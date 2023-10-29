@@ -23,13 +23,13 @@ export function registerApp(params: RegisterAppParams) {
 		method: 'POST',
 		body: payload,
 	}).
-	then(response => {
-		if (response.status === 200)
-			return response.json() as Promise<RegisterAppResponse>
+	  then(response => {
+		  if (response.status === 200)
+			  return response.json() as Promise<RegisterAppResponse>
 
-		// TODO: get error messages from a server
-		throw new Error('Error during application registration')
-	})	
+		  // TODO: get error messages from a server
+		  throw new Error('Error during application registration')
+	  })
 }
 
 export interface GetAppTokenParams {
@@ -46,7 +46,7 @@ interface TokenEntity {
 	[k: string]: string
 }
 
-export function getAppToken(params: GetAppTokenParams) {
+export function getAppToken(params: GetAppTokenParams): Promise<string> {
 	const payload = new FormData()
 
 	const {server, ...rest} = params
@@ -60,15 +60,15 @@ export function getAppToken(params: GetAppTokenParams) {
 		body: payload
 	})
 
-	return r.then(resp => {
-		if (resp.status === 200)
-			return (resp.json() as Promise<TokenEntity>).then(tokenEntity => tokenEntity.access_token)
+	return r.then(
+    resp => {
+		  if (resp.status === 200)
+			  return (resp.json() as Promise<TokenEntity>).then(tokenEntity => tokenEntity.access_token)
 
-		throw new Error('Can not obtain app token')
-	},
-	() => {
-		throw new Error('Can not obtain application token')	
-	}
-	)
+		  // We are interested only 200 status code, so treat any other codes as errors, too
+		  throw new Error('Can not obtain app token')
+	  }
+  ).catch(e => {
+		throw new Error(e)
+	})
 }
-

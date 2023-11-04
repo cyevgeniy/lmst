@@ -1,7 +1,4 @@
 import '../assets/css/main.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
 import { HelloWorld } from './components/HelloWorld.ts'
 import { LPost } from './components/LPost'
 import { registerApp, getAppToken } from './api/app.ts'
@@ -23,14 +20,12 @@ registerApp({
   .then(timeline => {
     console.log(timeline)
     for (const post of timeline) {
-      const { el } = LPost({content: post.content, created_at: post.created_at})
-      document.getElementById('timeline-root').appendChild(el)
+      const { el } = LPost({content: post.content, created_at: post.created_at, account: post.account})
+      document.getElementById('timeline-root')?.appendChild(el)
     }
   })
   .catch(err => console.log(err))
 
-
-const { el: hw } = HelloWorld()
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 <div id="timeline-root" class="timeline-container"> </div>

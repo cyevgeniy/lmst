@@ -18,3 +18,21 @@ body {
     border-radius: 4px;
     padding: 4px;
 }
+
+.post__header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.post__create-date {
+    color: gray;
+    font-style: italic;
+    margin-left: auto;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 9000px;
+}

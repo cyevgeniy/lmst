@@ -1,32 +1,21 @@
 import '../assets/css/main.css'
-import { HelloWorld } from './components/HelloWorld.ts'
-import { LPost } from './components/LPost'
-import { registerApp, getAppToken } from './api/app.ts'
-import { getPublicTimeline } from './api/timeline'
+import { useRouter } from './utils/useRouter'
 
-registerApp({
-  server: 'https://mastodon.social',
-  redirectUris: 'https://mastodon.social',
-  clientName: 'lmst'
+// !!! should be single instance
+const router = useRouter()
+
+router.navigateTo('timeline')
+
+const buttons = document.createElement('div')
+buttons.innerHTML = `<button id="btn"> Profile </div>
+<button id="btn1"> Settings </div>`
+
+document.getElementById('app')?.appendChild(buttons)
+
+document.getElementById('btn')?.addEventListener('click', () => {
+  router.navigateTo('profile')
 })
-  .then( (r) => getAppToken({
-    server: 'https://mastodon.social',
-    client_id: r.client_id,
-    client_secret: r.client_secret,
-    redirect_uri: 'localhost:5173',
-    grant_type: 'client_credentials'
-  }) )
-  .then(token => getPublicTimeline('https://mastodon.social', token))
-  .then(timeline => {
-    console.log(timeline)
-    for (const post of timeline) {
-      const { el } = LPost({content: post.content, created_at: post.created_at, account: post.account})
-      document.getElementById('timeline-root')?.appendChild(el)
-    }
-  })
-  .catch(err => console.log(err))
 
-
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-<div id="timeline-root" class="timeline-container"> </div>
-`
+document.getElementById('btn1')?.addEventListener('click', () => {
+  router.navigateTo('settings')
+})

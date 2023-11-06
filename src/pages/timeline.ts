@@ -2,16 +2,14 @@ import { registerApp } from '../utils/app'
 import { LStatuesList } from '../components/LStatusesList'
 import { getPublicTimeline } from '../api/timeline'
 import type { Status } from '../types/shared.d.ts'
+import { h } from '../utils/dom'
 
 export function Timeline() {
   let el: HTMLElement
   let timeline: any = []
 
   function render(): HTMLElement {
-    el = document.createElement('div')
-    el.setAttribute('id', 'timeline-root')
-    el.classList.add('timeline-container')
-
+    el = h('div', {class: 'timeline-container', attrs: {id: 'timeline-root'}})
     return el
   }
 

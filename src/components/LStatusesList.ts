@@ -1,9 +1,9 @@
 import type { Status } from '../types/shared.d.ts'
 import { LStatus } from './LStatus'
+import { h } from '../utils/dom'
 
 export function LStatuesList(statuses: Status[]) {
-  const el = document.createElement('div')
-  el.classList.add('statuses-list')
+  const el = h('div', {class: 'statuses-list'})
 
   for (const status of statuses) {
     const { el: statusEl } = LStatus(status)

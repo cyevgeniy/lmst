@@ -1,6 +1,7 @@
 import { registerApp } from '../utils/app'
-import { LPost } from '../components/LPost'
+import { LStatuesList } from '../components/LStatusesList'
 import { getPublicTimeline } from '../api/timeline'
+import type { Status } from '../types/shared.d.ts'
 
 export function Timeline() {
   let el: HTMLElement
@@ -16,11 +17,9 @@ export function Timeline() {
 
   async function onMount() {
     const token = await registerApp()
-    timeline = await getPublicTimeline('https://mastodon.social', token)
-    for (const post of timeline) {
-        const { el: postEl } = LPost({content: post.content, created_at: post.created_at, account: post.account})
-        el?.appendChild(postEl)
-    }
+    timeline = await getPublicTimeline('https://mastodon.social', token) as Status[]
+    const { el: statusesListEl } = LStatuesList(timeline)
+    el.appendChild(statusesListEl)
   }
 
   return {

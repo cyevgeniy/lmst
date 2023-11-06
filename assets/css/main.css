@@ -3,29 +3,36 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
 }
 
-.timeline-container {
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 700px;
+.statuses-list {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.post {
+.statuses-list__status {
     width: 100%;
     border: 1px solid gray;
     border-radius: 4px;
     padding: 4px;
 }
 
-.post__header {
+
+.timeline-container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+}
+
+
+
+.status__header {
     display: flex;
     gap: 16px;
     align-items: center;
 }
 
-.post__create-date {
+.status__create-date {
     color: gray;
     font-style: italic;
     margin-left: auto;

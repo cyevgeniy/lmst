@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/jsdom": "^21.1.5",
     "jsdom": "^22.1.0",
     "tap": "^18.5.7",
     "typescript": "^5.0.2",

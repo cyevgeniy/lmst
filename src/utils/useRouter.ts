@@ -1,47 +1,34 @@
 import { Settings } from '../pages/settings.ts'
 import { Profile } from '../pages/profile.ts'
 import { Page } from '../pages/page.ts'
-import type { PageInstance } from '../pages/page'
 import { Timeline } from '../pages/timeline.ts'
+import Navigo from 'navigo'
+ 
 
-export interface RoutePage {
-  page: PageInstance
-}
+const profilePage = Page(Profile)
+const settingsPage = Page(Settings)
+const timelinePage = Page(Timeline)
 
-export interface Router {
-  [route: string]: RoutePage
-}
+export const router = new Navigo('/');
 
-export function useRouter() {
-  const profilePage = Page(Profile)
-  const settingsPage = Page(Settings)
-  const timelinePage = Page(Timeline)
+router.on('/', function () {
+  timelinePage.mount()
+  router.resolve()
+})
 
-  let currentPage: string | undefined = undefined
+router.on('/profile/:id', function () {
+  profilePage.mount()
+  router.resolve()
+});
 
-  const router: Router = {
-    profile: { page: profilePage},
-    settings: { page: settingsPage},
-    timeline: { page: timelinePage},
-  }
+router.on('/settings', function () {
+  settingsPage.mount()
+  router.resolve()
+})
 
+router.on('/timeline', function () {
+  timelinePage.mount()
 
-  window.addEventListener('popstate', (e: PopStateEvent) => {
-    navigateTo(e.state.page)
-  })
+  router.resolve()
+})
 
-  function navigateTo(page: string) {
-    if (currentPage === page)
-      return
-
-    if (!router[page])
-      throw new Error('No such page!')
-
-    history.pushState({page}, '', `/${page}`)
-    router[page].page.mount()
-  }
-
-  return {
-    navigateTo,
-  }
-}

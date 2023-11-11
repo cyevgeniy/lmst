@@ -12,7 +12,7 @@ document.getElementById('app')?.appendChild(buttons)
 
 document.getElementById('btn')?.addEventListener('click', () => {
   // router.navigate('/profile/12', );
-  lRouter.navigateTo('/profile')
+  lRouter.navigateTo('/profile/13/question/question-123/')
 })
 
 document.getElementById('btn1')?.addEventListener('click', () => {

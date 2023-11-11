@@ -47,5 +47,24 @@ t.test('getPathparameters works', (t) => {
     }
   })
 
+  t.match(getPathParameters('/profile/:id/questions/:questionId', '/profile/123/questions/13'), {
+    matched: true,
+    params: {
+      id: '123',
+      questionId: '13',
+    }
+  })
+
+  t.match(getPathParameters('/profile/:id/', '/profile/13/'), {
+    matched: true,
+    params: {
+      id: '13',
+    }
+  })
+
+  t.match(getPathParameters('/profile/:id/questions', '/profile/13/'), {
+    matched: false
+  })
+
   t.end()
 })

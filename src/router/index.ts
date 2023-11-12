@@ -39,15 +39,11 @@ function createRouter(): Router {
   }
 
   window.addEventListener('load', () => {
-    console.log('Window load event, pathname = ', window.location.pathname)
-
     findCallback(window.location.pathname)()
   })
 
   window.addEventListener('popstate', () => {
-    console.log('Window popState event, pathName = ', window.location.pathname)
     findCallback(window.location.pathname)()
-//    callbacks.get(window.location.pathname)?.()
   })
 
   function on(path: string, cb: (params?: Record<string, string>) => void) {
@@ -65,6 +61,5 @@ function createRouter(): Router {
   }
 }
 
+// We need only one router in our app
 export const lRouter = createRouter()
-lRouter.on('/profile/:id/question/:questionId', (params) => {console.log('LProfile callback', JSON.stringify(params, null, 2))})
-lRouter.on('settings/', (params) => {console.log('LSettings callback', JSON.stringify(params, null, 2))})

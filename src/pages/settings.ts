@@ -7,7 +7,7 @@ export function Settings() {
   	return el
   }
 
-  function onMount() {
+  function onMount(_?: Record<string,string>) {
   	console.log('Settings on mount event')
   }
 

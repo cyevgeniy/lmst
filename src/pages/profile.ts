@@ -1,13 +1,20 @@
-
-
 export function Profile() {
 
   const el = document.createElement('div')
-  el.innerHTML = `<h1> Profile </h1>`
+  let profileId: string = ''
+
+  function update(params?: Record<string, string>) {
+    profileId = params?.id ?? ''
+    el.innerHTML = `<h1> Profile ${profileId} </h1>`
+  }
 
   function render() {
     return el
   }
 
-  return { render, }
+  function onMount(params?: Record<string, string>) {
+    update(params)
+  }
+
+  return { render, onMount }
 }

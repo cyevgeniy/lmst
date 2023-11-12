@@ -1,21 +1,21 @@
-export type PageConstructor = () => {render: () => HTMLElement, onMount?: () => void}
+export type PageConstructor = () => {render: () => HTMLElement, onMount?: (params?: Record<string,string>) => void}
 
 export interface PageInstance {
-  mount: () => void
+  mount: (params?: Record<string,string>) => void
 }
 
 export function Page(p: PageConstructor): PageInstance {
-  function mount() {
-  	// Find root node
-  	const root = document.getElementById('app')
+  function mount(params?: Record<string, string>) {
+    // Find root node
+    const root = document.getElementById('app')
 
-  	if (!root)
-  	  return
+    if (!root)
+      return
 
     const page = p()
     root.innerHTML = ''
     root.appendChild(page.render())
-    page.onMount?.()
+    page.onMount?.(params)
   }
 
   return {

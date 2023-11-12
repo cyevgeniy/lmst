@@ -13,7 +13,7 @@ export function Timeline() {
     return el
   }
 
-  async function onMount() {
+  async function onMount(_?: Record<string,string>) {
     const token = await registerApp()
     timeline = await getPublicTimeline('https://mastodon.social', token) as Status[]
     const { el: statusesListEl } = LStatuesList(timeline)

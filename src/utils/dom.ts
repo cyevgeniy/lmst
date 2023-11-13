@@ -24,7 +24,7 @@ export interface NodeProps {
  *    const el = h('div', {innerHtml: `<div class="header"> HEAD </div>`}) //<div>`<div class="header"> HEAD </div></div>
 
  */
-export function h(nodeName: string, props?: NodeProps | null, childs?: HTMLElement[] | string): HTMLElement {
+export function h(nodeName: string, props?: NodeProps | null, childs?: Array<HTMLElement | undefined> | string): HTMLElement {
   const el = document.createElement(nodeName)
 
   const _class = props?.class ?
@@ -46,7 +46,10 @@ export function h(nodeName: string, props?: NodeProps | null, childs?: HTMLEleme
 
   if (childs) {
     if (Array.isArray(childs))
-      childs?.forEach(child => el.appendChild(child))
+      childs?.forEach(child => {
+        if (child)
+          el.appendChild(child)
+      })
     else if (typeof childs === 'string')
       el.textContent = childs
   }

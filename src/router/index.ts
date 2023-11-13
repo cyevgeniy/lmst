@@ -29,7 +29,6 @@ function createRouter(): Router {
       const matched = getPathParameters(routePath, path)
 
       if (matched.matched) {
-        console.log('path=', path, ' routePath=', routePath)
         _callback = () => cb(matched.params)
         break
       }

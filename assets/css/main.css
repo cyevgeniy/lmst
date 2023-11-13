@@ -17,6 +17,16 @@ body {
     padding: 4px;
 }
 
+.status-attachment-container {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.status-attachment--image {
+    width: 100%;
+}
+
 
 .timeline-container {
     margin-left: auto;

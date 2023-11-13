@@ -16,6 +16,20 @@ export interface Account {
 }
 
 
+/**
+ * This interface represents media that can be attached to a Status
+ */
+export interface MediaAttachment {
+  id: string
+  type: 'unknown' | 'image' | 'gifv' | 'audio'
+  url: string
+  preview_url: string
+  remote_url?: string
+  description: string
+  blurhash: string
+}
+
+
 export interface Status {
   /**
    * ID of the status in the database
@@ -37,4 +51,9 @@ export interface Status {
    * The account that authored this status
    */
   account: Account
+
+  /**
+   * It may be an empty array, but not nullish
+   */
+  media_attachments: MediaAttachment[]
 }

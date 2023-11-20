@@ -3,6 +3,7 @@ import { LStatuesList } from '../components/LStatusesList'
 import { getPublicTimeline } from '../api/timeline'
 import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
+import { useTimeline } from '../stores/useTimeline'
 
 export function Timeline() {
   let el: HTMLElement
@@ -12,11 +13,13 @@ export function Timeline() {
 
   let addStatuses: undefined | ((statuses: Status[]) => void) = undefined
 
+  const { timeline } = useTimeline()
+
   async function loadStatuses() {
     const token = await registerApp()
     const statuses = await getPublicTimeline('https://social.vivaldi.net', token, {max_id: maxId}) as Status[]
-    //timelineContainer.appendChild(statusesListEl)
     addStatuses?.(statuses)
+    timeline.push(...statuses)
     maxId = statuses[statuses.length - 1].id
   }
 
@@ -34,7 +37,11 @@ export function Timeline() {
   }
 
   async function onMount(_?: Record<string,string>) {
-    loadStatuses()
+    console.log('onMount')
+    if (timeline.length === 0)
+      loadStatuses()
+    else
+      addStatuses?.(timeline)
   }
 
   return {

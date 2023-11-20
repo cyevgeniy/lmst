@@ -8,12 +8,12 @@ export async function registerApp(): Promise<string> {
   	return appToken
 
   return _registerApp({
-	  server: 'https://mastodon.social',
-	  redirectUris: 'https://mastodon.social',
+	  server: 'https://social.vivaldi.net',
+	  redirectUris: 'https://social.vivaldi.net',
 	  clientName: 'lmst'
 	})
   .then( (r) => getAppToken({
-    server: 'https://mastodon.social',
+    server: 'https://social.vivaldi.net',
     client_id: r.client_id,
     client_secret: r.client_secret,
     redirect_uri: 'localhost:5173',

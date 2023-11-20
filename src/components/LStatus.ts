@@ -1,4 +1,4 @@
-import type { Status, MediaAttachment } from '../types/shared'
+import type { Status } from '../types/shared'
 import { h } from '../utils/dom'
 import { lRouter } from '../router'
 

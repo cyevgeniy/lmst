@@ -27,6 +27,16 @@ body {
     width: 100%;
 }
 
+#timeline-root {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.timeline__load-more {
+    margin-top: auto;
+}
+
 
 .timeline-container {
     margin-left: auto;

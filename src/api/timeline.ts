@@ -1,19 +1,23 @@
 interface TimelineParams {
   local?: boolean
   remote?: boolean
-  onlyMedia?: boolean
-  maxId?: string
-  sinceId?: string
-  minId?: string
+  only_media?: boolean
+  max_id?: string
+  since_id?: string
+  min_id?: string
   limit?: number
 }
-
 
 export function getPublicTimeline(server: string, token: string, params: TimelineParams = {}) {
   const headers = new Headers()
   headers.append('Authorization', `Bearer token ${token}`)
   // TODO: add query parameters
-  const f = fetch(`${server}/api/v1/timelines/public`, {
+  // key=value&key=value&key=value
+  const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
+  const queryParams = queryArr.join('&')
+  console.log(queryParams)
+  const _server = `${server}/api/v1/timelines/public` + (queryParams.length > 0 ? `?${queryParams}` : '')
+  const f = fetch(_server, {
     method: 'GET',
     headers,
   })

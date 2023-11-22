@@ -4,6 +4,7 @@ import { getPublicTimeline } from '../api/timeline'
 import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
 import { useTimeline } from '../stores/useTimeline'
+import config from '../appConfig'
 
 export function Timeline() {
   let el: HTMLElement
@@ -17,7 +18,7 @@ export function Timeline() {
 
   async function loadStatuses() {
     const token = await registerApp()
-    const statuses = await getPublicTimeline('https://social.vivaldi.net', token, {max_id: maxId}) as Status[]
+    const statuses = await getPublicTimeline(config.server, token, {max_id: maxId}) as Status[]
     addStatuses?.(statuses)
     timeline.push(...statuses)
     maxId = statuses[statuses.length - 1].id

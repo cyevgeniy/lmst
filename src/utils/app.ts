@@ -1,4 +1,5 @@
 import { registerApp as _registerApp, getAppToken } from "../api/app"
+import config from '../appConfig'
 
 let appToken: string
 
@@ -8,12 +9,12 @@ export async function registerApp(): Promise<string> {
   	return appToken
 
   return _registerApp({
-	  server: 'https://social.vivaldi.net',
+	  server: config.server,
 	  redirectUris: 'https://social.vivaldi.net',
 	  clientName: 'lmst'
 	})
   .then( (r) => getAppToken({
-    server: 'https://social.vivaldi.net',
+    server: config.server,
     client_id: r.client_id,
     client_secret: r.client_secret,
     redirect_uri: 'localhost:5173',

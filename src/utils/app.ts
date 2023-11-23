@@ -11,7 +11,7 @@ export async function registerApp(): Promise<string> {
   return _registerApp({
 	  server: config.server,
 	  redirectUris: 'https://social.vivaldi.net',
-	  clientName: 'lmst'
+	  clientName: config.clientName
 	})
   .then( (r) => getAppToken({
     server: config.server,

@@ -28,8 +28,10 @@ export function Timeline() {
     loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
-    const { el: statusesListEl, add } = LStatuesList()
-    addStatuses= add
+    const statusesList = LStatuesList([])
+    const statusesListEl = statusesList.mount()
+
+    addStatuses = statusesList.appendStatuses
 
     timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtn])
     el = h('div', {attrs: {id: 'timeline-root'}}, [timelineContainer, loadMoreBtn])

@@ -1,4 +1,8 @@
-export type PageConstructor = () => {render: () => HTMLElement, onMount?: (params?: Record<string,string>) => void}
+export type PageConstructor = () => {
+  mount: () => HTMLElement,
+  onParamsChange?: (params?: Record<string,string>) => void | Promise<void>
+  // onMount?: (params?: Record<string,string>) => void
+}
 
 export interface PageInstance {
   mount: (params?: Record<string,string>) => void
@@ -14,8 +18,8 @@ export function Page(p: PageConstructor): PageInstance {
 
     const page = p()
     root.innerHTML = ''
-    root.appendChild(page.render())
-    page.onMount?.(params)
+    root.appendChild(page.mount())
+    page.onParamsChange?.(params)
   }
 
   return {

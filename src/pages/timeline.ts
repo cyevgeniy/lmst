@@ -5,8 +5,9 @@ import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
 import { useTimeline } from '../stores/useTimeline'
 import config from '../appConfig'
+import type { PageConstructor } from './page.ts'
 
-export function Timeline() {
+export const Timeline: PageConstructor = () => {
   let el: HTMLElement
   let timelineContainer: HTMLElement
   let loadMoreBtn: HTMLButtonElement
@@ -24,7 +25,7 @@ export function Timeline() {
     maxId = statuses[statuses.length - 1].id
   }
 
-  function render(): HTMLElement {
+  function mount(): HTMLElement {
     loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
@@ -39,8 +40,8 @@ export function Timeline() {
     return el
   }
 
-  async function onMount(_?: Record<string,string>) {
-    console.log('onMount')
+  async function onParamsChange(_?: Record<string,string>) {
+    console.log('onParamsChange')
     if (timeline.length === 0)
       loadStatuses()
     else
@@ -48,7 +49,7 @@ export function Timeline() {
   }
 
   return {
-    render,
-    onMount,
+    mount,
+    onParamsChange,
   }
 }

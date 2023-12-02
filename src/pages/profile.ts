@@ -1,4 +1,6 @@
-export function Profile() {
+import { PageConstructor } from './page'
+
+export const Profile: PageConstructor = () => {
 
   const el = document.createElement('div')
   let profileId: string = ''
@@ -8,13 +10,13 @@ export function Profile() {
     el.innerHTML = `<h1> Profile ${profileId} </h1>`
   }
 
-  function render() {
+  function mount() {
     return el
   }
 
-  function onMount(params?: Record<string, string>) {
+  function onParamsChange(params?: Record<string, string>) {
     update(params)
   }
 
-  return { render, onMount }
+  return { mount, onParamsChange }
 }

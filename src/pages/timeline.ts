@@ -1,5 +1,5 @@
 import { registerApp } from '../utils/app'
-import { LStatuesList } from '../components/LStatusesList'
+import { LStatusesList } from '../components/LStatusesList'
 import { getPublicTimeline } from '../api/timeline'
 import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
@@ -29,7 +29,7 @@ export const Timeline: PageConstructor = () => {
     loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
-    const statusesList = LStatuesList([])
+    const statusesList = LStatusesList([])
     const statusesListEl = statusesList.mount()
 
     addStatuses = statusesList.appendStatuses

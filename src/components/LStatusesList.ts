@@ -2,7 +2,7 @@ import type { Status } from '../types/shared.d.ts'
 import { LStatus } from './LStatus'
 import { h } from '../utils/dom'
 
-export function LStatuesList(statuses: Status[]) {
+export function LStatusesList(statuses: Status[]) {
   let rendered = false
   let el: HTMLElement
 
@@ -15,7 +15,7 @@ export function LStatuesList(statuses: Status[]) {
   }
 
   function render() {
-    el = h('div', {class: 'statuses-list'}) 
+    el = h('div', {class: 'statuses-list'})
 
     appendStatuses(statuses)
   }

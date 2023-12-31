@@ -8,6 +8,6 @@ function defineLmstConfig(conf: AppConfig): AppConfig {
 }
 
 export default defineLmstConfig({
-  server: 'https://social.vivaldi.net',
+  server: 'https://mastodon.social',
   clientName: 'lmst',
 })

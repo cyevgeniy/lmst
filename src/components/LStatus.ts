@@ -22,7 +22,7 @@ export function LStatus(status: Status) {
         attachments!.appendChild(h('img', {class: 'status-attachment--image', attrs: {src: attachment.preview_url}}))
       }
     })
-    
+
     el = h('div', {class: 'status'}, [
       h('div', {class: 'status__header'}, [
         avatar,
@@ -43,7 +43,7 @@ export function LStatus(status: Status) {
     if (!rendered) {
       render()
       avatar.addEventListener('click', () => {
-        lRouter.navigateTo(`/profile/${status.id}`)
+        lRouter.navigateTo(`/profile/${status.account.id}`)
       })
 
       rendered = true
@@ -51,6 +51,6 @@ export function LStatus(status: Status) {
 
     return el
   }
-  
+
   return { mount }
 }

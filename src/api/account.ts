@@ -4,13 +4,9 @@ import appConfig from '../appConfig'
 export function getStatuses(accountId: string) {
   const _server = `${appConfig.server}/api/v1/accounts/${accountId}/statuses`
 
-  return registerApp().then(token => {
-    //const headers = new Headers()
-    //headers.append('Authorization', `Bearer token ${token}`)
-
+  return registerApp().then(() => {
     const f = fetch(_server, {
       method: 'GET',
-      //headers,
     })
 
     return f.then(response => {

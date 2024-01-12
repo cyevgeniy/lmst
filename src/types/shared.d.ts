@@ -1,5 +1,10 @@
 export interface Account {
   /**
+   * Account id
+   */
+  id: string
+
+  /**
    * Avatar's url
    */
   avatar?: string

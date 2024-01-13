@@ -6,21 +6,21 @@ import { h } from '../utils/dom'
 import { useTimeline } from '../stores/useTimeline'
 import config from '../appConfig'
 import type { PageConstructor } from './page.ts'
+import type { StatusesListComponent } from '../components/LStatusesList'
 
 export const Timeline: PageConstructor = () => {
   let el: HTMLElement
   let timelineContainer: HTMLElement
   let loadMoreBtn: HTMLButtonElement
   let maxId = ''
-
-  let addStatuses: undefined | ((statuses: Status[]) => void) = undefined
+  let statusesList: StatusesListComponent
 
   const { timeline } = useTimeline()
 
   async function loadStatuses() {
     const token = await registerApp()
     const statuses = await getPublicTimeline(config.server, token, {max_id: maxId}) as Status[]
-    addStatuses?.(statuses)
+    statusesList?.addStatuses(statuses)
     timeline.push(...statuses)
     maxId = statuses[statuses.length - 1].id
   }
@@ -29,10 +29,9 @@ export const Timeline: PageConstructor = () => {
     loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
-    const statusesList = LStatusesList([])
-    const statusesListEl = statusesList.mount()
-
-    addStatuses = statusesList.appendStatuses
+    const statusesListEl = h('div')
+    statusesList = LStatusesList(statusesListEl, [])
+    statusesList.mount()
 
     timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtn])
     el = h('div', {attrs: {id: 'timeline-root'}}, [timelineContainer, loadMoreBtn])
@@ -45,7 +44,7 @@ export const Timeline: PageConstructor = () => {
     if (timeline.length === 0)
       loadStatuses()
     else
-      addStatuses?.(timeline)
+      statusesList?.addStatuses(timeline)
   }
 
   return {

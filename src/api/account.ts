@@ -1,11 +1,15 @@
 import { registerApp } from '../utils/app'
 import appConfig from '../appConfig'
+import type { PaginationParams } from '../types/shared.d'
 
-export function getStatuses(accountId: string) {
+export function getStatuses(accountId: string, params: PaginationParams = {}) {
   const _server = `${appConfig.server}/api/v1/accounts/${accountId}/statuses`
 
+  const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
+  const queryParams = queryArr.join('&')
+
   return registerApp().then(() => {
-    const f = fetch(_server, {
+    const f = fetch(_server + (queryParams.length > 0 ? `?${queryParams}` : '') , {
       method: 'GET',
     })
 

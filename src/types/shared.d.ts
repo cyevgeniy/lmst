@@ -62,3 +62,10 @@ export interface Status {
    */
   media_attachments: MediaAttachment[]
 }
+
+export interface PaginationParams {
+  limit?: number
+  since_id?: string
+  max_id?: string
+  min_id?: string
+}

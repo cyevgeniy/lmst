@@ -2,11 +2,20 @@ import type { Status } from '../types/shared.d.ts'
 import { LStatus } from './LStatus'
 import { h } from '../utils/dom'
 
-export function LStatusesList(statuses: Status[]) {
+export interface StatusesListComponent {
+  /**
+   * Adds list of statuses
+   */
+  addStatuses: (statuses: Status[]) => void
+
+  mount: () => void
+}
+
+export function LStatusesList(root: HTMLElement, statuses: Status[]): StatusesListComponent {
   let rendered = false
   let el: HTMLElement
 
-  function appendStatuses(statuses: Status[]) {
+  function addStatuses(statuses: Status[]) {
     for (const status of statuses) {
       const statusEl = LStatus(status).mount()
       statusEl.classList.add('statuses-list__status')
@@ -17,7 +26,9 @@ export function LStatusesList(statuses: Status[]) {
   function render() {
     el = h('div', {class: 'statuses-list'})
 
-    appendStatuses(statuses)
+    addStatuses(statuses)
+
+    root.appendChild(el)
   }
 
   function mount() {
@@ -31,6 +42,6 @@ export function LStatusesList(statuses: Status[]) {
 
   return {
     mount,
-    appendStatuses,
+    addStatuses,
   }
 }

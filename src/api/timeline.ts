@@ -1,11 +1,9 @@
-interface TimelineParams {
+import type { PaginationParams } from '../types/shared'
+
+interface TimelineParams extends PaginationParams  {
   local?: boolean
   remote?: boolean
   only_media?: boolean
-  max_id?: string
-  since_id?: string
-  min_id?: string
-  limit?: number
 }
 
 export function getPublicTimeline(server: string, token: string, params: TimelineParams = {}) {

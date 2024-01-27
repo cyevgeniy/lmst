@@ -1,7 +1,9 @@
 import { PageConstructor } from './page'
 import { LStatusesList } from '../components/LStatusesList'
+import { LProfileHeader } from '../components/ProfileHeader'
+import type { ProfileHeaderComponent } from '../components/ProfileHeader'
 import type { StatusesListComponent } from '../components/LStatusesList'
-import { getStatuses } from '../api/account'
+import { getAccount, getStatuses } from '../api/account'
 import { h } from '../utils/dom'
 export const Profile: PageConstructor = () => {
 
@@ -9,6 +11,7 @@ export const Profile: PageConstructor = () => {
   let statusesEl: HTMLElement
   let statusesList: StatusesListComponent
   let profileHeader: HTMLElement
+  let profileHeaderComponent: ProfileHeaderComponent
   let profileId: string = ''
   let maxId = ''
 
@@ -28,9 +31,12 @@ export const Profile: PageConstructor = () => {
 
     statusesEl = h('div')
     statusesList = LStatusesList(statusesEl, [])
+    profileHeader = h('div')
+    profileHeaderComponent = LProfileHeader(profileHeader)
     statusesList.mount()
+    profileHeaderComponent.mount()
     const timelineContainer = h('div', {class: 'timeline-container'}, [statusesEl, loadMoreBtn])
-    profileHeader = h('h2')
+
     el = h('div', {attrs: {id: 'timeline-root'}}, [profileHeader, timelineContainer, loadMoreBtn])
 
     rendered = true
@@ -38,7 +44,8 @@ export const Profile: PageConstructor = () => {
 
   function update(params?: Record<string, string>) {
     profileId = params?.id ?? ''
-    profileHeader.innerText = `Profile ${profileId}`
+    getAccount(profileId).then(resp => profileHeaderComponent.update(resp))
+    //profileHeader.innerText = `Profile ${profileId}`
     loadStatuses()
   }
 

@@ -18,6 +18,11 @@ export interface Account {
    * URL to username's account
    */
   url: string
+
+  /**
+   * The profile’s bio or description.
+   */
+  note?: string
 }
 
 

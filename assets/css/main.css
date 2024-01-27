@@ -63,3 +63,18 @@ body {
     height: 40px;
     border-radius: 9000px;
 }
+
+.account {
+  width: 100%;
+  padding: 1rem;
+  background-color: lightblue;
+}
+
+.account__name {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.account__note {
+  font-size: 14px;
+}

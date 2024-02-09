@@ -30,13 +30,12 @@ export function LStatus(status: Status) {
     const mediaCnt = status.media_attachments.length
     const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
     attachments = mediaCnt > 0 ? div(contClass) : undefined
-    if (attachments !== undefined) {
-      status.media_attachments.forEach(attachment => {
-        const node = attachmentNode(attachment)
-        if (node)
-          attachments!.appendChild(node)
-      })
-    }
+
+    attachments && status.media_attachments.forEach(attachment => {
+      const node = attachmentNode(attachment)
+      if (node)
+        attachments!.appendChild(node)
+    })
 
     el = div('status', [
       div('status__header', [

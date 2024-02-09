@@ -18,12 +18,10 @@ export const profilePage = definePage(() => {
 
   let rendered = false
 
-  function loadStatuses(): Promise<void> {
-    return getStatuses(profileId, {max_id: maxId}).then((resp) => {
-      console.log(resp)
-      statusesList.addStatuses(resp)
-      maxId = resp[resp.length - 1].id
-    })
+  async function loadStatuses(): Promise<void> {
+    const resp = await getStatuses(profileId, { max_id: maxId })
+    statusesList.addStatuses(resp)
+    maxId = resp[resp.length - 1].id
   }
 
   function render() {

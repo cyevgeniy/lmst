@@ -1,11 +1,12 @@
-import { PageConstructor } from './page'
+import { definePage } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import type { ProfileHeaderComponent } from '../components/ProfileHeader'
 import type { StatusesListComponent } from '../components/LStatusesList'
 import { getAccount, getStatuses } from '../api/account'
 import { h } from '../utils/dom'
-export const Profile: PageConstructor = () => {
+
+export const profilePage = definePage(() => {
 
   let el: HTMLElement
   let statusesEl: HTMLElement
@@ -39,6 +40,9 @@ export const Profile: PageConstructor = () => {
 
     el = h('div', {attrs: {id: 'timeline-root'}}, [profileHeader, timelineContainer, loadMoreBtn])
 
+
+
+
     rendered = true
   }
 
@@ -62,4 +66,4 @@ export const Profile: PageConstructor = () => {
   }
 
   return { mount, onParamsChange }
-}
+})

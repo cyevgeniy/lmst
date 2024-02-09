@@ -4,10 +4,10 @@ import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
 import { useTimeline } from '../stores/useTimeline'
 import config from '../appConfig'
-import type { PageConstructor } from './page.ts'
+import { definePage } from '../utils/page.ts'
 import type { StatusesListComponent } from '../components/LStatusesList'
 
-export const Timeline: PageConstructor = () => {
+export const timelinePage = definePage(() => {
   let el: HTMLElement
   let timelineContainer: HTMLElement
   let loadMoreBtn: HTMLButtonElement
@@ -49,4 +49,4 @@ export const Timeline: PageConstructor = () => {
     mount,
     onParamsChange,
   }
-}
+})

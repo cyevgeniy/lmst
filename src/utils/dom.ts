@@ -56,3 +56,15 @@ export function h(nodeName: string, props?: NodeProps | null, childs?: Array<HTM
 
   return el
 }
+
+export function div(classname: string | string[], childs: Array<HTMLElement | undefined> = []): HTMLElement {
+  return h('div', {class: classname }, childs)
+}
+
+export function span(classname: string | string[], text: string): HTMLElement {
+  return h('span', {class: classname }, text)
+}
+
+export function a(classname: string | string[], href: string, text: string) {
+  return h('a', { class: classname, attrs: { href, target: '_blank'}}, text)
+}

@@ -1,5 +1,5 @@
 import type { Status, MediaAttachment } from '../types/shared'
-import { h } from '../utils/dom'
+import { h, a, div, span } from '../utils/dom'
 import { lRouter } from '../router'
 import { Avatar } from './Avatar'
 
@@ -27,7 +27,7 @@ export function LStatus(status: Status) {
 
   function render() {
     avatar =  Avatar(status.account?.avatar).mount()
-    attachments = status.media_attachments.length > 0 ? h('div', {class: 'status-attachment-container'}) : undefined
+    attachments = status.media_attachments.length > 0 ? div('status-attachment-container') : undefined
     if (attachments !== undefined) {
       status.media_attachments.forEach(attachment => {
         const node = attachmentNode(attachment)
@@ -36,14 +36,14 @@ export function LStatus(status: Status) {
       })
     }
 
-    el = h('div', {class: 'status'}, [
-      h('div', {class: 'status__header'}, [
+    el = div('status', [
+      div('status__header', [
         avatar,
-        h('div', {class: 'status__username'}, [
-          h('span', null, `${status.account?.display_name || ''}`),
-          h('a', {attrs: {href: `${status.account?.url}`, target: '_blank'}, class: 'username__acc'}, `${status.account?.acct || ''}`),
+        div('status__username', [
+          span('', `${status.account?.display_name || ''}`),
+          a('username__acc', `${status.account?.url}`,  `${status.account?.acct || ''}`),
         ]),
-        h('span', {class: 'status__create-date'}, `${ fmtDate(status.created_at) ?? ''}`),
+        span('status__create-date', `${ fmtDate(status.created_at) ?? ''}`),
       ]),
       h('div', {innerHTML: status.content}),
       attachments

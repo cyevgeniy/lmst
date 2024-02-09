@@ -1,4 +1,4 @@
-import { h } from '../utils/dom'
+import { div } from '../utils/dom'
 import type { Account } from '../types/shared'
 import { Avatar } from './Avatar'
 
@@ -19,13 +19,13 @@ export function LProfileHeader(root: HTMLElement, account?: Account): ProfileHea
     if (rendered)
       return
 
-    displayNameEl = h('div', {class: "account__name"})
-    noteEl = h('div', {class: "account__note"})
+    displayNameEl = div('account__name')
+    noteEl = div('account__note')
 
     avatarComp = Avatar()
     avatarEl = avatarComp.mount()
-    el = h('div', {class: "account"}, [
-      h('div', {class: 'account__userinfo'}, [
+    el = div('account', [
+      div('account__userinfo', [
         avatarEl,
         displayNameEl
       ]),

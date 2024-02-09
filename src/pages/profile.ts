@@ -4,7 +4,7 @@ import { LProfileHeader } from '../components/ProfileHeader'
 import type { ProfileHeaderComponent } from '../components/ProfileHeader'
 import type { StatusesListComponent } from '../components/LStatusesList'
 import { getAccount, getStatuses } from '../api/account'
-import { h } from '../utils/dom'
+import { h, div } from '../utils/dom'
 
 export const profilePage = definePage(() => {
 
@@ -36,7 +36,7 @@ export const profilePage = definePage(() => {
     profileHeaderComponent = LProfileHeader(profileHeader)
     statusesList.mount()
     profileHeaderComponent.mount()
-    const timelineContainer = h('div', {class: 'timeline-container'}, [statusesEl, loadMoreBtn])
+    const timelineContainer = div('timeline-container', [statusesEl, loadMoreBtn])
 
     el = h('div', {attrs: {id: 'timeline-root'}}, [profileHeader, timelineContainer, loadMoreBtn])
 

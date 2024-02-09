@@ -1,4 +1,3 @@
-import { registerApp } from '../utils/app'
 import { LStatusesList } from '../components/LStatusesList'
 import { getPublicTimeline } from '../api/timeline'
 import type { Status } from '../types/shared.d.ts'
@@ -18,8 +17,7 @@ export const Timeline: PageConstructor = () => {
   const { timeline } = useTimeline()
 
   async function loadStatuses() {
-    const token = await registerApp()
-    const statuses = await getPublicTimeline(config.server, token, {max_id: maxId}) as Status[]
+    const statuses = await getPublicTimeline(config.server, {max_id: maxId}) as Status[]
     statusesList?.addStatuses(statuses)
     timeline.push(...statuses)
     maxId = statuses[statuses.length - 1].id

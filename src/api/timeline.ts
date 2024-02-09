@@ -6,10 +6,8 @@ interface TimelineParams extends PaginationParams  {
   only_media?: boolean
 }
 
-export function getPublicTimeline(server: string, token: string, params: TimelineParams = {}) {
+export function getPublicTimeline(server: string, params: TimelineParams = {}) {
   const headers = new Headers()
-  headers.append('Authorization', `Bearer token ${token}`)
-  // TODO: add query parameters
   // key=value&key=value&key=value
   const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
   const queryParams = queryArr.join('&')

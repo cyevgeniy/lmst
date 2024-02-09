@@ -6,23 +6,19 @@ interface TimelineParams extends PaginationParams  {
   only_media?: boolean
 }
 
-export function getPublicTimeline(server: string, params: TimelineParams = {}) {
+export async function getPublicTimeline(server: string, params: TimelineParams = {}) {
   const headers = new Headers()
   // key=value&key=value&key=value
   const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
   const queryParams = queryArr.join('&')
-  console.log(queryParams)
   const _server = `${server}/api/v1/timelines/public` + (queryParams.length > 0 ? `?${queryParams}` : '')
-  const f = fetch(_server, {
+  const resp = await fetch(_server, {
     method: 'GET',
     headers,
   })
 
-  return f.then(response => {
-    if (response.status === 200)
-      return response.json()
+  if (resp.status === 200)
+    return resp.json()
 
-    throw new Error('Can not load public timeline')
-  })
-    .catch(e => { throw new Error(e)})
+  throw new Error('Can not load public timeline')
 }

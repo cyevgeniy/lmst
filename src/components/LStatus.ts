@@ -39,7 +39,10 @@ export function LStatus(status: Status) {
     el = h('div', {class: 'status'}, [
       h('div', {class: 'status__header'}, [
         avatar,
-        h('span', null, `${status.account?.display_name || ''}`),
+        h('div', {class: 'status__username'}, [
+          h('span', null, `${status.account?.display_name || ''}`),
+          h('a', {attrs: {href: `${status.account?.url}`, target: '_blank'}, class: 'username__acc'}, `${status.account?.acct || ''}`),
+        ]),
         h('span', {class: 'status__create-date'}, `${ fmtDate(status.created_at) ?? ''}`),
       ]),
       h('div', {innerHTML: status.content}),

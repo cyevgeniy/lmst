@@ -50,6 +50,22 @@ body {
     align-items: center;
 }
 
+.status__username {
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+}
+
+.username__acc {
+  font-size: 14px;
+  color: gray;
+  text-decoration: none;
+}
+
+.username__acc:hover {
+  text-decoration: underline;
+}
+
 .status__create-date {
     color: gray;
     font-style: italic;

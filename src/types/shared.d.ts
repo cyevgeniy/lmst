@@ -23,6 +23,11 @@ export interface Account {
    * The profile’s bio or description.
    */
   note?: string
+
+  /**
+   * @username or server@username
+   */
+  acct?: string
 }
 
 

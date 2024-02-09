@@ -27,7 +27,9 @@ export function LStatus(status: Status) {
 
   function render() {
     avatar =  Avatar(status.account?.avatar).mount()
-    attachments = status.media_attachments.length > 0 ? div('status-attachment-container') : undefined
+    const mediaCnt = status.media_attachments.length
+    const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
+    attachments = mediaCnt > 0 ? div(contClass) : undefined
     if (attachments !== undefined) {
       status.media_attachments.forEach(attachment => {
         const node = attachmentNode(attachment)

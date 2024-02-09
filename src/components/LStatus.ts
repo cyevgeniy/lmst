@@ -1,10 +1,20 @@
-import type { Status } from '../types/shared'
+import type { Status, MediaAttachment } from '../types/shared'
 import { h } from '../utils/dom'
 import { lRouter } from '../router'
 import { Avatar } from './Avatar'
 
 function fmtDate(d: string) {
   return d.substring(0, d.indexOf('T'))
+}
+
+function attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
+  if (attachment.type === 'image')
+    return h('img', {
+      class: 'status-attachment--image',
+      attrs: {src: attachment.preview_url}
+    })
+  else
+    return undefined
 }
 
 export function LStatus(status: Status) {
@@ -18,11 +28,13 @@ export function LStatus(status: Status) {
   function render() {
     avatar =  Avatar(status.account?.avatar).mount()
     attachments = status.media_attachments.length > 0 ? h('div', {class: 'status-attachment-container'}) : undefined
-    attachments && status.media_attachments.forEach(attachment => {
-      if (attachment.type === 'image') {
-        attachments!.appendChild(h('img', {class: 'status-attachment--image', attrs: {src: attachment.preview_url}}))
-      }
-    })
+    if (attachments !== undefined) {
+      status.media_attachments.forEach(attachment => {
+        const node = attachmentNode(attachment)
+        if (node)
+          attachments!.appendChild(node)
+      })
+    }
 
     el = h('div', {class: 'status'}, [
       h('div', {class: 'status__header'}, [

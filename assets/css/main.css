@@ -5,6 +5,58 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
 }
 
+.layout__container {
+  display: flex;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+}
+
+.layout__header {
+  width: 100%;  
+}
+
+.layout__middle {
+  max-width: 680px;
+  width: calc(100% - 280px);
+}
+
+.layout__right {
+  width: 280px;
+  padding-left: 16px;
+}
+
+.layout__footer {
+  height: 20px;
+  padding-top: 8px;
+  /* border-top: 1px solid gray; */
+}
+
+.infoblock {
+  border-radius: 8px;
+  border: 1px solid lightgrey;
+  padding: 8px;
+}
+
+.infoblock > h2 {
+  margin-top: 0;
+}
+
+.nav {
+  height: 40px;
+  color: darkolivegreen;
+  position: sticky;
+  top: 0;
+  margin-bottom: 16px;
+  display: flex;
+  place-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: 1px solid rgb(235, 238, 240);
+  background-color: white;
+}
+
 .statuses-list {
   display: flex;
   flex-direction: column;

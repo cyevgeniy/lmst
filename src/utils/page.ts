@@ -1,3 +1,6 @@
+import { LInfo } from "../components/LInfo"
+import { Layout } from "../components/Layout"
+
 type PageConstructor = () => {
   mount: () => HTMLElement,
   onParamsChange?: (params?: Record<string,string>) => void | Promise<void>
@@ -17,7 +20,9 @@ export function definePage(p: PageConstructor): PageInstance {
 
     const page = p()
     root.innerHTML = ''
-    root.appendChild(page.mount())
+    const {middle, right } = Layout(root)
+    LInfo(right).mount()
+    middle.appendChild(page.mount())
     page.onParamsChange?.(params)
   }
 

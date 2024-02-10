@@ -12,3 +12,10 @@
 - [ ] Status post time tooltip
 - [ ] Sidebar/toolbar
 - [ ] Dark mode switch
+- [ ] 404 page
+- [ ] Responsive design
+- [ ] Settings
+  - [ ] Toggle nsfw content hiding
+- [ ] Status rendering
+  - [ ] NSFW content
+  - [ ] In reply to

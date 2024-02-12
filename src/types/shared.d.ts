@@ -71,6 +71,11 @@ export interface Status {
    * It may be an empty array, but not nullish
    */
   media_attachments: MediaAttachment[]
+
+  /**
+   * The status being reblogged.
+   */
+  reblog: Status | null
 }
 
 export interface PaginationParams {

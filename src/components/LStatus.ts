@@ -13,11 +13,23 @@ function attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
       class: 'status-attachment--image',
       attrs: {src: attachment.preview_url}
     })
+  
+  if (attachment.type === 'gifv')
+    return h('video', {
+      class: 'status-attachment--video',
+      attrs: {
+        src: attachment.url,
+        controls: '',
+      }
+    })
   else
     return undefined
 }
 
 export function LStatus(status: Status) {
+
+  const _status = status.reblog ?? status
+  const isReblogged = Boolean(status.reblog)
 
   let rendered = false
 
@@ -26,27 +38,30 @@ export function LStatus(status: Status) {
   let attachments: HTMLElement | undefined
 
   function render() {
-    avatar =  Avatar(status.account?.avatar).mount()
-    const mediaCnt = status.media_attachments.length
+    avatar =  Avatar(_status.account?.avatar).mount()
+    const mediaCnt = _status.media_attachments.length
     const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
     attachments = mediaCnt > 0 ? div(contClass) : undefined
 
-    attachments && status.media_attachments.forEach(attachment => {
+    attachments && _status.media_attachments.forEach(attachment => {
       const node = attachmentNode(attachment)
       if (node)
         attachments!.appendChild(node)
     })
 
+    const dispName = status.account.display_name
+
     el = div('status', [
+      isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,
       div('status__header', [
         avatar,
         div('status__username', [
-          span('', `${status.account?.display_name || ''}`),
-          a('username__acc', `${status.account?.url}`,  `${status.account?.acct || ''}`),
+          span('', `${_status.account?.display_name || ''}`),
+          a('username__acc', `${_status.account?.url}`,  `${_status.account?.acct || ''}`),
         ]),
         span('status__create-date', `${ fmtDate(status.created_at) ?? ''}`),
       ]),
-      h('div', {innerHTML: status.content}),
+      h('div', {innerHTML: _status.content}),
       attachments
     ])
   }
@@ -60,7 +75,7 @@ export function LStatus(status: Status) {
     if (!rendered) {
       render()
       avatar.addEventListener('click', () => {
-        lRouter.navigateTo(`/profile/${status.account.id}`)
+        lRouter.navigateTo(`/profile/${_status.account.id}`)
       })
 
       rendered = true

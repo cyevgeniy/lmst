@@ -69,6 +69,11 @@ body {
   padding: 4px;
 }
 
+.status--boosted {
+  margin-bottom: 8px;
+  color: darkgray;
+}
+
 .status-attachment-container {
   display: flex;
   gap: 8px;
@@ -82,6 +87,10 @@ body {
 }
 
 .status-attachment--image {
+  width: 100%;
+}
+
+.status-attachment--video {
   width: 100%;
 }
 

@@ -57,7 +57,8 @@ export function LStatus(status: Status) {
   function render() {
     avatar =  Avatar(_status.account?.avatar).mount()
 
-    attachments = getAttachmentsEl()
+    if (!_status.sensitive)
+      attachments = getAttachmentsEl()
 
     const dispName = status.account.display_name
 
@@ -77,8 +78,6 @@ export function LStatus(status: Status) {
       ]),
       _status.sensitive ? undefined : h('div', {innerHTML: _status.content}),
       _status.sensitive ? sensitiveEl : attachments,
-      // h('div', {innerHTML: _status.content}),
-      // attachments
     ])
   }
 
@@ -97,7 +96,6 @@ export function LStatus(status: Status) {
       sensitiveBtn?.addEventListener('click', () => {
         sensitiveEl?.remove()
         attachments = getAttachmentsEl()
-        console.log(attachments)
         _status.content && el.appendChild(h('div', {innerHTML: _status.content}))
         attachments && el.appendChild(attachments)
       })

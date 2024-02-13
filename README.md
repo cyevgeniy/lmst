@@ -18,4 +18,4 @@
   - [ ] Toggle nsfw content hiding
 - [ ] Status rendering
   - [ ] NSFW content
-  - [ ] In reply to
+  - [x] In reply to

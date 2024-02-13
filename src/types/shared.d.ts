@@ -76,6 +76,11 @@ export interface Status {
    * The status being reblogged.
    */
   reblog: Status | null
+
+  /**
+   * Sensitive content?
+   */
+  sensitive: boolean
 }
 
 export interface PaginationParams {

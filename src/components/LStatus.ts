@@ -14,7 +14,7 @@ function attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
       attrs: {src: attachment.preview_url}
     })
   
-  if (attachment.type === 'gifv')
+  if (['gifv', 'video'].includes(attachment.type))
     return h('video', {
       class: 'status-attachment--video',
       attrs: {
@@ -36,20 +36,34 @@ export function LStatus(status: Status) {
   let el: HTMLElement
   let avatar: HTMLElement
   let attachments: HTMLElement | undefined
+  let sensitiveEl: HTMLElement | undefined
+  let sensitiveBtn: HTMLButtonElement | undefined
+
+  function getAttachmentsEl(): HTMLElement | undefined {
+    const mediaCnt = _status.media_attachments.length
+    const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
+    const result = mediaCnt > 0 ? div(contClass) : undefined
+
+    result && _status.media_attachments.forEach(attachment => {
+      const node = attachmentNode(attachment)
+      if (node)
+        result!.appendChild(node)
+    })
+
+    return result
+
+  }
 
   function render() {
     avatar =  Avatar(_status.account?.avatar).mount()
-    const mediaCnt = _status.media_attachments.length
-    const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
-    attachments = mediaCnt > 0 ? div(contClass) : undefined
 
-    attachments && _status.media_attachments.forEach(attachment => {
-      const node = attachmentNode(attachment)
-      if (node)
-        attachments!.appendChild(node)
-    })
+    attachments = getAttachmentsEl()
 
     const dispName = status.account.display_name
+
+    sensitiveBtn = h('button', null, 'Show me tits!') as HTMLButtonElement
+
+    sensitiveEl = _status.sensitive ? h('div', null, [sensitiveBtn]): undefined
 
     el = div('status', [
       isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,
@@ -61,8 +75,10 @@ export function LStatus(status: Status) {
         ]),
         span('status__create-date', `${ fmtDate(status.created_at) ?? ''}`),
       ]),
-      h('div', {innerHTML: _status.content}),
-      attachments
+      _status.sensitive ? undefined : h('div', {innerHTML: _status.content}),
+      _status.sensitive ? sensitiveEl : attachments,
+      // h('div', {innerHTML: _status.content}),
+      // attachments
     ])
   }
 
@@ -76,6 +92,14 @@ export function LStatus(status: Status) {
       render()
       avatar.addEventListener('click', () => {
         lRouter.navigateTo(`/profile/${_status.account.id}`)
+      })
+
+      sensitiveBtn?.addEventListener('click', () => {
+        sensitiveEl?.remove()
+        attachments = getAttachmentsEl()
+        console.log(attachments)
+        _status.content && el.appendChild(h('div', {innerHTML: _status.content}))
+        attachments && el.appendChild(attachments)
       })
 
       rendered = true

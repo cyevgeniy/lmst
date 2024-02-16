@@ -17,7 +17,7 @@ export function LStatusesList(root: HTMLElement, statuses: Status[]): StatusesLi
 
   function addStatuses(statuses: Status[]) {
     for (const status of statuses) {
-      const statusEl = LStatus(status).mount()
+      const statusEl = new LStatus(status).el
       statusEl.classList.add('statuses-list__status')
       el?.appendChild(statusEl)
     }

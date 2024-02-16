@@ -1,6 +1,6 @@
 import { div } from '../utils/dom'
 import type { Account } from '../types/shared'
-import { Avatar } from './Avatar'
+import { LAvatar } from './Avatar'
 
 export interface ProfileHeaderComponent {
   mount: () => void
@@ -11,9 +11,8 @@ export function LProfileHeader(root: HTMLElement, account?: Account): ProfileHea
   let el: HTMLElement
   let displayNameEl: HTMLElement
   let noteEl: HTMLElement
-  let avatarEl: HTMLElement
+  let avatar: LAvatar
   let rendered: boolean = false
-  let avatarComp: ReturnType<typeof Avatar>
 
   function mount() {
     if (rendered)
@@ -22,11 +21,11 @@ export function LProfileHeader(root: HTMLElement, account?: Account): ProfileHea
     displayNameEl = div('account__name')
     noteEl = div('account__note')
 
-    avatarComp = Avatar()
-    avatarEl = avatarComp.mount()
+    avatar = new LAvatar()
+    // avatarEl = avatarComp.mount()
     el = div('account', [
       div('account__userinfo', [
-        avatarEl,
+        avatar.el,
         displayNameEl
       ]),
       noteEl
@@ -46,7 +45,7 @@ export function LProfileHeader(root: HTMLElement, account?: Account): ProfileHea
 
     displayNameEl.innerText = account?.display_name ?? ''
     noteEl.innerHTML = account?.note ?? ''
-    avatarComp.update(account?.avatar)
+    avatar.updateImage(account?.avatar)
   }
 
   return {

@@ -1,51 +1,58 @@
 import type { Status, MediaAttachment } from '../types/shared'
 import { h, a, div, span } from '../utils/dom'
 import { lRouter } from '../router'
-import { Avatar } from './Avatar'
+import { LAvatar } from './Avatar'
 
-function fmtDate(d: string) {
-  return d.substring(0, d.indexOf('T'))
-}
+export class LStatus {
+  public el: HTMLElement
+  private avatar: LAvatar
+  private attachments: HTMLElement | undefined
+  private sensitiveEl: HTMLElement | undefined
+  private sensitiveBtn: HTMLButtonElement | undefined
+  private _status: Status
+  private renderedStatus: Status
+  private isReblogged: boolean
 
-function attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
-  if (attachment.type === 'image')
-    return h('img', {
-      class: 'status-attachment--image',
-      attrs: {src: attachment.preview_url}
-    })
-  
-  if (['gifv', 'video'].includes(attachment.type))
-    return h('video', {
-      class: 'status-attachment--video',
-      attrs: {
-        src: attachment.url,
-        controls: '',
-      }
-    })
-  else
-    return undefined
-}
+  constructor(status: Status) {
+    this._status = status.reblog ?? status
+    this.isReblogged = Boolean(status.reblog)
+    this.renderedStatus = status
+    this.avatar = new LAvatar(this._status.account?.avatar)
 
-export function LStatus(status: Status) {
 
-  const _status = status.reblog ?? status
-  const isReblogged = Boolean(status.reblog)
+    if (!this._status.sensitive)
+      this.attachments = this.getAttachmentsEl()
 
-  let rendered = false
+    const dispName = this.renderedStatus.account.display_name
 
-  let el: HTMLElement
-  let avatar: HTMLElement
-  let attachments: HTMLElement | undefined
-  let sensitiveEl: HTMLElement | undefined
-  let sensitiveBtn: HTMLButtonElement | undefined
+    this.sensitiveBtn = h('button', null, 'Show me tits!') as HTMLButtonElement
 
-  function getAttachmentsEl(): HTMLElement | undefined {
-    const mediaCnt = _status.media_attachments.length
+    this.sensitiveEl = this._status.sensitive ? h('div', null, [this.sensitiveBtn]) : undefined
+
+    this.el = div('status', [
+      this.isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,
+      div('status__header', [
+        this.avatar.el,
+        div('status__username', [
+          span('', `${this._status.account?.display_name || ''}`),
+          a('username__acc', `${this._status.account?.url}`, `${this._status.account?.acct || ''}`),
+        ]),
+        span('status__create-date', `${fmtDate(this.renderedStatus.created_at) ?? ''}`),
+      ]),
+      this._status.sensitive ? undefined : h('div', { innerHTML: this._status.content }),
+      this._status.sensitive ? this.sensitiveEl : this.attachments,
+    ])
+
+    this.addEventListeners()
+  }
+
+  private getAttachmentsEl(): HTMLElement | undefined {
+    const mediaCnt = this._status.media_attachments.length
     const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
     const result = mediaCnt > 0 ? div(contClass) : undefined
 
-    result && _status.media_attachments.forEach(attachment => {
-      const node = attachmentNode(attachment)
+    result && this._status.media_attachments.forEach(attachment => {
+      const node = this.attachmentNode(attachment)
       if (node)
         result!.appendChild(node)
     })
@@ -54,57 +61,40 @@ export function LStatus(status: Status) {
 
   }
 
-  function render() {
-    avatar =  Avatar(_status.account?.avatar).mount()
-
-    if (!_status.sensitive)
-      attachments = getAttachmentsEl()
-
-    const dispName = status.account.display_name
-
-    sensitiveBtn = h('button', null, 'Show me tits!') as HTMLButtonElement
-
-    sensitiveEl = _status.sensitive ? h('div', null, [sensitiveBtn]): undefined
-
-    el = div('status', [
-      isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,
-      div('status__header', [
-        avatar,
-        div('status__username', [
-          span('', `${_status.account?.display_name || ''}`),
-          a('username__acc', `${_status.account?.url}`,  `${_status.account?.acct || ''}`),
-        ]),
-        span('status__create-date', `${ fmtDate(status.created_at) ?? ''}`),
-      ]),
-      _status.sensitive ? undefined : h('div', {innerHTML: _status.content}),
-      _status.sensitive ? sensitiveEl : attachments,
-    ])
+  private attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
+    if (attachment.type === 'image')
+      return h('img', {
+        class: 'status-attachment--image',
+        attrs: { src: attachment.preview_url }
+      })
+  
+    if (['gifv', 'video'].includes(attachment.type))
+      return h('video', {
+        class: 'status-attachment--video',
+        attrs: {
+          src: attachment.url,
+          controls: '',
+        }
+      })
+    else
+      return undefined
   }
 
-  /**
-   * Creates HTML elements for the component,
-   * adds all required event listeners and
-   * returns the root HTMLElement for the component
-   */
-  function mount() {
-    if (!rendered) {
-      render()
-      avatar.addEventListener('click', () => {
-        lRouter.navigateTo(`/profile/${_status.account.id}`)
-      })
+  private addEventListeners() {
+    this.avatar.onImageClick(() => {
+      lRouter.navigateTo(`/profile/${this._status.account.id}`)
+    })
 
-      sensitiveBtn?.addEventListener('click', () => {
-        sensitiveEl?.remove()
-        attachments = getAttachmentsEl()
-        _status.content && el.appendChild(h('div', {innerHTML: _status.content}))
-        attachments && el.appendChild(attachments)
-      })
+    this.sensitiveBtn?.addEventListener('click', () => {
+      this.sensitiveEl?.remove()
+      this.attachments = this.getAttachmentsEl()
+      this._status.content && this.el.appendChild(h('div', { innerHTML: this._status.content }))
+      this.attachments && this.el.appendChild(this.attachments)
+    })
 
-      rendered = true
-    }
-
-    return el
   }
+}
 
-  return { mount }
+function fmtDate(d: string) {
+  return d.substring(0, d.indexOf('T'))
 }

@@ -1,25 +1,23 @@
 import { div } from "../utils/dom";
 import { LNav } from "./LNav";
 
-export function Layout(root: HTMLElement) {
-  const middle = div('layout__middle')
-  const right = div('layout__right')
-  const footer = div('layout__footer')
+export class Layout {
+  public middle: HTMLElement
+  public right: HTMLElement
+  public footer: HTMLElement
+
+  constructor(root: HTMLElement) {
+    this.middle = div('layout__middle')
+    this.right = div('layout__right')
+    this.footer = div('layout__footer')
+
+    new LNav(root)
+
+    root.appendChild(div('layout__container', [
+      this.middle,
+      this.right,
+    ]))
   
-  LNav(root).mount()
-
-  root.appendChild(div('layout__container', [
-    middle,
-    right,
-  ]))
-
-  root.appendChild(footer)
-
-
-
-  return {
-    middle,
-    right,
-    footer,
+    root.appendChild(this.footer)
   }
 }

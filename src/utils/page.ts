@@ -20,9 +20,9 @@ export function definePage(p: PageConstructor): PageInstance {
 
     const page = p()
     root.innerHTML = ''
-    const {middle, right } = Layout(root)
-    LInfo(right).mount()
-    middle.appendChild(page.mount())
+    const layout = new Layout(root)
+    new LInfo(layout.right)
+    layout.middle.appendChild(page.mount())
     page.onParamsChange?.(params)
   }
 

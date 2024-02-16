@@ -5,14 +5,13 @@ import { h } from '../utils/dom'
 import { useTimeline } from '../stores/useTimeline'
 import config from '../appConfig'
 import { definePage } from '../utils/page.ts'
-import type { StatusesListComponent } from '../components/LStatusesList'
 
 export const timelinePage = definePage(() => {
   let el: HTMLElement
   let timelineContainer: HTMLElement
   let loadMoreBtn: HTMLButtonElement
   let maxId = ''
-  let statusesList: StatusesListComponent
+  let statusesList: LStatusesList
 
   const { timeline } = useTimeline()
 
@@ -28,8 +27,7 @@ export const timelinePage = definePage(() => {
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
     const statusesListEl = h('div')
-    statusesList = LStatusesList(statusesListEl, [])
-    statusesList.mount()
+    statusesList = new LStatusesList(statusesListEl, [])
 
     timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtn])
     el = h('div', {attrs: {id: 'timeline-root'}}, [timelineContainer, loadMoreBtn])

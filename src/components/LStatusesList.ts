@@ -2,46 +2,22 @@ import type { Status } from '../types/shared.d.ts'
 import { LStatus } from './LStatus'
 import { h } from '../utils/dom'
 
-export interface StatusesListComponent {
-  /**
-   * Adds list of statuses
-   */
-  addStatuses: (statuses: Status[]) => void
+export class LStatusesList {
+  private el: HTMLElement
+  
+  constructor(root: HTMLElement, statuses: Status[]) {
+    this.el = h('div', {class: 'statuses-list'})
 
-  mount: () => void
-}
+    this.addStatuses(statuses)
 
-export function LStatusesList(root: HTMLElement, statuses: Status[]): StatusesListComponent {
-  let rendered = false
-  let el: HTMLElement
+    root.appendChild(this.el)
+  }
 
-  function addStatuses(statuses: Status[]) {
+  addStatuses(statuses: Status[]) {
     for (const status of statuses) {
       const statusEl = new LStatus(status).el
       statusEl.classList.add('statuses-list__status')
-      el?.appendChild(statusEl)
+      this.el?.appendChild(statusEl)
     }
-  }
-
-  function render() {
-    el = h('div', {class: 'statuses-list'})
-
-    addStatuses(statuses)
-
-    root.appendChild(el)
-  }
-
-  function mount() {
-    if (!rendered) {
-      render()
-      rendered = true
-    }
-
-    return el
-  }
-
-  return {
-    mount,
-    addStatuses,
   }
 }

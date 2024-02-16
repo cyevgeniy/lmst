@@ -2,7 +2,7 @@ import { definePage } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import type { ProfileHeaderComponent } from '../components/ProfileHeader'
-import type { StatusesListComponent } from '../components/LStatusesList'
+// import type { StatusesListComponent } from '../components/LStatusesList'
 import { getAccount, getStatuses } from '../api/account'
 import { h, div } from '../utils/dom'
 
@@ -10,7 +10,7 @@ export const profilePage = definePage(() => {
 
   let el: HTMLElement
   let statusesEl: HTMLElement
-  let statusesList: StatusesListComponent
+  let statusesList: LStatusesList
   let profileHeader: HTMLElement
   let profileHeaderComponent: ProfileHeaderComponent
   let profileId: string = ''
@@ -29,10 +29,9 @@ export const profilePage = definePage(() => {
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
     statusesEl = h('div')
-    statusesList = LStatusesList(statusesEl, [])
+    statusesList = new LStatusesList(statusesEl, [])
     profileHeader = h('div')
     profileHeaderComponent = LProfileHeader(profileHeader)
-    statusesList.mount()
     profileHeaderComponent.mount()
     const timelineContainer = div('timeline-container', [statusesEl, loadMoreBtn])
 

@@ -2,54 +2,36 @@ import { div } from '../utils/dom'
 import type { Account } from '../types/shared'
 import { LAvatar } from './Avatar'
 
-export interface ProfileHeaderComponent {
-  mount: () => void
-  update: (a: Account) => void
-}
+export class LProfileHeader {
+  private el: HTMLElement
+  private displayNameEl: HTMLElement
+  private noteEl: HTMLElement
+  private avatar: LAvatar
 
-export function LProfileHeader(root: HTMLElement, account?: Account): ProfileHeaderComponent {
-  let el: HTMLElement
-  let displayNameEl: HTMLElement
-  let noteEl: HTMLElement
-  let avatar: LAvatar
-  let rendered: boolean = false
+  constructor(root: HTMLElement, account?: Account) {
+    this.displayNameEl = div('account__name')
+    this.noteEl = div('account__note')
 
-  function mount() {
-    if (rendered)
-      return
-
-    displayNameEl = div('account__name')
-    noteEl = div('account__note')
-
-    avatar = new LAvatar()
+    this.avatar = new LAvatar()
     // avatarEl = avatarComp.mount()
-    el = div('account', [
+    this.el = div('account', [
       div('account__userinfo', [
-        avatar.el,
-        displayNameEl
+        this.avatar.el,
+        this.displayNameEl
       ]),
-      noteEl
+      this.noteEl
     ])
 
-    rendered = true
-    root.appendChild(el)
-    update(account)
+    root.appendChild(this.el)
+    this.update(account)  
   }
 
   /**
    * Updates information about the account
    */
-  function update(account?: Account) {
-    if (!rendered)
-      return
-
-    displayNameEl.innerText = account?.display_name ?? ''
-    noteEl.innerHTML = account?.note ?? ''
-    avatar.updateImage(account?.avatar)
-  }
-
-  return {
-    mount,
-    update
+  update(account?: Account) {
+    this.displayNameEl.innerText = account?.display_name ?? ''
+    this.noteEl.innerHTML = account?.note ?? ''
+    this.avatar.updateImage(account?.avatar)
   }
 }

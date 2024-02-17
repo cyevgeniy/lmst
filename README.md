@@ -9,13 +9,19 @@
 ## TODO
 
 - [ ] Noscript alert text
-- [ ] Status post time tooltip
+
 - [ ] Sidebar/toolbar
 - [ ] Dark mode switch
 - [ ] 404 page
 - [ ] Responsive design
+- [ ] Loading state
+  - [ ] "Load more" button
+  - [ ] While timeline is loading
 - [ ] Settings
   - [ ] Toggle nsfw content hiding
 - [ ] Status rendering
-  - [ ] NSFW content
+  - [x] NSFW content
   - [x] In reply to
+  - [ ] Status post time tooltip
+- Styling
+- [ ] Add user authorization

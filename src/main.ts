@@ -2,6 +2,7 @@ import '../assets/css/main.css'
 import { lRouter } from './router'
 import { timelinePage } from './pages/timeline'
 import { profilePage } from './pages/profile'
+import { oauthPage } from './pages/oauth'
 
 const buttons = document.createElement('div')
 buttons.innerHTML = `<button id="btn"> Profile </div>
@@ -19,3 +20,4 @@ document.getElementById('btn1')?.addEventListener('click', () => {
 
 lRouter.on('/', () => timelinePage.mount())
 lRouter.on('/profile/:id', (params) => profilePage.mount(params))
+lRouter.on('/oauth', () => oauthPage.mount())

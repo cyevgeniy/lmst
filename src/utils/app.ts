@@ -1,31 +1,54 @@
-import { registerApp as _registerApp, getAppToken } from "../api/app"
+import { registerApp as _registerApp } from "../api/app"
 import config from '../appConfig'
+import { success } from "./api"
+import type { Application } from '../api/app'
+import type { ApiResult } from "./api"
+import appConfig from "../appConfig"
 
-let appToken: string
+const APP_INFO_KEY = 'lmst_appInfo'
 
-export async function registerApp(): Promise<string> {
+let appInfo: Application
 
-  if (appToken)
-  	return appToken
+interface RegisteredApp {
+  appInfo: Application
+}
 
-  return _registerApp({
+
+export async function registerApp(): Promise<ApiResult<RegisteredApp>> {
+  const tmp = localStorage.getItem(APP_INFO_KEY)
+
+  if (tmp)
+    appInfo = JSON.parse(tmp) as Application
+  
+  if (appInfo)
+  	return success({appInfo})
+
+  const res =  await _registerApp({
 	  server: config.server,
-	  redirectUris: 'https://social.vivaldi.net',
-	  clientName: config.clientName
+	  redirectUris: `${appConfig.baseUrl}/oauth`,
+	  clientName: config.clientName,
+    website: `${appConfig.baseUrl}`,
+    scopes: 'read write push follow',
 	})
-  .then( (r) => getAppToken({
-    server: config.server,
-    client_id: r.client_id,
-    client_secret: r.client_secret,
-    redirect_uri: 'localhost:5173',
-    grant_type: 'client_credentials'
-  }) )
-  .then(token => {
-  	appToken = token
-  	return token
+
+  if (!res.ok)
+    return res
+
+  appInfo = res.value
+  localStorage.setItem(APP_INFO_KEY, JSON.stringify(appInfo))
+
+  return success({appInfo})
+}
+
+export async function verifyCredentials(token: string): Promise<boolean> {
+  if (!appInfo || !token)
+    return false
+
+  const resp = await fetch(`${config.server}/api/v1/apps/verify_credentials`, {
+    headers: {
+      Authorization: `Bearer ${token}`, 
+    }
   })
-  .catch(err => {
-  	console.log(err)
-  	return ''
-  })
+
+  return resp.status === 200
 }

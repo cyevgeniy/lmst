@@ -2,6 +2,7 @@ interface AppConfig {
   server: string
   clientName: string
   repo: string
+  baseUrl: string
 }
 
 function defineLmstConfig(conf: AppConfig): AppConfig {
@@ -9,7 +10,8 @@ function defineLmstConfig(conf: AppConfig): AppConfig {
 }
 
 export default defineLmstConfig({
-  server: 'https://mastodon.social',
+  server: 'https://mstdn.social',
   clientName: 'lmst',
-  repo: 'https://git.sr.ht/~ychbn/lmst'
+  repo: 'https://git.sr.ht/~ychbn/lmst',
+  baseUrl: 'http://localhost:5173',
 })

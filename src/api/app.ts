@@ -1,10 +1,15 @@
+import { fail, success } from '../utils/api'
+import type { ApiResult } from '../utils/api'
+
 interface RegisterAppParams {
   server: string
   redirectUris: string
   clientName: string
+  website: string
+  scopes: string
 }
 
-interface RegisterAppResponse {
+export interface Application {
   id: string
   name: string
   website: string | null
@@ -14,22 +19,31 @@ interface RegisterAppResponse {
   vapid_key: string
 }
 
-export function registerApp(params: RegisterAppParams) {
+export async function registerApp(params: RegisterAppParams): Promise<ApiResult<Application>> {
   const payload = new FormData()
   payload.append('client_name', params.clientName)
   payload.append('redirect_uris', params.redirectUris)
+  payload.append('scopes', params.scopes)
 
-  return fetch(`${params.server}/api/v1/apps`, {
-    method: 'POST',
-    body: payload,
-  }).
-    then(response => {
+  try {
+    const response = await fetch(`${params.server}/api/v1/apps`, {
+      method: 'POST',
+      body: payload,
+    })
+
       if (response.status === 200)
-	return response.json() as Promise<RegisterAppResponse>
+        return success(await response.json() as Application)
 
       // TODO: get error messages from a server
       throw new Error('Error during application registration')
-    })
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : 'Error during app registration'
+    console.error(msg)
+    return {
+      ok: false,
+      error: msg,
+    }
+  }
 }
 
 export interface GetAppTokenParams {
@@ -41,12 +55,14 @@ export interface GetAppTokenParams {
   [k: string]: string
 }
 
-interface TokenEntity {
+export interface Token {
   access_token: string
-  [k: string]: string
+  token_type: string
+  scope: string
+  created_at: number
 }
 
-export function getAppToken(params: GetAppTokenParams): Promise<string> {
+export async function getAppToken(params: GetAppTokenParams): Promise<ApiResult<Token>> {
   const payload = new FormData()
 
   const {server, ...rest} = params
@@ -55,20 +71,19 @@ export function getAppToken(params: GetAppTokenParams): Promise<string> {
     payload.append(key, rest[key])
   }
 
-  const r = fetch(`${params.server}/oauth/token`, {
-    method: 'POST',
-    body: payload
-  })
+  try {
+    const resp = await fetch(`${params.server}/oauth/token`, {
+      method: 'POST',
+      body: payload
+    })
 
-  return r.then(
-    resp => {
-      if (resp.status === 200)
-	return (resp.json() as Promise<TokenEntity>).then(tokenEntity => tokenEntity.access_token)
+    if (resp.status === 200)
+      return success(await resp.json() as Token)
 
-      // We are interested only 200 status code, so treat any other codes as errors, too
-      throw new Error('Can not obtain app token')
-    }
-  ).catch(e => {
-    throw new Error(e)
-  })
+    throw new Error('[Get app token]: Response status is not 200')
+  } catch(e: unknown) {
+    const msg = e instanceof Error ? e.message : 'Error trying to claim app token'
+    console.error(msg)
+    return fail(msg)
+  }
 }

@@ -80,7 +80,14 @@ export interface CredentialAccount {
   avatar: string
 }
 
+const user: { value: CredentialAccount | undefined } = {value: undefined}
+
 export async function verifyCredentials() {
+  loadCachedUser()
+
+  if (user.value)
+    return user.value
+
   const tmp = store.getItem(TOKEN_KEY)
   if (!tmp)
     return undefined
@@ -98,16 +105,21 @@ export async function verifyCredentials() {
 
   // console.log(await resp.json())
 
-  const user = await resp.json() as CredentialAccount
+  const _user = await resp.json() as CredentialAccount
 
-  store.setItem(USER_KEY, user)
+  store.setItem(USER_KEY, _user)
 
-  return user
+  return _user
 }
-
-const user: { value: CredentialAccount | undefined } = {value: undefined}
 
 export function useUser() {
   return user
+}
+
+export function loadCachedUser() {
+  const tmp = store.getItem(USER_KEY)
+
+  if (tmp)
+    user.value = JSON.parse(tmp) as CredentialAccount
 }
 

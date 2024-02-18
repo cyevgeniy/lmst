@@ -1,5 +1,5 @@
 import {h, div } from '../utils/dom'
-import { authorize, useUser, verifyCredentials } from '../utils/user'
+import { authorize, useUser, verifyCredentials, loadCachedUser } from '../utils/user'
 
 export class LNav {
   public el: HTMLElement
@@ -8,6 +8,8 @@ export class LNav {
   private signupContainer: HTMLElement
 
   constructor(root: HTMLElement) {
+    const user = useUser()
+
     this.authorize = h('div', null , 'Login')
     this.logout = h('div', null , 'Logout')
     this.signupContainer = h('div',
@@ -25,8 +27,10 @@ export class LNav {
     ])
 
     root.appendChild(this.el)
-
-    const user = useUser()
+    verifyCredentials().then(user => {
+      if (user)
+        this.authorize.innerText = user.display_name  
+    })
 
     this.authorize.addEventListener('click', async () => {
       // First, check if we hava cached user data

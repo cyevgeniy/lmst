@@ -1,5 +1,5 @@
 import {h, div } from '../utils/dom'
-import { authorize } from '../utils/user'
+import { authorize, useUser, verifyCredentials } from '../utils/user'
 
 export class LNav {
   public el: HTMLElement
@@ -26,8 +26,15 @@ export class LNav {
 
     root.appendChild(this.el)
 
+    const user = useUser()
+
     this.authorize.addEventListener('click', async () => {
-      await authorize()
+      // First, check if we hava cached user data
+      user.value = await verifyCredentials()
+      if (user.value)
+        window.location.replace('/')
+      else 
+        await authorize()
     })
   }
 }

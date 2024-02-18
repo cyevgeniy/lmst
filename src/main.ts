@@ -21,3 +21,5 @@ document.getElementById('btn1')?.addEventListener('click', () => {
 lRouter.on('/', () => timelinePage.mount())
 lRouter.on('/profile/:id', (params) => profilePage.mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
+
+

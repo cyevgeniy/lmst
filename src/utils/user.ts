@@ -3,8 +3,10 @@ import appConfig from "../appConfig"
 import { ApiResult, fail, success } from "./api"
 import { registerApp } from "./app"
 import { searchParams } from "./url"
+import { store } from "../store"
 
-const TOKEN_KEY = 'lmst_userToken'
+const TOKEN_KEY = 'token'
+const USER_KEY = 'user'
 
 let userToken: Token | undefined
 
@@ -29,7 +31,7 @@ export async function getUserToken(code: string): Promise<ApiResult<Token>> {
   if (!code) return fail('Code is empty')
   
   if (!userToken) {
-    const ut = localStorage.getItem(TOKEN_KEY)
+    const ut = store.getItem(TOKEN_KEY)
     userToken = ut ? JSON.parse(ut) as Token : undefined
   }
 
@@ -47,7 +49,7 @@ export async function getUserToken(code: string): Promise<ApiResult<Token>> {
     code,
     client_id: app.value.appInfo.client_id,
     client_secret: app.value.appInfo.client_secret,
-    redirect_uri: `${appConfig}/oauth`,
+    redirect_uri: `${appConfig.baseUrl}/oauth`,
     scope: 'read write follow push',
   }
 
@@ -59,7 +61,7 @@ export async function getUserToken(code: string): Promise<ApiResult<Token>> {
     })
 
     userToken = await r.json() as Token
-    localStorage.setItem(TOKEN_KEY, JSON.stringify(userToken))
+    store.setItem(TOKEN_KEY, userToken)
 
     return success(userToken)
   } catch (e: unknown) {
@@ -67,3 +69,45 @@ export async function getUserToken(code: string): Promise<ApiResult<Token>> {
     return fail(msg)
   }
 }
+
+export interface CredentialAccount {
+  id: string
+  username: string
+  acct: string
+  url: string
+  display_name: string
+  note: string
+  avatar: string
+}
+
+export async function verifyCredentials() {
+  const tmp = store.getItem(TOKEN_KEY)
+  if (!tmp)
+    return undefined
+  
+  const token = (JSON.parse(tmp) as Token).access_token
+
+  const resp = await fetch(`${appConfig.server}/api/v1/accounts/verify_credentials`, {
+    headers: {
+      Authorization: `Bearer ${token}`, 
+    }
+  })
+
+  if (resp.status !== 200)
+    return undefined
+
+  // console.log(await resp.json())
+
+  const user = await resp.json() as CredentialAccount
+
+  store.setItem(USER_KEY, user)
+
+  return user
+}
+
+const user: { value: CredentialAccount | undefined } = {value: undefined}
+
+export function useUser() {
+  return user
+}
+

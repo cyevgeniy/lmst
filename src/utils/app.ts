@@ -4,8 +4,9 @@ import { success } from "./api"
 import type { Application } from '../api/app'
 import type { ApiResult } from "./api"
 import appConfig from "../appConfig"
+import { store } from "../store"
 
-const APP_INFO_KEY = 'lmst_appInfo'
+const APP_INFO_KEY = 'appInfo'
 
 let appInfo: Application
 
@@ -15,7 +16,7 @@ interface RegisteredApp {
 
 
 export async function registerApp(): Promise<ApiResult<RegisteredApp>> {
-  const tmp = localStorage.getItem(APP_INFO_KEY)
+  const tmp = store.getItem(APP_INFO_KEY)
 
   if (tmp)
     appInfo = JSON.parse(tmp) as Application
@@ -35,20 +36,7 @@ export async function registerApp(): Promise<ApiResult<RegisteredApp>> {
     return res
 
   appInfo = res.value
-  localStorage.setItem(APP_INFO_KEY, JSON.stringify(appInfo))
+  store.setItem(APP_INFO_KEY, appInfo)
 
   return success({appInfo})
-}
-
-export async function verifyCredentials(token: string): Promise<boolean> {
-  if (!appInfo || !token)
-    return false
-
-  const resp = await fetch(`${config.server}/api/v1/apps/verify_credentials`, {
-    headers: {
-      Authorization: `Bearer ${token}`, 
-    }
-  })
-
-  return resp.status === 200
 }

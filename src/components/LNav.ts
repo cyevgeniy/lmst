@@ -1,5 +1,5 @@
 import {h, div } from '../utils/dom'
-import { authorize, useUser, verifyCredentials, loadCachedUser } from '../utils/user'
+import { authorize, useUser, verifyCredentials } from '../utils/user'
 
 export class LNav {
   public el: HTMLElement
@@ -29,7 +29,7 @@ export class LNav {
     root.appendChild(this.el)
     verifyCredentials().then(user => {
       if (user)
-        this.authorize.innerText = user.display_name  
+        this.authorize.innerText = user.display_name
     })
 
     this.authorize.addEventListener('click', async () => {
@@ -37,7 +37,7 @@ export class LNav {
       user.value = await verifyCredentials()
       if (user.value)
         window.location.replace('/')
-      else 
+      else
         await authorize()
     })
   }

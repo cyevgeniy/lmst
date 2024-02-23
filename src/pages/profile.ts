@@ -7,9 +7,7 @@ import { h, div } from '../utils/dom'
 export const profilePage = definePage(() => {
 
   let el: HTMLElement
-  let statusesEl: HTMLElement
   let statusesList: LStatusesList
-  let profileHeader: HTMLElement
   let profileHeaderComponent: LProfileHeader
   let profileId: string = ''
   let maxId = ''
@@ -26,16 +24,14 @@ export const profilePage = definePage(() => {
     const loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 
-    statusesEl = h('div')
-    statusesList = new LStatusesList(statusesEl, [])
-    profileHeader = h('div')
-    profileHeaderComponent = new LProfileHeader(profileHeader)
-    const timelineContainer = div('timeline-container', [statusesEl, loadMoreBtn])
+    const timelineContainer = div('timeline-container', [])
+    statusesList = new LStatusesList(timelineContainer, [])
+    timelineContainer.appendChild(loadMoreBtn)
 
-    el = h('div', {attrs: {id: 'timeline-root'}}, [profileHeader, timelineContainer, loadMoreBtn])
-
-
-
+    el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
+    profileHeaderComponent = new LProfileHeader(el)
+    el.appendChild(timelineContainer)
+    el.appendChild(loadMoreBtn)
 
     rendered = true
   }

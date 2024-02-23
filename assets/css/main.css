@@ -5,26 +5,48 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
 }
 
-.layout__container {
-  display: flex;
-  max-width: 1440px;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: center;
+.layout__header {
+  width: 100%;
 }
 
-.layout__header {
-  width: 100%;  
+.layout__container {
+  display: flex;
+  flex-direction: column;
 }
 
 .layout__middle {
-  max-width: 680px;
-  width: calc(100% - 280px);
+  width: 100%;
 }
 
 .layout__right {
-  width: 280px;
-  padding-left: 16px;
+  width: 100%;
+  display: none;
+}
+
+@media screen and (min-width: 1240px) {
+  .layout__container {
+    display: flex;
+    flex-direction: row;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+  }
+
+  .layout__middle {
+    max-width: 680px;
+    width: calc(100% - 280px);
+  }
+
+  .layout__right {
+    display: block;
+    width: 280px;
+    padding-left: 16px;
+  }
+
+  .statuses-list {
+    padding: 0;
+  }
 }
 
 .layout__footer {
@@ -67,6 +89,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 4px;
 }
 
 .statuses-list__status {
@@ -111,12 +134,6 @@ body {
 }
 
 
-.timeline-container {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 600px;
-}
-
 .status__header {
   display: flex;
   gap: 16px;
@@ -127,6 +144,10 @@ body {
   display: flex;
   gap: 2px;
   flex-direction: column;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .username__acc {

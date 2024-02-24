@@ -85,6 +85,14 @@ body {
   gap: 16px;
 }
 
+.nav__login, .nav__logout {
+  cursor: pointer;
+}
+
+.nav__login:hover, .nav__logout:hover {
+  text-decoration: underline;
+}
+
 .statuses-list {
   display: flex;
   flex-direction: column;

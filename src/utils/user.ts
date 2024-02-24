@@ -5,71 +5,6 @@ import { registerApp } from "./app"
 import { searchParams } from "./url"
 import { store } from "../store"
 
-const TOKEN_KEY = 'token'
-const USER_KEY = 'user'
-
-let userToken: Token | undefined
-
-export async function authorize() {
-    const res = await registerApp()
-      if (res.ok) {
-        // TODO: verify credentials and handle errors?
-        //await verifyCredentials()
-        const clientId = res.value.appInfo.client_id
-        const params = {
-          response_type: 'code',
-          redirect_uri: `${appConfig.baseUrl}/oauth`,
-          client_id: clientId,
-        }
-        const sp = searchParams(params)
-
-        window.location.replace(`${appConfig.server}/oauth/authorize?${sp}`)
-      }
-}
-
-export async function getUserToken(code: string): Promise<ApiResult<Token>> {
-  if (!code) return fail('Code is empty')
-  
-  if (!userToken) {
-    const ut = store.getItem(TOKEN_KEY)
-    userToken = ut ? JSON.parse(ut) as Token : undefined
-  }
-
-  if (userToken)
-    return success(userToken)
-
-  const app = await registerApp()
-
-  if (!app.ok) {
-    return app
-  }
-
-  const params = {
-    grant_type: 'authorization_code',
-    code,
-    client_id: app.value.appInfo.client_id,
-    client_secret: app.value.appInfo.client_secret,
-    redirect_uri: `${appConfig.baseUrl}/oauth`,
-    scope: 'read write follow push',
-  }
-
-  const sp = searchParams(params)
-
-  try {
-    const r = await fetch(`${appConfig.server}/oauth/token?${sp}`, {
-      method: 'POST',
-    })
-
-    userToken = await r.json() as Token
-    store.setItem(TOKEN_KEY, userToken)
-
-    return success(userToken)
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Can not get user token'
-    return fail(msg)
-  }
-}
-
 export interface CredentialAccount {
   id: string
   username: string
@@ -80,46 +15,176 @@ export interface CredentialAccount {
   avatar: string
 }
 
-const user: { value: CredentialAccount | undefined } = {value: undefined}
+type UserChangeCallback = (user: CredentialAccount) => void
 
-export async function verifyCredentials() {
-  loadCachedUser()
+const TOKEN_KEY = 'token'
+const USER_KEY = 'user'
 
-  if (user.value)
-    return user.value
+export class User implements CredentialAccount{
+  private static instance: User
+  private token: Token | undefined
+  private onUserChangeCallbacks: UserChangeCallback[] = []
 
-  const tmp = store.getItem(TOKEN_KEY)
-  if (!tmp)
-    return undefined
-  
-  const token = (JSON.parse(tmp) as Token).access_token
+  public id: string = ''
+  public username: string = ''
+  public acct: string = ''
+  public url: string = ''
+  public display_name: string = ''
+  public note: string = ''
+  public avatar: string = ''
 
-  const resp = await fetch(`${appConfig.server}/api/v1/accounts/verify_credentials`, {
-    headers: {
-      Authorization: `Bearer ${token}`, 
+
+  constructor() {
+    if (User.instance)
+      return User.instance
+
+    User.instance = this
+  }
+
+  public addOnUserChangeCb(fn: UserChangeCallback ) {
+    this.onUserChangeCallbacks.push(fn)
+  }
+
+  private processCallbacks() {
+    this.onUserChangeCallbacks.forEach(fn => fn(this))
+  }
+
+  async authorize() {
+    const res = await registerApp()
+    if (res.ok) {
+      // TODO: verify credentials and handle errors?
+      //await verifyCredentials()
+      const clientId = res.value.appInfo.client_id
+      const params = {
+        response_type: 'code',
+        redirect_uri: `${appConfig.baseUrl}/oauth`,
+        client_id: clientId,
+      }
+      const sp = searchParams(params)
+
+      window.location.replace(`${appConfig.server}/oauth/authorize?${sp}`)
     }
-  })
+  }
 
-  if (resp.status !== 200)
-    return undefined
+  private loadTokenFromStore() {
+    if (!this.token) {
+      const ut = store.getItem(TOKEN_KEY)
+      this.token = ut ? JSON.parse(ut) as Token : undefined
+    }  
+  }
 
-  // console.log(await resp.json())
+  async getUserToken(code: string): Promise<ApiResult<Token>> {
+    if (!code) return fail('Code is empty')
 
-  const _user = await resp.json() as CredentialAccount
+    this.loadTokenFromStore()
 
-  store.setItem(USER_KEY, _user)
+    if (this.token)
+      return success(this.token)
 
-  return _user
-}
+    const app = await registerApp()
 
-export function useUser() {
-  return user
-}
+    if (!app.ok) {
+      return app
+    }
 
-export function loadCachedUser() {
-  const tmp = store.getItem(USER_KEY)
+    const params = {
+      grant_type: 'authorization_code',
+      code,
+      client_id: app.value.appInfo.client_id,
+      client_secret: app.value.appInfo.client_secret,
+      redirect_uri: `${appConfig.baseUrl}/oauth`,
+      scope: 'read write follow push',
+    }
 
-  if (tmp)
-    user.value = JSON.parse(tmp) as CredentialAccount
+    const sp = searchParams(params)
+
+    try {
+      const r = await fetch(`${appConfig.server}/oauth/token?${sp}`, {
+        method: 'POST',
+      })
+
+      this.token = await r.json() as Token
+      store.setItem(TOKEN_KEY, this.token)
+
+      return success(this.token)
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Can not get user token'
+      return fail(msg)
+    }
+  }
+
+  private clearUserData() {
+    this.id = ''
+    this.avatar = ''
+    this.display_name = ''
+    this.note = ''
+    this.url = ''
+  }
+
+  public isLoaded() {
+    return Boolean(this.id)
+  }
+
+  async verifyCredentials() {
+    this.loadCachedUser()
+
+    if (this.id) {
+      this.processCallbacks()
+      return this
+    }
+
+    const tmp = store.getItem(TOKEN_KEY)
+    if (!tmp) {
+      this.clearUserData()
+      this.processCallbacks()
+      return this
+    }
+
+    const token = (JSON.parse(tmp) as Token).access_token
+
+    const resp = await fetch(`${appConfig.server}/api/v1/accounts/verify_credentials`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+
+    if (resp.status === 200) {
+
+      const _user = await resp.json() as CredentialAccount
+      
+      this.loadUserFromObject(_user)
+
+      store.setItem(USER_KEY, _user)
+    }
+
+    this.processCallbacks()
+
+    return this
+  }
+
+  private loadUserFromObject(obj: CredentialAccount) {
+    this.id = obj.id
+    this.display_name = obj.display_name
+    this.note = obj.note
+    this.url = obj.url
+    this.username = obj.username
+    this.avatar = obj.avatar
+  }
+
+  private loadCachedUser() {
+    const tmp = store.getItem(USER_KEY)
+
+    if (tmp)
+      this.loadUserFromObject(JSON.parse(tmp) as CredentialAccount)
+  }
+
+  public async logOut() {
+    this.loadTokenFromStore()
+    store.removeItem(USER_KEY)
+    store.removeItem(TOKEN_KEY)
+    this.clearUserData()
+    
+    this.processCallbacks()
+  }
 }
 

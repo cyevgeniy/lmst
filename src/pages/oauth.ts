@@ -1,6 +1,6 @@
 import { div } from "../utils/dom";
 import { definePage } from "../utils/page";
-import { getUserToken, useUser, verifyCredentials } from '../utils/user'
+import { User } from '../utils/user'
 
 export const oauthPage = definePage(() => {
   async function onParamsChange() {
@@ -9,16 +9,15 @@ export const oauthPage = definePage(() => {
     const searchParams = new URL(window.location).searchParams
     const code = searchParams.get('code')
 
-    const res = await getUserToken(code ?? '')
-
-    const user = useUser()
+    const user = new User()
+    const res = await user.getUserToken(code ?? '')
 
     if (!res.ok) {
       console.error(res.error)
       window.location.replace('/')
     }
     else {
-      user.value = await verifyCredentials()
+      user.verifyCredentials()
       window.location.replace('/')
     }
   }

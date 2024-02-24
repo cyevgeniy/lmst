@@ -66,14 +66,18 @@ export class User implements CredentialAccount{
     }
   }
 
-  private loadTokenFromStore() {
+  public loadTokenFromStore() {
     if (!this.token) {
       const ut = store.getItem(TOKEN_KEY)
       this.token = ut ? JSON.parse(ut) as Token : undefined
     }  
   }
 
-  async getUserToken(code: string): Promise<ApiResult<Token>> {
+  public accessToken(): string {
+    return this.token?.access_token ?? ''
+  }
+
+  public async getUserToken(code: string): Promise<ApiResult<Token>> {
     if (!code) return fail('Code is empty')
 
     this.loadTokenFromStore()

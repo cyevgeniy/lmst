@@ -15,7 +15,7 @@ export interface CredentialAccount {
   avatar: string
 }
 
-type UserChangeCallback = (user: CredentialAccount) => void
+type UserChangeCallback = (user: User) => void
 
 const TOKEN_KEY = 'token'
 const USER_KEY = 'user'
@@ -74,7 +74,7 @@ export class User implements CredentialAccount{
     if (!this.token) {
       const ut = store.getItem(TOKEN_KEY)
       this.token = ut ? JSON.parse(ut) as Token : undefined
-    }  
+    }
   }
 
   public accessToken(): string {
@@ -159,7 +159,7 @@ export class User implements CredentialAccount{
     if (resp.status === 200) {
 
       const _user = await resp.json() as CredentialAccount
-      
+
       this.loadUserFromObject(_user)
 
       store.setItem(USER_KEY, _user)
@@ -192,8 +192,7 @@ export class User implements CredentialAccount{
     store.removeItem(TOKEN_KEY)
     this.clearUserData()
     this.appConfig.clearServerInfo()
-    
+
     this.processCallbacks()
   }
 }
-

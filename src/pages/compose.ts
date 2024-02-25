@@ -17,28 +17,29 @@ export const composePage = definePage(() => {
 
     const params = new FormData()
     params.append('status', statusText)
-    
+
     try {
       const resp = await fetch(`${appConfig.server}/api/v1/statuses`, {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${user.accessToken()}`,
+          Authorization: `Bearer ${user.accessToken()}`,
         },
         body: params,
-        })
-      if (resp.status === 200)
+      })
+      if (resp.status === 200) {
         alert('Posted!')
+        text.value = ''
+      }
 
     } catch(e: unknown) {
-        if (e instanceof Error)
-            console.error(e.message)
+      if (e instanceof Error)
+        console.error(e.message)
     }
   }
 
   function mount() {
-  
-    text = h('textarea') as HTMLTextAreaElement
-    btn = h('button', null, 'Post')
+    text = h('textarea', {attrs: {maxLength: '300', rows: '10', autofocus: 'true', placeholder: 'What\'s on your mind?'}, class: 'compose__text'}) as HTMLTextAreaElement
+    btn = h('button', {class: 'compose__post'}, 'Post')
 
     btn.addEventListener('click', () => {
       postStatus()

@@ -93,6 +93,21 @@ body {
   text-decoration: underline;
 }
 
+.nav__compose {
+
+}
+
+.compose__text {
+  width: 100%;
+  display: block;
+  resize: vertical;
+}
+
+.compose__post {
+  margin-top: 16px;
+  display: block;
+}
+
 .statuses-list {
   display: flex;
   flex-direction: column;

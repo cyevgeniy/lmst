@@ -6,6 +6,7 @@ export class LNav {
   public el: HTMLElement
   private authorize: HTMLElement
   private logout: HTMLElement
+  private compose: HTMLElement
   private signupContainer: HTMLElement
   private user: User
 
@@ -14,6 +15,7 @@ export class LNav {
 
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
     this.logout = h('div', {class: 'nav__logout' } , 'Logout')
+    this.compose = h('a', {class: 'nav__compose', attrs: { href: '/compose' }}, 'Compose')
     this.signupContainer = h('div',
       {class: 'nav--signup-container'},
       [
@@ -25,6 +27,7 @@ export class LNav {
       h('a', {attrs: {href: '/'}}, [
         h('span', {attrs: {id: 'logo'}}, 'Lmst')
       ]),
+      this.compose,
       this.signupContainer,
     ])
 
@@ -33,11 +36,15 @@ export class LNav {
       this.authorize.innerText = u.id ? u.display_name : 'Login'
     })
 
+    this.user.addOnUserChangeCb(u => {
+      this.compose.style.display = u.isLoaded() ? 'inline-block' : 'none'
+    })
+
     this.user.verifyCredentials()
 
     this.authorize.addEventListener('click', async () => {
       // Prompt for server
-      
+
       // First, check if we hava cached user data
       await this.user.verifyCredentials() //user.value = await verifyCredentials()
       if (this.user.isLoaded())

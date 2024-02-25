@@ -67,17 +67,6 @@ export class LmstConfig implements AppConfig {
   }
 }
 
-// function defineLmstConfig(conf: AppConfig): AppConfig {
-//   return conf
-// }
-
-// let config = defineLmstConfig({
-//   server: '',
-//   clientName: 'lmst',
-//   repo: 'https://git.sr.ht/~ychbn/lmst',
-//   baseUrl: 'http://localhost:5173',
-// })
-
 export function useAppConfig() {
   return new LmstConfig()
 }

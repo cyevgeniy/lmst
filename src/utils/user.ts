@@ -62,6 +62,7 @@ export class User implements CredentialAccount{
         response_type: 'code',
         redirect_uri: `${this.appConfig.baseUrl}/oauth`,
         client_id: clientId,
+        scope: 'read write push'
       }
       const sp = searchParams(params)
 

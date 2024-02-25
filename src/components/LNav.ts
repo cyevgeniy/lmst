@@ -1,5 +1,6 @@
 import {h, div } from '../utils/dom'
 import { CredentialAccount, User } from '../utils/user'
+import {useAppConfig } from '../appConfig'
 
 export class LNav {
   public el: HTMLElement
@@ -35,12 +36,18 @@ export class LNav {
     this.user.verifyCredentials()
 
     this.authorize.addEventListener('click', async () => {
+      // Prompt for server
+      
       // First, check if we hava cached user data
       await this.user.verifyCredentials() //user.value = await verifyCredentials()
       if (this.user.isLoaded())
         window.location.replace('/')
-      else
+      else {
+        const server = prompt('Enter server:') ?? ''
+        const appConfig = useAppConfig()
+        appConfig.server = server
         await this.user.authorize()
+      }
     })
 
     this.logout.addEventListener('click', () => {

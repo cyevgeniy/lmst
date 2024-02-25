@@ -1,5 +1,7 @@
-import appConfig from '../appConfig'
+import {useAppConfig} from '../appConfig'
 import type { Account, PaginationParams } from '../types/shared.d'
+
+const appConfig = useAppConfig()
 
 export async function getAccount(id: string) : Promise<Account> {
   const url = `${appConfig.server}/api/v1/accounts/${id}`

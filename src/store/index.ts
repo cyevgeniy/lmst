@@ -33,6 +33,8 @@ class LocalStorageStore implements Store {
 
     if (v)
       localStorage.setItem(this.getKey(key), v)
+    else
+      localStorage.removeItem(this.getKey(key))
   }
 
   removeItem(key: string) {

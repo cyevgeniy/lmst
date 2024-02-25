@@ -1,5 +1,5 @@
 import { Token } from "../api/app"
-import appConfig from "../appConfig"
+import {useAppConfig} from "../appConfig"
 import { ApiResult, fail, success } from "./api"
 import { registerApp } from "./app"
 import { searchParams } from "./url"
@@ -24,6 +24,7 @@ export class User implements CredentialAccount{
   private static instance: User
   private token: Token | undefined
   private onUserChangeCallbacks: UserChangeCallback[] = []
+  private appConfig: ReturnType<typeof useAppConfig>
 
   public id: string = ''
   public username: string = ''
@@ -35,6 +36,8 @@ export class User implements CredentialAccount{
 
 
   constructor() {
+    this.appConfig = useAppConfig()
+
     if (User.instance)
       return User.instance
 
@@ -57,12 +60,12 @@ export class User implements CredentialAccount{
       const clientId = res.value.appInfo.client_id
       const params = {
         response_type: 'code',
-        redirect_uri: `${appConfig.baseUrl}/oauth`,
+        redirect_uri: `${this.appConfig.baseUrl}/oauth`,
         client_id: clientId,
       }
       const sp = searchParams(params)
 
-      window.location.replace(`${appConfig.server}/oauth/authorize?${sp}`)
+      window.location.replace(`${this.appConfig.server}/oauth/authorize?${sp}`)
     }
   }
 
@@ -96,14 +99,14 @@ export class User implements CredentialAccount{
       code,
       client_id: app.value.appInfo.client_id,
       client_secret: app.value.appInfo.client_secret,
-      redirect_uri: `${appConfig.baseUrl}/oauth`,
+      redirect_uri: `${this.appConfig.baseUrl}/oauth`,
       scope: 'read write follow push',
     }
 
     const sp = searchParams(params)
 
     try {
-      const r = await fetch(`${appConfig.server}/oauth/token?${sp}`, {
+      const r = await fetch(`${this.appConfig.server}/oauth/token?${sp}`, {
         method: 'POST',
       })
 
@@ -146,7 +149,7 @@ export class User implements CredentialAccount{
 
     const token = (JSON.parse(tmp) as Token).access_token
 
-    const resp = await fetch(`${appConfig.server}/api/v1/accounts/verify_credentials`, {
+    const resp = await fetch(`${this.appConfig.server}/api/v1/accounts/verify_credentials`, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -187,6 +190,7 @@ export class User implements CredentialAccount{
     store.removeItem(USER_KEY)
     store.removeItem(TOKEN_KEY)
     this.clearUserData()
+    this.appConfig.clearServerInfo()
     
     this.processCallbacks()
   }

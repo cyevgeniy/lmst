@@ -1,9 +1,8 @@
 import { registerApp as _registerApp } from "../api/app"
-import config from '../appConfig'
+import {useAppConfig} from '../appConfig'
 import { success } from "./api"
 import type { Application } from '../api/app'
 import type { ApiResult } from "./api"
-import appConfig from "../appConfig"
 import { store } from "../store"
 
 const APP_INFO_KEY = 'appInfo'
@@ -13,6 +12,8 @@ let appInfo: Application
 interface RegisteredApp {
   appInfo: Application
 }
+
+const appConfig = useAppConfig()
 
 
 export async function registerApp(): Promise<ApiResult<RegisteredApp>> {
@@ -25,9 +26,9 @@ export async function registerApp(): Promise<ApiResult<RegisteredApp>> {
   	return success({appInfo})
 
   const res =  await _registerApp({
-	  server: config.server,
+	  server: appConfig.server,
 	  redirectUris: `${appConfig.baseUrl}/oauth`,
-	  clientName: config.clientName,
+	  clientName: appConfig.clientName,
     website: `${appConfig.baseUrl}`,
     scopes: 'read write push follow',
 	})

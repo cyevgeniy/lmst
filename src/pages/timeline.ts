@@ -3,7 +3,7 @@ import { getPublicTimeline, getHomeTimeline } from '../api/timeline'
 import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
 import { useTimeline } from '../stores/useTimeline'
-import config from '../appConfig'
+import {useAppConfig} from '../appConfig'
 import { definePage } from '../utils/page.ts'
 import { User } from '../utils/user.ts'
 
@@ -14,6 +14,7 @@ export const timelinePage = definePage(() => {
   let maxId = ''
   let statusesList: LStatusesList
   const user = new User()
+  const config = useAppConfig()
 
   const { timeline } = useTimeline()
 

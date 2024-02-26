@@ -94,11 +94,14 @@ body {
 }
 
 .nav__compose {
-
+  font-size: 20px;
+  color: darkred;
+  margin-left: 10px;
 }
 
 .compose__text {
   width: 100%;
+  box-sizing: border-box;
   display: block;
   resize: vertical;
 }

@@ -25,3 +25,6 @@
   - [ ] Status post time tooltip
 - Styling
 - [ ] Add user authorization
+- [ ] Compose status
+  - [ ] Sensitive flag
+  - [ ] Attach media

@@ -112,16 +112,15 @@ body {
 }
 
 .statuses-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
   padding: 4px;
 }
 
 .statuses-list__status {
-  border: 1px solid rgb(235, 238, 240);
-  border-radius: 4px;
-  padding: 4px;
+  border-top: 1px solid rgb(235, 238, 240);
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 16px;
+  padding-bottom: 16px;
 }
 
 .status--boosted {

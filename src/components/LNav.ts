@@ -1,6 +1,7 @@
 import {h, div } from '../utils/dom'
 import { CredentialAccount, User } from '../utils/user'
 import {useAppConfig } from '../appConfig'
+import { lRouter } from '../router'
 
 export class LNav {
   public el: HTMLElement
@@ -15,7 +16,7 @@ export class LNav {
 
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
     this.logout = h('div', {class: 'nav__logout' } , 'Logout')
-    this.compose = h('a', {class: 'nav__compose', attrs: { href: '/compose' }}, 'Compose')
+    this.compose = h('span', {class: 'nav__compose'}, 'Compose')
     this.signupContainer = h('div',
       {class: 'nav--signup-container'},
       [
@@ -60,6 +61,10 @@ export class LNav {
     this.logout.addEventListener('click', () => {
       this.user.logOut()
       window.location.replace('/')
+    })
+
+    this.compose.addEventListener('click', () => {
+      lRouter.navigateTo('/compose')
     })
   }
 }

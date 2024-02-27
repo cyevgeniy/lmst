@@ -1,12 +1,12 @@
 import '../assets/css/main.css'
 import { lRouter } from './router'
-import { timelinePage } from './pages/timeline'
+import { TimelinePage, timelinePage } from './pages/timeline'
 import { profilePage } from './pages/profile'
 import { oauthPage } from './pages/oauth'
-import { composePage } from './pages/compose'
-// import { useAppConfig } from "./appConfig"
-// import { User } from "./utils/user"
-// import { TimelineManager } from './appManager'
+import { ComposePage } from './pages/compose'
+import { useAppConfig } from "./appConfig"
+import { User } from "./utils/user"
+import { StatusManager, TimelineManager } from './appManager'
 
 const buttons = document.createElement('div')
 buttons.innerHTML = `<button id="btn"> Profile </div>
@@ -22,13 +22,17 @@ document.getElementById('btn1')?.addEventListener('click', () => {
   lRouter.navigateTo('/settings')
 })
 
-// const appConfig = useAppConfig()
-// const user = new User()
-// const timelineManager = new TimelineManager({user, config: appConfig})
+const appConfig = useAppConfig()
+const user = new User()
+const statusManager = new StatusManager({user, config: appConfig})
+const timelineManager = new TimelineManager({user, config: appConfig})
 
-lRouter.on('/', () => timelinePage.mount())
+const compPage = new ComposePage(statusManager)
+const timePage = new TimelinePage(timelineManager)
+
+lRouter.on('/', () => timePage.mount())
 lRouter.on('/profile/:id', (params) => profilePage.mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
-lRouter.on('/compose', () => composePage.mount())
+lRouter.on('/compose', () => compPage.mount())
 
 

@@ -31,7 +31,8 @@ export class TimelineManager implements ITimelineManager {
     this.config = opts.config
   }
 
-  public async loadStatuses() {
+  public async loadStatuses(): Promise<Status[]> {
+    console.log(this.maxId)
     await this.user.verifyCredentials()
     this.user.loadTokenFromStore()
     let fn = async () => await getPublicTimeline(this.config.server, {max_id: this.maxId}) as Status[]
@@ -42,6 +43,49 @@ export class TimelineManager implements ITimelineManager {
     // xxx: handle fetch errors?
     const statuses = await fn()
     this.statuses.push(...statuses)
+    this.maxId = statuses[statuses.length - 1].id
+    return statuses
+  }
+
+  public resetPagination() {
+    this.maxId = ''
   }
 }
 
+export interface IStatusManager {
+  postStatus(params: {statusText: string}): Promise<void>
+}
+
+export class StatusManager implements IStatusManager {
+  private user: User
+  private config: AppConfig
+
+  constructor(opts: {user: User, config: AppConfig}) {
+    this.user = opts.user
+    this.config = opts.config
+  }
+
+  public async postStatus(params: {statusText: string}) {
+    this.user.loadTokenFromStore()
+
+    const payload = new FormData()
+    payload.append('status', params.statusText)
+
+    try {
+      const resp = await fetch(`${this.config.server}/api/v1/statuses`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.user.accessToken()}`,
+        },
+        body: payload,
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Status was not posted')
+
+    } catch(e: unknown) {
+      if (e instanceof Error)
+        console.error(e.message)
+    }
+  }
+}

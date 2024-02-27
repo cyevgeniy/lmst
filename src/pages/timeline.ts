@@ -1,61 +1,51 @@
 import { LStatusesList } from '../components/LStatusesList'
-import { getPublicTimeline, getHomeTimeline } from '../api/timeline'
-import type { Status } from '../types/shared.d.ts'
 import { h } from '../utils/dom'
-import { useTimeline } from '../stores/useTimeline'
-import {useAppConfig} from '../appConfig'
-import { definePage } from '../utils/page.ts'
-import { User } from '../utils/user.ts'
+import { Page } from '../utils/page.ts'
+import type { IPage } from '../utils/page'
+import type { TimelineManager } from '../appManager.ts'
 
-export const timelinePage = definePage(() => {
-  let el: HTMLElement
-  let timelineContainer: HTMLElement
-  let loadMoreBtn: HTMLButtonElement
-  let maxId = ''
-  let statusesList: LStatusesList
-  const user = new User()
-  const config = useAppConfig()
+export class TimelinePage extends Page implements IPage {
+  private el: HTMLElement
+  private timelineContainer: HTMLElement
+  private loadMoreBtn: HTMLButtonElement
+  private statusesList: LStatusesList
 
-  const { timeline } = useTimeline()
+  private timelineManager: TimelineManager
+  
+  constructor(tm: TimelineManager) {
+    super()
 
-  async function loadStatuses() {
-    await user.verifyCredentials()
-    user.loadTokenFromStore()
-    let fn = async () => await getPublicTimeline(config.server, {max_id: maxId}) as Status[]
-
-    if (user.isLoaded())
-      fn = async () => await getHomeTimeline(config.server, user.accessToken(),  {max_id: maxId})
-    
-      const statuses = await fn()
-      console.log(statuses)
-    statusesList?.addStatuses(statuses)
-    timeline.push(...statuses)
-    maxId = statuses[statuses.length - 1].id
-  }
-
-  function mount(): HTMLElement {
-    loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
-    loadMoreBtn.addEventListener('click', () => loadStatuses())
+    this.timelineManager = tm
+    this.loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
+    this.loadMoreBtn.addEventListener('click', () => this.loadMore())
 
     const statusesListEl = h('div')
-    statusesList = new LStatusesList(statusesListEl, [])
+    this.statusesList = new LStatusesList(statusesListEl, [])
 
-    timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtn])
-    el = h('div', {attrs: {id: 'timeline-root'}}, [timelineContainer, loadMoreBtn])
-
-    return el
+    this.timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, this.loadMoreBtn])
+    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer, this.loadMoreBtn])  
   }
 
-  async function onParamsChange(_?: Record<string,string>) {
+  private async loadMore() {
+    const st = await this.timelineManager.loadStatuses()
+    this.statusesList?.addStatuses(st)
+  }
+
+  public mount(params?: Record<string, string>) {
+    super.mount()
+    this.timelineManager.resetPagination()
+    this.layout.middle.appendChild(this.el)
+    this.onParamsChange(params)
+  }
+
+  public async onParamsChange(_?: Record<string,string>) {
     console.log('onParamsChange')
-    if (timeline.length === 0)
-      loadStatuses()
+    console.log(this.timelineManager.statuses)
+    if (this.timelineManager.statuses.length === 0) {
+      const st = await this.timelineManager.loadStatuses()
+      this.statusesList?.addStatuses(st)
+    }
     else
-      statusesList?.addStatuses(timeline)
+      this.statusesList?.addStatuses(this.timelineManager.statuses)
   }
-
-  return {
-    mount,
-    onParamsChange,
-  }
-})
+}

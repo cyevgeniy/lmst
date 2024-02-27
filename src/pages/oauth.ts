@@ -22,7 +22,7 @@ export const oauthPage = definePage(() => {
     }
   }
 
-  function mount(p = {}): HTMLElement {
+  function mount(): HTMLElement {
     return div('', []) // 
   }
 

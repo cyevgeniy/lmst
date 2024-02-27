@@ -6,7 +6,6 @@ import { useTimeline } from '../stores/useTimeline'
 import {useAppConfig} from '../appConfig'
 import { definePage } from '../utils/page.ts'
 import { User } from '../utils/user.ts'
-import type { TimelineManager } from '../appManager'
 
 export const timelinePage = definePage(() => {
   let el: HTMLElement
@@ -14,7 +13,6 @@ export const timelinePage = definePage(() => {
   let loadMoreBtn: HTMLButtonElement
   let maxId = ''
   let statusesList: LStatusesList
-  let timelineManager: TimelineManager
   const user = new User()
   const config = useAppConfig()
 
@@ -35,8 +33,7 @@ export const timelinePage = definePage(() => {
     maxId = statuses[statuses.length - 1].id
   }
 
-  function mount(tm: TimelineManager): HTMLElement {
-    timelineManager = tm
+  function mount(): HTMLElement {
     loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
     loadMoreBtn.addEventListener('click', () => loadStatuses())
 

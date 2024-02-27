@@ -1,6 +1,6 @@
 import { store } from "./store"
 
-interface AppConfig {
+export interface AppConfig {
   server: string
   clientName: string
   repo: string

@@ -15,9 +15,12 @@ export class LStatusesList {
 
   addStatuses(statuses: Status[]) {
     for (const status of statuses) {
-      const statusEl = new LStatus(status).el
-      statusEl.classList.add('statuses-list__status')
-      this.el?.appendChild(statusEl)
+      const statusComp = new LStatus(status)
+      statusComp.onBoost((s) => {
+        alert(`boost status with id = ${s.id}`)
+      })
+      statusComp.el.classList.add('statuses-list__status')
+      this.el?.appendChild(statusComp.el)
     }
   }
 }

@@ -2,6 +2,9 @@ import type { Status, MediaAttachment } from '../types/shared'
 import { h, a, div, span } from '../utils/dom'
 import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
+import { LStatusButtons } from './LStatusButtons'
+
+export type StatusCallback = (s: Status) => void
 
 export class LStatus {
   public el: HTMLElement
@@ -9,15 +12,34 @@ export class LStatus {
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined
   private sensitiveBtn: HTMLButtonElement | undefined
+  //private actions: HTMLSelectElement | undefined
   private _status: Status
   private renderedStatus: Status
   private isReblogged: boolean
+  private statusButtons: LStatusButtons
+  private _onBoost: StatusCallback | undefined = undefined
+  private _onBookmark: StatusCallback | undefined = undefined
 
   constructor(status: Status) {
     this._status = status.reblog ?? status
     this.isReblogged = Boolean(status.reblog)
     this.renderedStatus = status
     this.avatar = new LAvatar(this._status.account?.avatar)
+    this.statusButtons = new LStatusButtons(status)
+    this.statusButtons.onBoostClick(() => {
+      this._onBoost && this._onBoost(this.renderedStatus)
+    })
+    this.statusButtons.onBookmarkClick(() => {
+      this._onBookmark && this._onBookmark(this.renderedStatus)
+    })
+
+    // xxx: Create Combobox component instead
+    /* this.actions = h('select', null, [
+      h('option', {attrs: {value: ''}}, 'Actions:'),
+      h('option', {attrs: {value: 'bookmark'}}, 'Bookmark'),
+      h('option', {attrs: {value: 'reply'}}, 'Reply'),
+      h('option', {attrs: {value: 'report'}}, 'Report'),
+    ]) as HTMLSelectElement */
 
 
     if (!this._status.sensitive)
@@ -41,6 +63,8 @@ export class LStatus {
       ]),
       this._status.sensitive ? undefined : h('div', { innerHTML: this._status.content }),
       this._status.sensitive ? this.sensitiveEl : this.attachments,
+      this.statusButtons.el,
+      //this.actions,
     ])
 
     this.addEventListeners()
@@ -92,6 +116,20 @@ export class LStatus {
       this.attachments && this.el.appendChild(this.attachments)
     })
 
+    /* this.actions!.addEventListener('change', () => {
+      if (this.actions!.value === 'bookmark')
+        this.statusActions.bookmark(this.renderedStatus.id)
+
+      this.actions!.value = ''
+    }) */
+  }
+
+  public onBoost(fn: StatusCallback) {
+    this._onBoost = fn
+  }
+
+  public onBookmark(fn: StatusCallback) {
+    this._onBookmark = fn
   }
 }
 

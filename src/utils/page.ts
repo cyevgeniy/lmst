@@ -2,7 +2,7 @@ import { LInfo } from "../components/LInfo"
 import { Layout } from "../components/Layout"
 
 type PageConstructor = () => {
-  mount: () => HTMLElement,
+  mount: (t: any) => HTMLElement,
   onParamsChange?: (params?: Record<string,string>) => void | Promise<void>
 }
 

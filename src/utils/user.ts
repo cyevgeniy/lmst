@@ -179,6 +179,9 @@ export class User implements CredentialAccount{
     this.avatar = obj.avatar
   }
 
+  /**
+   * xxx: load token here
+   */
   private loadCachedUser() {
     const tmp = store.getItem(USER_KEY)
 

@@ -24,8 +24,9 @@ export interface NodeProps {
  *    const el = h('div', {innerHtml: `<div class="header"> HEAD </div>`}) //<div>`<div class="header"> HEAD </div></div>
 
  */
-export function h(nodeName: string, props?: NodeProps | null, childs?: Array<HTMLElement | undefined> | string): HTMLElement {
-  const el = document.createElement(nodeName)
+type TagName = keyof HTMLElementTagNameMap
+export function h<T extends TagName>(nodeName: T, props?: NodeProps | null, childs?: Array<HTMLElement | undefined> | string) {
+  const el = document.createElement<T>(nodeName)
 
   const _class = props?.class ?
     typeof props.class === 'string'

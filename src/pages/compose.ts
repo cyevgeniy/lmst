@@ -1,4 +1,4 @@
-import { Page, definePage } from '../utils/page'
+import { Page } from '../utils/page'
 import type { IPage } from '../utils/page'
 import { h } from '../utils/dom'
 import { useAppConfig } from '../appConfig'

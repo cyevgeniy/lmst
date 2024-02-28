@@ -2,7 +2,7 @@ import '../assets/css/main.css'
 import { lRouter } from './router'
 import { TimelinePage } from './pages/timeline'
 import { ProfilePage } from './pages/profile'
-import { oauthPage } from './pages/oauth'
+import { OAuthPage } from './pages/oauth'
 import { ComposePage } from './pages/compose'
 import { useAppConfig } from "./appConfig"
 import { User } from "./utils/user"
@@ -22,11 +22,12 @@ const statusManager = new StatusManager({user, config: appConfig})
 const timelineManager = new TimelineManager({user, config: appConfig})
 const profileTimelineManager = new ProfileTimelineManager()
 
-const compPage = new ComposePage(statusManager)
-const timePage = new TimelinePage(timelineManager)
-const profPage = new ProfilePage(profileTimelineManager)
+const composePage = new ComposePage(statusManager)
+const timelinePage = new TimelinePage(timelineManager)
+const profilePage = new ProfilePage(profileTimelineManager)
+const oauthPage = new OAuthPage({ user })
 
-lRouter.on('/', () => timePage.mount())
-lRouter.on('/profile/:id', (params) => profPage.mount(params))
+lRouter.on('/', () => timelinePage.mount())
+lRouter.on('/profile/:id', (params) => profilePage.mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
-lRouter.on('/compose', () => compPage.mount())
+lRouter.on('/compose', () => composePage.mount())

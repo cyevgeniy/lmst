@@ -225,3 +225,13 @@ body {
 .account__note {
   font-size: 14px;
 }
+
+.button {
+  border: 1px solid rgb(203 213 225);
+  background-color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}

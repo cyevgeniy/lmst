@@ -16,7 +16,7 @@ export class TimelinePage extends Page implements IPage {
     super()
 
     this.timelineManager = tm
-    this.loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
+    this.loadMoreBtn = h('button', {class: ['button', 'timeline__load-more']}, 'Load more') as HTMLButtonElement
     this.loadMoreBtn.addEventListener('click', () => this.loadMore())
 
     const statusesListEl = h('div')

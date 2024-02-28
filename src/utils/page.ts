@@ -3,7 +3,6 @@ import { Layout } from "../components/Layout"
 
 export interface IPage {
   mount: (params?: Record<string, string>) => void
-  onParamsChange?: (params?: Record<string, string>) => void
 }
 
 export class Page {

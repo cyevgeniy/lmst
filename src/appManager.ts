@@ -2,6 +2,7 @@ import { getPublicTimeline, getHomeTimeline } from './api/timeline'
 import type { Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { User } from './utils/user'
+import { getAccount, getStatuses } from './api/account'
 
 export interface ITimelineManager {
   /**
@@ -49,6 +50,33 @@ export class TimelineManager implements ITimelineManager {
 
   public resetPagination() {
     this.maxId = ''
+  }
+}
+
+export class ProfileTimelineManager implements ITimelineManager {
+  private maxId: string
+  public statuses: Status[]
+  public profileId: string
+
+  constructor() {
+    this.maxId = ''
+    this.profileId = ''
+    this.statuses = []
+  }
+
+  public async loadStatuses(): Promise<Status[]> {
+    const statuses = await getStatuses(this.profileId, { max_id: this.maxId })
+    this.maxId = statuses[statuses.length - 1].id
+
+    return statuses
+  }
+
+  public resetPagination() {
+    this.maxId = ''
+  }
+
+  public async getAccount() {
+    return await getAccount(this.profileId)
   }
 }
 

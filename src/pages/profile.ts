@@ -1,59 +1,56 @@
-import { definePage } from '../utils/page'
+import { IPage, Page,  definePage } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { getAccount, getStatuses } from '../api/account'
 import { h, div } from '../utils/dom'
+import { ProfileTimelineManager } from '../appManager'
 
-export const profilePage = definePage(() => {
+export class ProfilePage extends Page implements IPage {
+  private el: HTMLElement
+  private statusesList: LStatusesList
+  private profileHeaderComponent: LProfileHeader
+  private profileId: string
 
-  let el: HTMLElement
-  let statusesList: LStatusesList
-  let profileHeaderComponent: LProfileHeader
-  let profileId: string = ''
-  let maxId = ''
+  private profileManager: ProfileTimelineManager
 
-  let rendered = false
+  constructor(pm: ProfileTimelineManager) {
+    super()
+    this.profileManager = pm
+    this.profileId = ''
 
-  async function loadStatuses(): Promise<void> {
-    const resp = await getStatuses(profileId, { max_id: maxId })
-    statusesList.addStatuses(resp)
-    maxId = resp[resp.length - 1].id
-  }
-
-  function render() {
     const loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
-    loadMoreBtn.addEventListener('click', () => loadStatuses())
+    loadMoreBtn.addEventListener('click', () => this.loadStatuses())
 
     const timelineContainer = div('timeline-container', [])
-    statusesList = new LStatusesList(timelineContainer, [])
+    this.statusesList = new LStatusesList(timelineContainer, [])
     timelineContainer.appendChild(loadMoreBtn)
 
-    el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
-    profileHeaderComponent = new LProfileHeader(el)
-    el.appendChild(timelineContainer)
-    el.appendChild(loadMoreBtn)
+    this.el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
+    this.profileHeaderComponent = new LProfileHeader(this.el)
+    this.el.appendChild(timelineContainer)
+    this.el.appendChild(loadMoreBtn)
 
-    rendered = true
   }
 
-  function update(params?: Record<string, string>) {
-    profileId = params?.id ?? ''
-    getAccount(profileId).then(resp => profileHeaderComponent.update(resp))
-    //profileHeader.innerText = `Profile ${profileId}`
-    loadStatuses()
+  public mount(params?: Record<string, string>) {
+    super.mount()
+    this.layout.middle.innerHTML = ''
+    this.layout.middle.appendChild(this.el)
+    this.onParamsChange(params)
   }
 
-  function mount() {
-    if (rendered)
-      return el
+  private async loadStatuses() {
+    if (!this.profileId)
+      return
 
-    render()
-    return el
+    const statuses = await this.profileManager.loadStatuses()
+    this.statusesList.addStatuses(statuses)
   }
 
-  function onParamsChange(params?: Record<string, string>) {
-    update(params)
+  public onParamsChange(params?: Record<string, string>) {
+    this.profileId = params?.id ?? ''
+    this.profileManager.profileId = this.profileId
+    this.profileManager.getAccount().then(resp => this.profileHeaderComponent.update(resp))
+    this.loadStatuses()
   }
-
-  return { mount, onParamsChange }
-})
+}

@@ -1,7 +1,6 @@
-import { IPage, Page,  definePage } from '../utils/page'
+import { IPage, Page } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
-import { getAccount, getStatuses } from '../api/account'
 import { h, div } from '../utils/dom'
 import { ProfileTimelineManager } from '../appManager'
 

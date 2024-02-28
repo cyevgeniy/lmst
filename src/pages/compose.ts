@@ -3,7 +3,7 @@ import type { IPage } from '../utils/page'
 import { h } from '../utils/dom'
 import { useAppConfig } from '../appConfig'
 import { User } from '../utils/user'
-import type { StatusManager, StuatusManager } from '../appManager'
+import type { StatusManager } from '../appManager'
 
 
 export class ComposePage extends Page implements IPage {

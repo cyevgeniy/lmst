@@ -9,6 +9,8 @@ export class LNav {
   private logout: HTMLElement
   private compose: HTMLElement
   private signupContainer: HTMLElement
+  private mainLink: HTMLElement
+
   private user: User
 
   constructor(root: HTMLElement) {
@@ -24,10 +26,11 @@ export class LNav {
         this.logout,
       ])
 
-    this.el = div('nav', [
-      h('a', {attrs: {href: '/'}}, [
+    this.mainLink = h('a', {attrs: {href: '/'}}, [
         h('span', {attrs: {id: 'logo'}}, 'Lmst')
-      ]),
+      ])
+    this.el = div('nav', [
+      this.mainLink,
       this.compose,
       this.signupContainer,
     ])
@@ -42,6 +45,11 @@ export class LNav {
     })
 
     this.user.verifyCredentials()
+
+    this.mainLink.addEventListener('click', (e: MouseEvent) => {
+      e.preventDefault()
+      lRouter.navigateTo('/')
+    })
 
     this.authorize.addEventListener('click', async () => {
       // Prompt for server

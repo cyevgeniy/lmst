@@ -7,7 +7,7 @@ export class LNav {
   public el: HTMLElement
   private authorize: HTMLElement
   private logout: HTMLElement
-  private compose: HTMLElement
+  private compose: HTMLAnchorElement
   private signupContainer: HTMLElement
   private mainLink: HTMLElement
 
@@ -18,7 +18,7 @@ export class LNav {
 
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
     this.logout = h('div', {class: 'nav__logout' } , 'Logout')
-    this.compose = h('span', {class: 'nav__compose'}, 'Compose')
+    this.compose = h('a', {class: 'nav__compose', attrs: { href: '/compose'}}, 'Compose')
     this.signupContainer = h('div',
       {class: 'nav--signup-container'},
       [
@@ -71,7 +71,8 @@ export class LNav {
       window.location.replace('/')
     })
 
-    this.compose.addEventListener('click', () => {
+    this.compose.addEventListener('click', (e: MouseEvent) => {
+      e.preventDefault()
       lRouter.navigateTo('/compose')
     })
   }

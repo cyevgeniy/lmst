@@ -24,10 +24,11 @@ const profileTimelineManager = new ProfileTimelineManager()
 
 const composePage = new ComposePage(statusManager)
 const timelinePage = new TimelinePage(timelineManager)
-const profilePage = new ProfilePage(profileTimelineManager)
 const oauthPage = new OAuthPage({ user })
 
 lRouter.on('/', () => timelinePage.mount())
-lRouter.on('/profile/:id', (params) => profilePage.mount(params))
+// For profiles, always create new instances of profilePages, so that they won't
+// share the same timeline cache
+lRouter.on('/profile/:id', (params) => (new ProfilePage(profileTimelineManager)).mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
 lRouter.on('/compose', () => composePage.mount())

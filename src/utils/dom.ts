@@ -74,7 +74,8 @@ export function button(classname: string | string[], text: string) {
   const classes = ['button']
   if (Array.isArray(classname))
     classes.push(...classname)
-  else
+  // Ignore empty strings
+  else if (classname)
     classes.push(classname)
 
   return h('button', {class: classes}, text)

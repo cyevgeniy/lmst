@@ -1,5 +1,5 @@
 import type { Status, MediaAttachment } from '../types/shared'
-import { h, a, div, span } from '../utils/dom'
+import { h, a, div, span, button } from '../utils/dom'
 import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
@@ -47,7 +47,7 @@ export class LStatus {
 
     const dispName = this.renderedStatus.account.display_name
 
-    this.sensitiveBtn = h('button', null, 'Show me tits!') as HTMLButtonElement
+    this.sensitiveBtn = button('', 'Show sensitive content')
 
     this.sensitiveEl = this._status.sensitive ? h('div', null, [this.sensitiveBtn]) : undefined
 
@@ -63,7 +63,7 @@ export class LStatus {
       ]),
       this._status.sensitive ? undefined : h('div', { innerHTML: this._status.content }),
       this._status.sensitive ? this.sensitiveEl : this.attachments,
-      this.statusButtons.el,
+     // this.statusButtons.el,
       //this.actions,
     ])
 

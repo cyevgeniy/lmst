@@ -1,7 +1,7 @@
 import { IPage, Page } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
-import { h, div } from '../utils/dom'
+import { h, button, div } from '../utils/dom'
 import { ProfileTimelineManager } from '../appManager'
 
 export class ProfilePage extends Page implements IPage {
@@ -17,7 +17,7 @@ export class ProfilePage extends Page implements IPage {
     this.profileManager = pm
     this.profileId = ''
 
-    const loadMoreBtn = h('button', {class: "timeline__load-more"}, 'Load more') as HTMLButtonElement
+    const loadMoreBtn = button('timeline__load-more', 'Load more')
     loadMoreBtn.addEventListener('click', () => this.loadStatuses())
 
     const timelineContainer = div('timeline-container', [])

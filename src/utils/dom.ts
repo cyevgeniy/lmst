@@ -69,3 +69,13 @@ export function span(classname: string | string[], text: string): HTMLElement {
 export function a(classname: string | string[], href: string, text: string) {
   return h('a', { class: classname, attrs: { href, target: '_blank'}}, text)
 }
+
+export function button(classname: string | string[], text: string) {
+  const classes = ['button']
+  if (Array.isArray(classname))
+    classes.push(...classname)
+  else
+    classes.push(classname)
+
+  return h('button', {class: classes}, text)
+}

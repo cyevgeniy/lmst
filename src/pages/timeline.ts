@@ -1,5 +1,5 @@
 import { LStatusesList } from '../components/LStatusesList'
-import { h } from '../utils/dom'
+import { button, h } from '../utils/dom'
 import { Page } from '../utils/page.ts'
 import type { IPage } from '../utils/page'
 import type { TimelineManager } from '../appManager.ts'
@@ -16,7 +16,8 @@ export class TimelinePage extends Page implements IPage {
     super()
 
     this.timelineManager = tm
-    this.loadMoreBtn = h('button', {class: ['button', 'timeline__load-more']}, 'Load more') as HTMLButtonElement
+    this.loadMoreBtn = button('timeline__load-more', 'Load more')
+
     this.loadMoreBtn.addEventListener('click', () => this.loadMore())
 
     const statusesListEl = h('div')

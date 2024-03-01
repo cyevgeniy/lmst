@@ -186,7 +186,7 @@ export class User implements CredentialAccount{
       this.loadUserFromObject(JSON.parse(tmp) as CredentialAccount)
   }
 
-  public async logOut() {
+  public logOut() {
     this.loadTokenFromStore()
     store.removeItem(USER_KEY)
     store.removeItem(TOKEN_KEY)

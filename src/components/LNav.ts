@@ -1,7 +1,7 @@
 import {h, div } from '../utils/dom'
 import { CredentialAccount, User } from '../utils/user'
-import {useAppConfig } from '../appConfig'
 import { lRouter } from '../router'
+import type { Mediator } from '../types/shared'
 
 export class LNav {
   public el: HTMLElement
@@ -10,10 +10,12 @@ export class LNav {
   private compose: HTMLAnchorElement
   private signupContainer: HTMLElement
   private mainLink: HTMLElement
+  private pageMediator: Mediator
 
   private user: User
 
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, pm: Mediator) {
+    this.pageMediator = pm
     this.user = new User()
 
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
@@ -48,27 +50,15 @@ export class LNav {
 
     this.mainLink.addEventListener('click', (e: MouseEvent) => {
       e.preventDefault()
-      lRouter.navigateTo('/')
+      this.pageMediator.notify('navigate:main')
     })
 
     this.authorize.addEventListener('click', async () => {
-      // Prompt for server
-
-      // First, check if we hava cached user data
-      await this.user.verifyCredentials() //user.value = await verifyCredentials()
-      if (this.user.isLoaded())
-        window.location.replace('/')
-      else {
-        const server = prompt('Enter server:') ?? ''
-        const appConfig = useAppConfig()
-        appConfig.server = server
-        await this.user.authorize()
-      }
+      this.pageMediator.notify('navigate:login')
     })
 
     this.logout.addEventListener('click', () => {
-      this.user.logOut()
-      window.location.replace('/')
+      this.pageMediator.notify('navigate:logout')
     })
 
     this.compose.addEventListener('click', (e: MouseEvent) => {

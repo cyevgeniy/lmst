@@ -89,3 +89,7 @@ export interface PaginationParams {
   max_id?: string
   min_id?: string
 }
+
+export interface Mediator {
+  notify(msg: string): void
+}

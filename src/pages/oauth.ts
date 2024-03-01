@@ -1,5 +1,6 @@
 import { Page } from "../utils/page";
 import type { IPage } from "../utils/page";
+import type { Mediator } from "../types/shared";
 import { User } from '../utils/user'
 
 export class OAuthPage extends Page implements IPage {
@@ -7,8 +8,9 @@ export class OAuthPage extends Page implements IPage {
 
   constructor(opts: {
     user: User
+    pm: Mediator
   }) {
-    super()
+    super(opts.pm)
     this.user = opts.user
   }
 
@@ -29,6 +31,6 @@ export class OAuthPage extends Page implements IPage {
     else {
       this.user.verifyCredentials()
       window.location.replace('/')
-    }  
+    }
   }
 }

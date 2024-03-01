@@ -3,6 +3,8 @@ import { button, h } from '../utils/dom'
 import { Page } from '../utils/page.ts'
 import type { IPage } from '../utils/page'
 import type { TimelineManager } from '../appManager.ts'
+import type { Mediator } from '../types/shared'
+
 
 export class TimelinePage extends Page implements IPage {
   private el: HTMLElement
@@ -11,11 +13,12 @@ export class TimelinePage extends Page implements IPage {
   private statusesList: LStatusesList
 
   private timelineManager: TimelineManager
-  
-  constructor(tm: TimelineManager) {
-    super()
+
+  constructor(tm: TimelineManager, pm: Mediator) {
+    super(pm)
 
     this.timelineManager = tm
+
     this.loadMoreBtn = button('timeline__load-more', 'Load more')
 
     this.loadMoreBtn.addEventListener('click', () => this.loadMore())
@@ -23,8 +26,12 @@ export class TimelinePage extends Page implements IPage {
     const statusesListEl = h('div')
     this.statusesList = new LStatusesList(statusesListEl, [])
 
+    this.timelineManager.onClearStatuses(() => {
+      this.statusesList.clearStatuses()
+    })
+
     this.timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, this.loadMoreBtn])
-    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer, this.loadMoreBtn])  
+    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer, this.loadMoreBtn])
   }
 
   private async loadMore() {
@@ -34,19 +41,16 @@ export class TimelinePage extends Page implements IPage {
 
   public mount(params?: Record<string, string>) {
     super.mount()
-    this.timelineManager.resetPagination()
+    this.timelineManager.clearStatuses()
     this.layout.middle.appendChild(this.el)
     this.onParamsChange(params)
   }
 
+  /**
+   * Later we should cache fetched timeline and merge it with new
+   * timeline after we navigate from the 'compose' page
+   */
   public async onParamsChange(_?: Record<string,string>) {
-    console.log('onParamsChange')
-    console.log(this.timelineManager.statuses)
-    if (this.timelineManager.statuses.length === 0) {
-      const st = await this.timelineManager.loadStatuses()
-      this.statusesList?.addStatuses(st)
-    }
-    else
-      this.statusesList?.addStatuses(this.timelineManager.statuses)
+    await this.loadMore()
   }
 }

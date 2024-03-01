@@ -3,6 +3,8 @@ import type { Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { User } from './utils/user'
 import { getAccount, getStatuses } from './api/account'
+import type { Router } from './router'
+import type { Mediator } from './types/shared'
 
 export interface ITimelineManager {
   /**
@@ -14,13 +16,22 @@ export interface ITimelineManager {
    * Loads next portion of statuses
    */
   loadStatuses: () => void
+
+  /**
+   * Clears all statuses
+   */
+  clearStatuses: () => void
+
+  //onClearStatuses: (fn: () => void) => void
 }
 
 export class TimelineManager implements ITimelineManager {
   private maxId: string
   private user: User
   private config: AppConfig
+  public onClearCallback?: () => void
   public statuses: Status[]
+
 
   constructor(opts: {
     user: User,
@@ -30,17 +41,21 @@ export class TimelineManager implements ITimelineManager {
     this.statuses = []
     this.user = opts.user
     this.config = opts.config
+    this.onClearCallback = undefined
+  }
+
+  public onClearStatuses(fn: () => void) {
+    this.onClearCallback = fn
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    console.log(this.maxId)
     await this.user.verifyCredentials()
     this.user.loadTokenFromStore()
     let fn = async () => await getPublicTimeline(this.config.server, {max_id: this.maxId}) as Status[]
 
     if (this.user.isLoaded())
       fn = async () => await getHomeTimeline(this.config.server, this.user.accessToken(),  {max_id: this.maxId})
-    
+
     // xxx: handle fetch errors?
     const statuses = await fn()
     this.statuses.push(...statuses)
@@ -50,6 +65,12 @@ export class TimelineManager implements ITimelineManager {
 
   public resetPagination() {
     this.maxId = ''
+  }
+
+  public clearStatuses() {
+    this.resetPagination()
+    this.statuses = []
+    this.onClearCallback && this.onClearCallback()
   }
 }
 
@@ -73,6 +94,11 @@ export class ProfileTimelineManager implements ITimelineManager {
 
   public resetPagination() {
     this.maxId = ''
+  }
+
+  public clearStatuses() {
+    this.resetPagination()
+    this.statuses = []
   }
 
   public async getAccount() {
@@ -114,6 +140,58 @@ export class StatusManager implements IStatusManager {
     } catch(e: unknown) {
       if (e instanceof Error)
         console.error(e.message)
+    }
+  }
+}
+
+/**
+ * This mediator object handles global application events,
+ * such as login, logout and navigate to the main page
+ */
+export class GlobalPageMediator implements Mediator {
+  private user: User
+  private timelineManager: TimelineManager
+  private router: Router
+  private config: AppConfig
+
+  constructor(opts: {
+    user: User
+    timelineManager: TimelineManager
+    router: Router
+    config: AppConfig
+  }) {
+    this.user = opts.user
+    this.timelineManager = opts.timelineManager
+    this.router = opts.router
+    this.config = opts.config
+  }
+
+  private goHome() {
+    this.router.navigateTo('/')
+  }
+
+  async notify(msg: string) {
+    if (msg === 'navigate:main') {
+      this.goHome()
+      return
+    }
+
+    if (msg === 'navigate:logout') {
+      this.user.logOut()
+      this.timelineManager.clearStatuses()
+      this.goHome()
+      return
+    }
+
+    if (msg === 'navigate:login') {
+      await this.user.verifyCredentials()
+      if (this.user.isLoaded())
+        this.goHome()
+      else {
+        const server = prompt('Enter server:') ?? ''
+        this.config.server = server
+        await this.user.authorize()
+      }
     }
   }
 }

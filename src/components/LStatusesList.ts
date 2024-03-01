@@ -4,7 +4,7 @@ import { h } from '../utils/dom'
 
 export class LStatusesList {
   private el: HTMLElement
-  
+
   constructor(root: HTMLElement, statuses: Status[]) {
     this.el = h('div', {class: 'statuses-list'})
 
@@ -22,5 +22,9 @@ export class LStatusesList {
       statusComp.el.classList.add('statuses-list__status')
       this.el?.appendChild(statusComp.el)
     }
+  }
+
+  clearStatuses() {
+    this.el.innerHTML = ''
   }
 }

@@ -1,4 +1,5 @@
 import { IPage, Page } from '../utils/page'
+import type { Mediator } from '../types/shared'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { h, button, div } from '../utils/dom'
@@ -9,11 +10,13 @@ export class ProfilePage extends Page implements IPage {
   private statusesList: LStatusesList
   private profileHeaderComponent: LProfileHeader
   private profileId: string
+//  private pageMediator: Mediator
 
   private profileManager: ProfileTimelineManager
 
-  constructor(pm: ProfileTimelineManager) {
-    super()
+  constructor(pm: ProfileTimelineManager, pageMediator: Mediator) {
+    super(pageMediator)
+  //  this.pageMediator = pageMediator
     this.profileManager = pm
     this.profileId = ''
 

@@ -200,7 +200,7 @@ body {
 }
 
 .avatar {
-
+  cursor: pointer;
   border-radius: 9000px;
 }
 

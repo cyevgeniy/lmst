@@ -27,7 +27,7 @@ export class LmstConfig implements AppConfig {
     this._server = ''
     this.clientName = 'lmst'
     this.repo = 'https://git.sr.ht/~ychbn/lmst'
-    this.baseUrl = 'https://a-lmst.netlify.app'
+    this.baseUrl = import.meta.env.VITE_BASE_URL
     this.callbacks = []
 
     LmstConfig.instance = this

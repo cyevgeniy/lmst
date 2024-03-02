@@ -5,6 +5,7 @@ export interface AppConfig {
   clientName: string
   repo: string
   baseUrl: string
+  version: string
 }
 
 type CallbackFn = (server: string) => void
@@ -19,6 +20,7 @@ export class LmstConfig implements AppConfig {
   public readonly clientName: string = ''
   public readonly repo: string = ''
   public readonly baseUrl: string = ''
+  public readonly version: string = ''
 
   constructor() {
     if (LmstConfig.instance)
@@ -28,6 +30,7 @@ export class LmstConfig implements AppConfig {
     this.clientName = 'lmst'
     this.repo = 'https://git.sr.ht/~ychbn/lmst'
     this.baseUrl = import.meta.env.VITE_BASE_URL
+    this.version = import.meta.env.VITE_APP_VERSION
     this.callbacks = []
 
     LmstConfig.instance = this

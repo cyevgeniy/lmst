@@ -11,6 +11,7 @@ export class ProfilePage extends Page implements IPage {
   private statusesList: LStatusesList
   private profileHeaderComponent: LProfileHeader
   private profileId: string
+  private loadMoreBtn: HTMLButtonElement
 //  private pageMediator: Mediator
 
   private profileManager: ProfileTimelineManager

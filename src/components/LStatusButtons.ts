@@ -2,6 +2,7 @@ import { h } from '../utils/dom'
 import type { Status } from '../types/shared.d.ts'
 
 export class LStatusButtons {
+  // @ts-ignore
   private readonly status: Status
   private bookmarkBtn: HTMLButtonElement
   private boostBtn: HTMLButtonElement

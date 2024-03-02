@@ -49,7 +49,7 @@ export class LStatus {
 
     this.sensitiveBtn = button('', 'Show sensitive content')
 
-    this.sensitiveEl = this._status.sensitive ? h('div', null, [this.sensitiveBtn]) : undefined
+    this.sensitiveEl = this._status.sensitive ? h('div', {class: 'show-sensitive-content'}, [this.sensitiveBtn]) : undefined
 
     this.el = div('status', [
       this.isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,

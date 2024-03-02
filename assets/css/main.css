@@ -23,6 +23,14 @@ body {
   display: none;
 }
 
+.show-sensitive-content {
+  margin-top: 8px;
+}
+
+.show-sensitive-content > button {
+  width: 100%;
+}
+
 @media screen and (min-width: 1240px) {
   .layout__container {
     display: flex;

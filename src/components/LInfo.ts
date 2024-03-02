@@ -8,7 +8,7 @@ export class LInfo {
 
     this.serverInfo = a('', appConfig.server, appConfig.server)
     root.appendChild(div('infoblock', [
-      h('h2', null, 'Info'),
+      h('h2', null, 'Client Info'),
       div('', [
         span('', 'Server: '),
         this.serverInfo,

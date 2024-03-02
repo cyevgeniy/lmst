@@ -26,7 +26,7 @@ export class ComposePage extends Page implements IPage {
       } catch (e: unknown) {
         // show error to the user
         if (e instanceof Error)
-          console.log(e.message)
+          console.error(e.message)
       }
     })
 

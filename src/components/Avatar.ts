@@ -1,4 +1,5 @@
 import { h } from '../utils/dom'
+import { onClick } from '../utils/events'
 
 export class LAvatar {
   public el: HTMLElement
@@ -8,7 +9,7 @@ export class LAvatar {
   }
 
   onImageClick(cb: () => void) {
-    this.el.addEventListener('click', cb)
+    onClick(this.el, cb)
   }
 
   /**

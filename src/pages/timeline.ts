@@ -1,5 +1,5 @@
 import { LStatusesList } from '../components/LStatusesList'
-import { button, h } from '../utils/dom'
+import { button, div, h } from '../utils/dom'
 import { Page } from '../utils/page.ts'
 import type { IPage } from '../utils/page'
 import type { TimelineManager } from '../appManager.ts'
@@ -20,6 +20,8 @@ export class TimelinePage extends Page implements IPage {
     this.timelineManager = tm
 
     this.loadMoreBtn = button('timeline__load-more', 'Load more')
+    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn])
+
 
     this.loadMoreBtn.addEventListener('click', () => this.loadMore())
 
@@ -30,8 +32,8 @@ export class TimelinePage extends Page implements IPage {
       this.statusesList.clearStatuses()
     })
 
-    this.timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, this.loadMoreBtn])
-    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer, this.loadMoreBtn])
+    this.timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtnContainer])
+    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer, loadMoreBtnContainer])
   }
 
   private async loadMore() {

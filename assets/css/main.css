@@ -166,10 +166,23 @@ body {
   gap: 2rem;
 }
 
-.timeline__load-more {
+.timeline__load-more-container {
+  padding-left: 4px;
+  padding-right: 4px;
   margin-top: auto;
 }
 
+.timeline__load-more {
+  width: 100%;
+  height: 100%;
+  font-size: 1rem;
+}
+
+@media screen and (min-width: 1240px) {
+  .timeline__load-more {
+    font-size: 14px;
+  }
+}
 
 .status__header {
   display: flex;

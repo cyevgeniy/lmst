@@ -2,6 +2,7 @@ import {h, div } from '../utils/dom'
 import { CredentialAccount, User } from '../utils/user'
 import { lRouter } from '../router'
 import type { Mediator } from '../types/shared'
+import { onClick } from '../utils/events'
 
 export class LNav {
   public el: HTMLElement
@@ -48,22 +49,22 @@ export class LNav {
 
     this.user.verifyCredentials()
 
-    this.mainLink.addEventListener('click', (e: MouseEvent) => {
+    onClick(this.mainLink, (e: MouseEvent) => {
       e.preventDefault()
       this.pageMediator.notify('navigate:main')
     })
 
-    this.authorize.addEventListener('click', async () => {
+    onClick(this.authorize, async () => {
       this.pageMediator.notify('navigate:login')
     })
 
-    this.logout.addEventListener('click', () => {
+    onClick(this.logout, () => {
       this.pageMediator.notify('navigate:logout')
     })
 
-    this.compose.addEventListener('click', (e: MouseEvent) => {
+    onClick(this.compose, (e: MouseEvent) => {
       e.preventDefault()
-      lRouter.navigateTo('/compose')
+      lRouter.navigateTo('/compose')  
     })
   }
 }

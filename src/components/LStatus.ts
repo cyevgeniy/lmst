@@ -87,10 +87,10 @@ export class LStatus {
 
   private attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
     if (attachment.type === 'image')
-      return h('img', {
+      return h('a', {attrs: {href: attachment.preview_url, target: '_blank'}}, [h('img', {
         class: 'status-attachment--image',
         attrs: { src: attachment.preview_url }
-      })
+      })])
   
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {

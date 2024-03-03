@@ -16,7 +16,7 @@ export class LInfo {
 
       div('', [
         span('', 'Version: '),
-        span('', '2024.03.01 '),
+        span('', appConfig.version),
       ])
 
 

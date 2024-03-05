@@ -236,7 +236,7 @@ body {
 
 .avatar--md {
   width: 40px;
-  height: 40px; 
+  height: 40px;
 }
 
 .avatar--lg {
@@ -278,4 +278,8 @@ body {
   font-weight: 500;
   padding-top: 4px;
   padding-bottom: 4px;
+}
+
+.button--disabled {
+  background-color: #f9f9f9;
 }

@@ -1,15 +1,15 @@
 import { LStatusesList } from '../components/LStatusesList'
-import { button, div, h } from '../utils/dom'
+import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
+import { div, h } from '../utils/dom'
 import { Page } from '../utils/page.ts'
 import type { IPage } from '../utils/page'
 import type { TimelineManager } from '../appManager.ts'
 import type { Mediator } from '../types/shared'
 
-
 export class TimelinePage extends Page implements IPage {
   private el: HTMLElement
   private timelineContainer: HTMLElement
-  private loadMoreBtn: HTMLButtonElement
+  private loadMoreBtn: LLoadMoreBtn
   private statusesList: LStatusesList
 
   private timelineManager: TimelineManager
@@ -19,11 +19,8 @@ export class TimelinePage extends Page implements IPage {
 
     this.timelineManager = tm
 
-    this.loadMoreBtn = button('timeline__load-more', 'Load more')
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn])
-
-
-    this.loadMoreBtn.addEventListener('click', () => this.loadMore())
+    this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadMore() })
+    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
 
     const statusesListEl = h('div')
     this.statusesList = new LStatusesList(statusesListEl, [])
@@ -37,7 +34,9 @@ export class TimelinePage extends Page implements IPage {
   }
 
   private async loadMore() {
+    this.loadMoreBtn.loading = true
     const st = await this.timelineManager.loadStatuses()
+    this.loadMoreBtn.loading = false
     this.statusesList?.addStatuses(st)
   }
 

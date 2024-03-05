@@ -2,8 +2,8 @@ import { IPage, Page } from '../utils/page'
 import type { Mediator } from '../types/shared'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
-import { h, button, div } from '../utils/dom'
-import { onClick } from '../utils/events'
+import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
+import { h, div } from '../utils/dom'
 import { ProfileTimelineManager } from '../appManager'
 
 export class ProfilePage extends Page implements IPage {
@@ -11,8 +11,7 @@ export class ProfilePage extends Page implements IPage {
   private statusesList: LStatusesList
   private profileHeaderComponent: LProfileHeader
   private profileId: string
-  private loadMoreBtn: HTMLButtonElement
-//  private pageMediator: Mediator
+  private loadMoreBtn: LLoadMoreBtn
 
   private profileManager: ProfileTimelineManager
 
@@ -22,10 +21,8 @@ export class ProfilePage extends Page implements IPage {
     this.profileManager = pm
     this.profileId = ''
 
-    this.loadMoreBtn = button('timeline__load-more', 'Load more')
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn])
-    onClick(this.loadMoreBtn, () => this.loadStatuses())
-    // this.loadMoreBtn.addEventListener('click', () => this.loadStatuses())
+    this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses() })
+    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
 
     const timelineContainer = div('timeline-container', [])
     this.statusesList = new LStatusesList(timelineContainer, [])
@@ -49,7 +46,11 @@ export class ProfilePage extends Page implements IPage {
     if (!this.profileId)
       return
 
+    // xxx: check for errors here or in profileManager and return an
+    // empty array?
+    this.loadMoreBtn.loading = true
     const statuses = await this.profileManager.loadStatuses()
+    this.loadMoreBtn.loading = false
     this.statusesList.addStatuses(statuses)
   }
 

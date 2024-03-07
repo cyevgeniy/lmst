@@ -8,14 +8,6 @@ import { useAppConfig } from "./appConfig"
 import { User } from "./utils/user"
 import { GlobalPageMediator, StatusManager, ProfileTimelineManager, TimelineManager } from './appManager'
 
-document.getElementById('btn')?.addEventListener('click', () => {
-  lRouter.navigateTo('/profile/13/question/question-123/')
-})
-
-document.getElementById('btn1')?.addEventListener('click', () => {
-  lRouter.navigateTo('/settings')
-})
-
 const appConfig = useAppConfig()
 const user = new User()
 const statusManager = new StatusManager({user, config: appConfig})

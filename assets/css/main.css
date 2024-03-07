@@ -155,6 +155,10 @@ body {
   gap: 8px;
 }
 
+.status-attachment--link {
+  width: 100%;
+}
+
 .status-attachment--image {
   width: 100%;
   height: 100%;

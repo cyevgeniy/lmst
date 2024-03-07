@@ -3,11 +3,14 @@ import { h, a, div, span, button } from '../utils/dom'
 import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
+import { onClick } from '../utils/events'
 
 export type StatusCallback = (s: Status) => void
 
 export class LStatus {
   public el: HTMLElement
+  // Link wrapper for avatar
+  private avatarLnk: HTMLAnchorElement
   private avatar: LAvatar
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined
@@ -24,6 +27,7 @@ export class LStatus {
     this._status = status.reblog ?? status
     this.isReblogged = Boolean(status.reblog)
     this.renderedStatus = status
+
     this.avatar = new LAvatar(this._status.account?.avatar)
     this.statusButtons = new LStatusButtons(status)
     this.statusButtons.onBoostClick(() => {
@@ -51,10 +55,12 @@ export class LStatus {
 
     this.sensitiveEl = this._status.sensitive ? h('div', {class: 'show-sensitive-content'}, [this.sensitiveBtn]) : undefined
 
+    this.avatarLink = h('a', {attrs: {href: `/profile/${this._status.account.id}`}}, [this.avatar.el])
+
     this.el = div('status', [
       this.isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,
       div('status__header', [
-        this.avatar.el,
+        this.avatarLink,
         div('status__username', [
           span('', `${this._status.account?.display_name || ''}`),
           a('username__acc', `${this._status.account?.url}`, `${this._status.account?.acct || ''}`),
@@ -87,11 +93,11 @@ export class LStatus {
 
   private attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
     if (attachment.type === 'image')
-      return h('a', {attrs: {href: attachment.preview_url, target: '_blank'}}, [h('img', {
+      return h('a', {attrs: {href: attachment.preview_url, target: '_blank'}, class: 'status-attachment--link' }, [h('img', {
         class: 'status-attachment--image',
         attrs: { src: attachment.preview_url }
       })])
-  
+
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {
         class: 'status-attachment--video',
@@ -105,9 +111,11 @@ export class LStatus {
   }
 
   private addEventListeners() {
-    this.avatar.onImageClick(() => {
+    onClick(this.avatarLink, (e: MouseEvent) => {
+      e.preventDefault()
       lRouter.navigateTo(`/profile/${this._status.account.id}`)
     })
+
 
     this.sensitiveBtn?.addEventListener('click', () => {
       this.sensitiveEl?.remove()

@@ -10,7 +10,7 @@ export type StatusCallback = (s: Status) => void
 export class LStatus {
   public el: HTMLElement
   // Link wrapper for avatar
-  private avatarLnk: HTMLAnchorElement
+  private avatarLink: HTMLAnchorElement
   private avatar: LAvatar
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined

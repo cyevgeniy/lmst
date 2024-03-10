@@ -3,14 +3,17 @@ import { CredentialAccount, User } from '../utils/user'
 import { lRouter } from '../router'
 import type { Mediator } from '../types/shared'
 import { onClick } from '../utils/events'
+import { LNavLink } from './LNavLink'
+import penIcon from '../../assets/icons/pen.svg?raw'
+import globeIcon from '../../assets/icons/globe.svg?raw'
 
 export class LNav {
   public el: HTMLElement
   private authorize: HTMLElement
   private logout: HTMLElement
-  private compose: HTMLAnchorElement
+  private composeLink: LNavLink
   private signupContainer: HTMLElement
-  private mainLink: HTMLElement
+  private mainLink: LNavLink
   private pageMediator: Mediator
 
   private user: User
@@ -21,7 +24,8 @@ export class LNav {
 
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
     this.logout = h('div', {class: 'nav__logout' } , 'Logout')
-    this.compose = h('a', {class: 'nav__compose', attrs: { href: '/compose'}}, 'Compose')
+    this.composeLink = new LNavLink({text: 'Compose', link: '/compose', icon: penIcon})
+    this.mainLink = new LNavLink({text: 'Lmst', link: '/', icon: globeIcon})
     this.signupContainer = h('div',
       {class: 'nav--signup-container'},
       [
@@ -29,12 +33,12 @@ export class LNav {
         this.logout,
       ])
 
-    this.mainLink = h('a', {attrs: {href: '/'}}, [
-        h('span', {attrs: {id: 'logo'}}, 'Lmst')
-      ])
+    // this.mainLink = h('a', {attrs: {href: '/'}}, [
+    //     h('span', {attrs: {id: 'logo'}}, 'Lmst')
+    //   ])
     this.el = div('nav', [
-      this.mainLink,
-      this.compose,
+      this.mainLink.el,
+      this.composeLink.el,
       this.signupContainer,
     ])
 
@@ -44,12 +48,12 @@ export class LNav {
     })
 
     this.user.addOnUserChangeCb(u => {
-      this.compose.style.display = u.isLoaded() ? 'inline-block' : 'none'
+      this.composeLink.el.style.display = u.isLoaded() ? 'inline-flex' : 'none'
     })
 
     this.user.verifyCredentials()
 
-    onClick(this.mainLink, (e: MouseEvent) => {
+    onClick(this.mainLink.el, (e: MouseEvent) => {
       e.preventDefault()
       this.pageMediator.notify('navigate:main')
     })
@@ -62,7 +66,7 @@ export class LNav {
       this.pageMediator.notify('navigate:logout')
     })
 
-    onClick(this.compose, (e: MouseEvent) => {
+    onClick(this.composeLink.el, (e: MouseEvent) => {
       e.preventDefault()
       lRouter.navigateTo('/compose')  
     })

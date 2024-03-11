@@ -51,16 +51,22 @@ export class TimelineManager implements ITimelineManager {
   public async loadStatuses(): Promise<Status[]> {
     await this.user.verifyCredentials()
     this.user.loadTokenFromStore()
-    let fn = async () => await getPublicTimeline(this.config.server, {max_id: this.maxId}) as Status[]
+    let fn = async () => await getPublicTimeline(this.config.server, {max_id: this.maxId})
 
     if (this.user.isLoaded())
       fn = async () => await getHomeTimeline(this.config.server, this.user.accessToken(),  {max_id: this.maxId})
 
-    // xxx: handle fetch errors?
-    const statuses = await fn()
-    this.statuses.push(...statuses)
-    this.maxId = statuses[statuses.length - 1].id
-    return statuses
+    const st = await fn()
+
+    if (st.ok) {
+      const statuses = st.value
+      this.statuses.push(...statuses)
+      this.maxId = statuses[statuses.length - 1].id
+      return statuses
+    }
+
+    return []
+    
   }
 
   public resetPagination() {

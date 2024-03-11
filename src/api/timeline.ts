@@ -1,4 +1,5 @@
-import type { PaginationParams } from '../types/shared'
+import type { PaginationParams, Status } from '../types/shared'
+import { ApiResult, fail, success } from '../utils/api'
 
 interface TimelineParams extends PaginationParams  {
   local?: boolean
@@ -6,7 +7,10 @@ interface TimelineParams extends PaginationParams  {
   only_media?: boolean
 }
 
-export async function getPublicTimeline(server: string, params: TimelineParams = {}) {
+export async function getPublicTimeline(
+  server: string,
+  params: TimelineParams = {}
+): Promise<ApiResult<Status[]>> {
   const headers = new Headers()
   // key=value&key=value&key=value
   const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
@@ -18,12 +22,16 @@ export async function getPublicTimeline(server: string, params: TimelineParams =
   })
 
   if (resp.status === 200)
-    return resp.json()
+   return  success<Status[]>(await resp.json())
 
-  throw new Error('Can not load public timeline')
+  return fail('Can not load public timeline')
 }
 
-export async function getHomeTimeline(server: string, token: string, params: TimelineParams = {}) {
+export async function getHomeTimeline(
+  server: string,
+  token: string,
+  params: TimelineParams = {}
+): Promise<ApiResult<Status[]>> {
   const headers = new Headers({
     Authorization: `Bearer ${token}`,
   })
@@ -37,7 +45,7 @@ export async function getHomeTimeline(server: string, token: string, params: Tim
   })
 
   if (resp.status === 200)
-    return resp.json()
+    return success<Status[]>(await resp.json())
 
-  throw new Error('Can not load home timeline')
+  return fail('Can not load home timeline')
 }

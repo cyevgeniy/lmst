@@ -23,4 +23,10 @@ export function success<T>(v: T): Succeed<T> {
     value: v,
   }
 }
+
+export function getQueryParams<T extends object>(params: T): string {
+  const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
+  const queryParams = queryArr.join('&')
+  return queryParams.length > 0 ? `?${queryParams}` : ''
+}
   

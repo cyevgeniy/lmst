@@ -1,5 +1,5 @@
 import type { PaginationParams, Status } from '../types/shared'
-import { ApiResult, fail, success } from '../utils/api'
+import { ApiResult, fail, getQueryParams, success } from '../utils/api'
 
 interface TimelineParams extends PaginationParams  {
   local?: boolean
@@ -13,9 +13,8 @@ export async function getPublicTimeline(
 ): Promise<ApiResult<Status[]>> {
   const headers = new Headers()
   // key=value&key=value&key=value
-  const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
-  const queryParams = queryArr.join('&')
-  const _server = `${server}/api/v1/timelines/public` + (queryParams.length > 0 ? `?${queryParams}` : '')
+  const prm = getQueryParams(params)
+  const _server = `${server}/api/v1/timelines/public${prm}`
   const resp = await fetch(_server, {
     method: 'GET',
     headers,
@@ -35,10 +34,9 @@ export async function getHomeTimeline(
   const headers = new Headers({
     Authorization: `Bearer ${token}`,
   })
-  // key=value&key=value&key=value
-  const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
-  const queryParams = queryArr.join('&')
-  const _server = `${server}/api/v1/timelines/home` + (queryParams.length > 0 ? `?${queryParams}` : '')
+  const prm = getQueryParams(params)
+  // xxx: only_media doesn't work
+  const _server = `${server}/api/v1/timelines/home${prm}`
   const resp = await fetch(_server, {
     method: 'GET',
     headers,

@@ -21,7 +21,12 @@ const globalPageMediator = new GlobalPageMediator({
 
 
 const composePage = new ComposePage(statusManager, globalPageMediator)
-const timelinePage = new TimelinePage(timelineManager, globalPageMediator)
+const timelinePage = new TimelinePage({
+  tm: timelineManager,
+  pm: globalPageMediator,
+  sm: statusManager,
+})
+
 const oauthPage = new OAuthPage({ user, pm: globalPageMediator })
 
 lRouter.on('/', () => timelinePage.mount())
@@ -29,6 +34,10 @@ lRouter.on('/', () => timelinePage.mount())
 // share the same timeline cache
 // BTW, maybe we want to "reset" timeline manager state in mount() function instead
 // of creation of new instances each time
-lRouter.on('/profile/:id', (params) => (new ProfilePage(new ProfileTimelineManager(), globalPageMediator)).mount(params))
+lRouter.on('/profile/:id',
+ (params) => (new ProfilePage({
+   pm: new ProfileTimelineManager({user}),
+  pageMediator: globalPageMediator,
+  sm: statusManager})).mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
 lRouter.on('/compose', () => composePage.mount())

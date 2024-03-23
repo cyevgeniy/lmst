@@ -4,7 +4,14 @@ import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { h, div } from '../utils/dom'
-import { ProfileTimelineManager } from '../appManager'
+import { ProfileTimelineManager, StatusManager } from '../appManager'
+
+interface ProfilePageConstructorParams {
+  pm: ProfileTimelineManager
+  pageMediator: Mediator
+  sm: StatusManager
+}
+
 
 export class ProfilePage extends Page implements IPage {
   private el: HTMLElement
@@ -15,17 +22,22 @@ export class ProfilePage extends Page implements IPage {
 
   private profileManager: ProfileTimelineManager
 
-  constructor(pm: ProfileTimelineManager, pageMediator: Mediator) {
-    super(pageMediator)
+  constructor(opts: ProfilePageConstructorParams) {
+    super(opts.pageMediator)
   //  this.pageMediator = pageMediator
-    this.profileManager = pm
+    this.profileManager = opts.pm
     this.profileId = ''
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses() })
     const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
 
     const timelineContainer = div('timeline-container', [])
-    this.statusesList = new LStatusesList(timelineContainer, [])
+    this.statusesList = new LStatusesList({
+      root: timelineContainer,
+      statuses: [],
+      sm: opts.sm
+    })
+
     timelineContainer.appendChild(loadMoreBtnContainer)
 
     this.el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])

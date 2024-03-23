@@ -191,6 +191,26 @@ body {
   gap: 12px;
 }
 
+.status__boost {
+  background-color: white;
+  cursor: pointer;
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99999px;
+}
+
+.status__boost:hover {
+  background-color: rgb(235, 238, 240);
+}
+
+.status__boost > * {
+  height: 24px;
+  width: 24px;
+}
+
 #timeline-root {
   display: flex;
   flex-direction: column;

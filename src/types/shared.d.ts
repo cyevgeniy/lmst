@@ -81,6 +81,11 @@ export interface Status {
    * Sensitive content?
    */
   sensitive: boolean
+
+  /**
+   * Is a status was boosted by the current user
+   */
+  reblogged?: boolean
 }
 
 export interface PaginationParams {

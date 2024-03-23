@@ -66,7 +66,7 @@ export class TimelineManager implements ITimelineManager {
     }
 
     return []
-    
+
   }
 
   public resetPagination() {
@@ -84,15 +84,20 @@ export class ProfileTimelineManager implements ITimelineManager {
   private maxId: string
   public statuses: Status[]
   public profileId: string
+  private user: User
 
-  constructor() {
+  constructor(opts: {
+    user: User
+  }) {
     this.maxId = ''
     this.profileId = ''
     this.statuses = []
+    this.user = opts.user
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    const statuses = await getStatuses(this.profileId, { max_id: this.maxId })
+    this.user.loadTokenFromStore()
+    const statuses = await getStatuses(this.profileId, { max_id: this.maxId }, this.user.accessToken())
     this.maxId = statuses[statuses.length - 1].id
 
     return statuses
@@ -114,6 +119,8 @@ export class ProfileTimelineManager implements ITimelineManager {
 
 export interface IStatusManager {
   postStatus(params: {statusText: string}): Promise<void>
+  boostStatus(id: Status['id']): Promise<void>
+  actionsEnabled(): boolean
 }
 
 export class StatusManager implements IStatusManager {
@@ -147,6 +154,31 @@ export class StatusManager implements IStatusManager {
       if (e instanceof Error)
         console.error(e.message)
     }
+  }
+
+  public async boostStatus(id: Status['id']): Promise<void> {
+    if (!this.user.isLoaded)
+      return
+
+    try {
+        const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}/reblog`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.user.accessToken()}`,
+          },
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Status was not boosted')
+    }
+    catch(e: unknown) {
+      if (e instanceof Error)
+        console.error(e.message)
+    }
+  }
+
+  public actionsEnabled() {
+    return this.user.isLoaded()
   }
 }
 

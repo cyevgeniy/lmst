@@ -14,14 +14,19 @@ export async function getAccount(id: string) : Promise<Account> {
   throw new Error('Cannot load account info')
 }
 
-export async function getStatuses(accountId: string, params: PaginationParams = {}) {
+export async function getStatuses(accountId: string, params: PaginationParams = {}, token: string = '') {
   const _server = `${appConfig.server}/api/v1/accounts/${accountId}/statuses`
 
   const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
   const queryParams = queryArr.join('&')
 
+  const headers = new Headers({
+    Authorization: `Bearer ${token}`,
+  })
+
   const resp = await fetch(_server + (queryParams.length > 0 ? `?${queryParams}` : '') , {
     method: 'GET',
+    headers,
   })
 
   if (resp.status === 200)

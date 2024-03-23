@@ -28,8 +28,11 @@ export class LStatusesList {
       console.log(this.sm.ownStatus(status.reblog ?? status))
 
       const statusComp = new LStatus({status, actionsEnabled})
-      statusComp.onBoost((s) => {
-        this.sm.boostStatus(s.id)
+      statusComp.onBoost((s, boosted) => {
+        if (boosted)
+          this.sm.boostStatus(s.id)
+        else
+          this.sm.unboostStatus(s.id)
       })
       statusComp.el.classList.add('statuses-list__status')
       this.el?.appendChild(statusComp.el)

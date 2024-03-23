@@ -120,6 +120,7 @@ export class ProfileTimelineManager implements ITimelineManager {
 export interface IStatusManager {
   postStatus(params: {statusText: string}): Promise<void>
   boostStatus(id: Status['id']): Promise<void>
+  unboostStatus(id: Status['id']): Promise<void>
   actionsEnabled(): boolean
   ownStatus(s: Status): boolean
 }
@@ -158,6 +159,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {
+    console.log('boost status: ', id)
     if (!this.user.isLoaded)
       return
 
@@ -177,6 +179,30 @@ export class StatusManager implements IStatusManager {
         console.error(e.message)
     }
   }
+
+  public async unboostStatus(id: Status['id']): Promise<void> {
+    console.log('unboost status: ', id)
+    if (!this.user.isLoaded)
+      return
+
+    try {
+        const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}/unreblog`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${this.user.accessToken()}`,
+          },
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Status was not unboosted')
+    }
+    catch(e: unknown) {
+      if (e instanceof Error)
+        console.error(e.message)
+    }
+  }
+
+
 
   public actionsEnabled() {
     return this.user.isLoaded()

@@ -3,11 +3,13 @@ import type { Status } from '../types/shared.d.ts'
 import { boost } from './Icons.ts'
 import { onClick } from '../utils/events'
 
+type OnBoostCallback = (boosted: boolean) => void
+
 export class LStatusButtons {
   // @ts-ignore
   private readonly status: Status
   private boostBtn: HTMLButtonElement
-  private boostCb: (() => void) | undefined
+  private boostCb: OnBoostCallback | undefined
   private actionsEnabled: boolean
   public el: HTMLElement
 
@@ -34,8 +36,11 @@ export class LStatusButtons {
 
   private addEventListeners() {
     onClick(this.boostBtn, () => {
-      if (this.actionsEnabled && this.boostCb) {
-        this.boostCb()
+      if (this.actionsEnabled) {
+
+        if (this.boostCb) {
+          this.boostCb(!this.status.reblogged)
+        }
 
         // Toggle boosted class
         if (!this.status.reblogged)
@@ -48,7 +53,7 @@ export class LStatusButtons {
     })
   }
 
-  public onBoostClick(fn: () => void) {
+  public onBoostClick(fn: OnBoostCallback) {
     this.boostCb = fn
   }
 }

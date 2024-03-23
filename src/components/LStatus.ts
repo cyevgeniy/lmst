@@ -6,6 +6,7 @@ import { LStatusButtons } from './LStatusButtons'
 import { onClick } from '../utils/events'
 
 export type StatusCallback = (s: Status) => void
+type StatusBoostCallback = (s: Status, boosted: boolean) => void
 
 export class LStatus {
   public el: HTMLElement
@@ -20,7 +21,7 @@ export class LStatus {
   private renderedStatus: Status
   private isReblogged: boolean
   private statusButtons: LStatusButtons
-  private _onBoost: StatusCallback | undefined = undefined
+  private _onBoost: StatusBoostCallback  | undefined = undefined
 
   constructor(opts: {
     status: Status,
@@ -41,8 +42,8 @@ export class LStatus {
 
     this.avatar = new LAvatar(this._status.account?.avatar)
     this.statusButtons = new LStatusButtons({status, actionsEnabled})
-    this.statusButtons.onBoostClick(() => {
-      this._onBoost && this._onBoost(this.renderedStatus)
+    this.statusButtons.onBoostClick((boosted: boolean) => {
+      this._onBoost && this._onBoost(this._status, boosted)
     })
     // xxx: Create Combobox component instead
     //  this.actions = h('select', null, [
@@ -139,7 +140,7 @@ export class LStatus {
     }) */
   }
 
-  public onBoost(fn: StatusCallback) {
+  public onBoost(fn: StatusBoostCallback) {
     this._onBoost = fn
   }
 }

@@ -206,6 +206,10 @@ body {
   background-color: rgb(235, 238, 240);
 }
 
+.status__boost--boosted {
+  color: red;
+}
+
 .status__boost > * {
   height: 24px;
   width: 24px;

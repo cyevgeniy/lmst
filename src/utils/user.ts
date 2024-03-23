@@ -177,6 +177,7 @@ export class User implements CredentialAccount{
     this.url = obj.url
     this.username = obj.username
     this.avatar = obj.avatar
+    this.acct = obj.acct
   }
 
   private loadCachedUser() {

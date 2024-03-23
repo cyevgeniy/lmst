@@ -15,9 +15,12 @@ export class LStatusButtons {
     status: Status
     actionsEnabled: boolean
   }) {
-    this.status = opts.status
+    this.status = opts.status.reblog ?? opts.status
     this.actionsEnabled = opts.actionsEnabled
-    this.boostBtn = h('button', {class: 'status__boost', innerHTML: boost})
+    const classes: string[] = ['status__boost']
+    if (this.status.reblogged)
+      classes.push('status__boost--boosted')
+    this.boostBtn = h('button', {class: classes, innerHTML: boost})
     this.el = h('div', {
       class: 'status__buttons' },
       [
@@ -31,7 +34,17 @@ export class LStatusButtons {
 
   private addEventListeners() {
     onClick(this.boostBtn, () => {
-     this.actionsEnabled && this.boostCb && this.boostCb()
+      if (this.actionsEnabled && this.boostCb) {
+        this.boostCb()
+
+        // Toggle boosted class
+        if (!this.status.reblogged)
+          this.boostBtn.classList.add('status__boost--boosted')
+        else
+          this.boostBtn.classList.remove('status__boost--boosted')
+
+        this.status.reblogged !== undefined && (this.status.reblogged = !this.status.reblogged)
+      }
     })
   }
 

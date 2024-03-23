@@ -121,6 +121,7 @@ export interface IStatusManager {
   postStatus(params: {statusText: string}): Promise<void>
   boostStatus(id: Status['id']): Promise<void>
   actionsEnabled(): boolean
+  ownStatus(s: Status): boolean
 }
 
 export class StatusManager implements IStatusManager {
@@ -179,6 +180,11 @@ export class StatusManager implements IStatusManager {
 
   public actionsEnabled() {
     return this.user.isLoaded()
+  }
+
+  public ownStatus(s: Status) {
+    console.log(this.user)
+    return this.user.acct === s.account.acct
   }
 }
 

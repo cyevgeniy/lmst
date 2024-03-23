@@ -23,8 +23,10 @@ export class LStatusesList {
   }
 
   addStatuses(statuses: Status[]) {
-    const actionsEnabled = this.sm.actionsEnabled()
     for (const status of statuses) {
+      const actionsEnabled = this.sm.actionsEnabled() && !this.sm.ownStatus(status.reblog ?? status)
+      console.log(this.sm.ownStatus(status.reblog ?? status))
+
       const statusComp = new LStatus({status, actionsEnabled})
       statusComp.onBoost((s) => {
         this.sm.boostStatus(s.id)

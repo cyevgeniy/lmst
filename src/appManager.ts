@@ -183,7 +183,6 @@ export class StatusManager implements IStatusManager {
   }
 
   public ownStatus(s: Status) {
-    console.log(this.user)
     return this.user.acct === s.account.acct
   }
 }

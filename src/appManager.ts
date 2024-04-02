@@ -31,6 +31,7 @@ export class TimelineManager implements ITimelineManager {
   private config: AppConfig
   public onClearCallback?: () => void
   public statuses: Status[]
+  public rendered: boolean
 
 
   constructor(opts: {
@@ -42,6 +43,7 @@ export class TimelineManager implements ITimelineManager {
     this.user = opts.user
     this.config = opts.config
     this.onClearCallback = undefined
+    this.rendered = false
   }
 
   public onClearStatuses(fn: () => void) {
@@ -248,6 +250,7 @@ export class GlobalPageMediator implements Mediator {
     if (msg === 'navigate:logout') {
       this.user.logOut()
       this.timelineManager.clearStatuses()
+      this.timelineManager.rendered = false
       this.goHome()
       return
     }

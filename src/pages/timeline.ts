@@ -17,14 +17,12 @@ export class TimelinePage extends Page implements IPage {
   private timelineContainer: HTMLElement
   private loadMoreBtn: LLoadMoreBtn
   private statusesList: LStatusesList
-  private rendered: boolean
 
   private timelineManager: TimelineManager
 
   constructor(opts: TimelineConstructorParams) {
     super(opts.pm)
 
-    this.rendered = false
     this.timelineManager = opts.tm
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadMore() })
@@ -58,14 +56,14 @@ export class TimelinePage extends Page implements IPage {
     // For the home timeline, we want to cache already loaded timeline,
     // so that when the user returns to it, he can scroll from
     // the previous position
-    !this.rendered && this.timelineManager.clearStatuses()
+    !this.timelineManager.rendered && this.timelineManager.clearStatuses()
     this.layout.middle.appendChild(this.el)
 
     // Load statuses only on initial mount
     // After mount, statuses are loaded only by 'Load more'
     // button click
-    !this.rendered && this.onParamsChange(params)
-    this.rendered = true
+    !this.timelineManager.rendered && this.onParamsChange(params)
+    this.timelineManager.rendered = true
   }
 
   /**

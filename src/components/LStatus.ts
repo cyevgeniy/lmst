@@ -5,7 +5,6 @@ import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
 import { onClick } from '../utils/events'
 
-export type StatusCallback = (s: Status) => void
 type StatusBoostCallback = (s: Status, boosted: boolean) => void
 
 export class LStatus {

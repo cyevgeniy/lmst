@@ -2,7 +2,7 @@ import { Page } from '../utils/page'
 import type { IPage } from '../utils/page'
 import { h } from '../utils/dom'
 import type { StatusManager } from '../appManager'
-import type { Mediator } from '../types/shared'
+import { App } from '../app'
 
 
 export class ComposePage extends Page implements IPage {
@@ -12,9 +12,9 @@ export class ComposePage extends Page implements IPage {
 
   private statusManager: StatusManager
 
-  constructor(statusManager: StatusManager, pm: Mediator) {
-    super(pm)
-    this.statusManager = statusManager
+  constructor(app: App) {
+    super(app.globalMediator)
+    this.statusManager = app.statusManager
 
     this.text = h('textarea', {attrs: {maxLength: '300', rows: '10', autofocus: 'true', placeholder: 'What\'s on your mind?'}, class: 'compose__text'}) as HTMLTextAreaElement
     this.btn = h('button', {class: 'compose__post'}, 'Post')

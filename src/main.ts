@@ -4,40 +4,34 @@ import { TimelinePage } from './pages/timeline'
 import { ProfilePage } from './pages/profile'
 import { OAuthPage } from './pages/oauth'
 import { ComposePage } from './pages/compose'
-import { useAppConfig } from "./appConfig"
+import { App } from './app'
 import { User } from "./utils/user"
-import { GlobalPageMediator, StatusManager, ProfileTimelineManager, TimelineManager } from './appManager'
+import { ProfileTimelineManager } from './appManager'
 
-const appConfig = useAppConfig()
 const user = new User()
-const statusManager = new StatusManager({user, config: appConfig})
-const timelineManager = new TimelineManager({user, config: appConfig})
-const globalPageMediator = new GlobalPageMediator({
-  user,
-  config: appConfig,
-  timelineManager,
-  router: lRouter,
-})
 
+const app = new App()
+const composePage = new ComposePage(app)
+const timelinePage = new TimelinePage(app)
 
-const composePage = new ComposePage(statusManager, globalPageMediator)
-const timelinePage = new TimelinePage({
-  tm: timelineManager,
-  pm: globalPageMediator,
-  sm: statusManager,
-})
-
-const oauthPage = new OAuthPage({ user, pm: globalPageMediator })
+const oauthPage = new OAuthPage(app)
 
 lRouter.on('/', () => timelinePage.mount())
+
 // For profiles, always create new instances of profilePages, so that they won't
 // share the same timeline cache
 // BTW, maybe we want to "reset" timeline manager state in mount() function instead
 // of creation of new instances each time
-lRouter.on('/profile/:id',
- (params) => (new ProfilePage({
-   pm: new ProfileTimelineManager({user}),
-  pageMediator: globalPageMediator,
-  sm: statusManager})).mount(params))
+function createProfilePage() {
+  const p = new ProfilePage({
+    pm: new ProfileTimelineManager({user}),
+    pageMediator: app.globalMediator,
+    sm: app.statusManager
+  })
+
+  return p
+}
+
+lRouter.on('/profile/:id', (params) => (createProfilePage()).mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
 lRouter.on('/compose', () => composePage.mount())

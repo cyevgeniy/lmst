@@ -73,3 +73,4 @@ export class LmstConfig implements AppConfig {
 export function useAppConfig() {
   return new LmstConfig()
 }
+

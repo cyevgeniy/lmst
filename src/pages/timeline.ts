@@ -3,14 +3,8 @@ import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { div, h } from '../utils/dom'
 import { Page } from '../utils/page.ts'
 import type { IPage } from '../utils/page'
-import type { StatusManager, TimelineManager } from '../appManager.ts'
-import type { Mediator } from '../types/shared'
-
-interface TimelineConstructorParams {
-  tm: TimelineManager
-  pm: Mediator
-  sm: StatusManager
-}
+import type { TimelineManager } from '../appManager.ts'
+import { App } from '../app'
 
 export class TimelinePage extends Page implements IPage {
   private el: HTMLElement
@@ -20,10 +14,10 @@ export class TimelinePage extends Page implements IPage {
 
   private timelineManager: TimelineManager
 
-  constructor(opts: TimelineConstructorParams) {
-    super(opts.pm)
+  constructor(app: App) {
+    super(app.globalMediator)
 
-    this.timelineManager = opts.tm
+    this.timelineManager = app.timelineManager
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadMore() })
     const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
@@ -32,7 +26,7 @@ export class TimelinePage extends Page implements IPage {
     this.statusesList = new LStatusesList({
       root:statusesListEl,
       statuses:[],
-      sm: opts.sm
+      sm: app.statusManager
     })
 
     this.timelineManager.onClearStatuses(() => {

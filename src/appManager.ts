@@ -155,8 +155,10 @@ export class StatusManager implements IStatusManager {
         throw new Error('Status was not posted')
 
     } catch(e: unknown) {
-      if (e instanceof Error)
+      if (e instanceof Error) {
         console.error(e.message)
+        throw e
+      }
     }
   }
 

@@ -16,7 +16,16 @@ export class ComposePage extends Page implements IPage {
     super(app.globalMediator)
     this.statusManager = app.statusManager
 
-    this.text = h('textarea', {attrs: {maxLength: '300', rows: '10', autofocus: 'true', placeholder: 'What\'s on your mind?'}, class: 'compose__text'}) as HTMLTextAreaElement
+    this.text = h('textarea', {
+      attrs: {
+        maxLength: '300',
+        rows: '10',
+        autofocus: 'true',
+        placeholder: 'What\'s on your mind?'
+      },
+      class: 'compose__text'
+    }) as HTMLTextAreaElement
+
     this.btn = h('button', {class: 'compose__post'}, 'Post')
 
     this.btn.addEventListener('click', async () => {
@@ -26,7 +35,7 @@ export class ComposePage extends Page implements IPage {
       } catch (e: unknown) {
         // show error to the user
         if (e instanceof Error)
-          console.error(e.message)
+          alert(e.message)
       }
     })
 

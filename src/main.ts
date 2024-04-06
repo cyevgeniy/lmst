@@ -5,10 +5,7 @@ import { ProfilePage } from './pages/profile'
 import { OAuthPage } from './pages/oauth'
 import { ComposePage } from './pages/compose'
 import { App } from './app'
-import { User } from "./utils/user"
 import { ProfileTimelineManager } from './appManager'
-
-const user = new User()
 
 const app = new App()
 const composePage = new ComposePage(app)
@@ -24,7 +21,7 @@ lRouter.on('/', () => timelinePage.mount())
 // of creation of new instances each time
 function createProfilePage() {
   const p = new ProfilePage({
-    pm: new ProfileTimelineManager({user}),
+    pm: new ProfileTimelineManager({user: app.user}),
     pageMediator: app.globalMediator,
     sm: app.statusManager
   })

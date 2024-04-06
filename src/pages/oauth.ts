@@ -1,14 +1,14 @@
 import { Page } from "../utils/page";
 import type { IPage } from "../utils/page";
 import { User } from '../utils/user'
-import { App } from '../app'
+import { AppManager } from '../appManager'
 
 export class OAuthPage extends Page implements IPage {
   private readonly user: User
 
-  constructor(app: App) {
-    super(app.globalMediator)
-    this.user = app.user
+  constructor(appManager: AppManager) {
+    super(appManager.globalMediator)
+    this.user = appManager.user
   }
 
   public async mount() {

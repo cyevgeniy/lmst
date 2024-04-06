@@ -1,8 +1,7 @@
 import { Page } from '../utils/page'
 import type { IPage } from '../utils/page'
 import { h } from '../utils/dom'
-import type { StatusManager } from '../appManager'
-import { App } from '../app'
+import type { StatusManager, AppManager } from '../appManager'
 
 
 export class ComposePage extends Page implements IPage {
@@ -12,9 +11,9 @@ export class ComposePage extends Page implements IPage {
 
   private statusManager: StatusManager
 
-  constructor(app: App) {
-    super(app.globalMediator)
-    this.statusManager = app.statusManager
+  constructor(appManager: AppManager) {
+    super(appManager.globalMediator)
+    this.statusManager = appManager.statusManager
 
     this.text = h('textarea', {
       attrs: {

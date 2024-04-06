@@ -1,9 +1,9 @@
 import { Token } from "../api/app"
 import {useAppConfig} from "../appConfig"
 import { ApiResult, fail, success } from "./api"
-import { registerApp } from "./app"
 import { searchParams } from "./url"
 import { store } from "../store"
+import { App } from "../app"
 
 export interface CredentialAccount {
   id: string
@@ -25,6 +25,7 @@ export class User implements CredentialAccount{
   private token: Token | undefined
   private onUserChangeCallbacks: UserChangeCallback[] = []
   private appConfig: ReturnType<typeof useAppConfig>
+  private app: App
 
   public id: string = ''
   public username: string = ''
@@ -34,9 +35,9 @@ export class User implements CredentialAccount{
   public note: string = ''
   public avatar: string = ''
 
-
   constructor() {
     this.appConfig = useAppConfig()
+    this.app = new App()
 
     if (User.instance)
       return User.instance
@@ -53,7 +54,7 @@ export class User implements CredentialAccount{
   }
 
   async authorize() {
-    const res = await registerApp()
+    const res = await this.app.registerApp()
     if (res.ok) {
       // TODO: verify credentials and handle errors?
       //await verifyCredentials()
@@ -89,7 +90,7 @@ export class User implements CredentialAccount{
     if (this.token)
       return success(this.token)
 
-    const app = await registerApp()
+    const app = await this.app.registerApp()
 
     if (!app.ok) {
       return app

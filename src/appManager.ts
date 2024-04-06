@@ -5,6 +5,8 @@ import { User } from './utils/user'
 import { getAccount, getStatuses } from './api/account'
 import type { Router } from './router'
 import type { Mediator } from './types/shared'
+import { useAppConfig } from './appConfig'
+import { lRouter } from './router'
 
 export interface ITimelineManager {
   /**
@@ -267,5 +269,26 @@ export class GlobalPageMediator implements Mediator {
         await this.user.authorize()
       }
     }
+  }
+}
+
+export class AppManager {
+  private config: AppConfig
+  public user: User
+  public statusManager: StatusManager
+  public timelineManager: TimelineManager
+  public globalMediator: GlobalPageMediator
+
+  constructor() {
+    this.user = new User()
+    this.config = useAppConfig()
+    this.statusManager = new StatusManager({ user: this.user, config: this.config })
+    this.timelineManager = new TimelineManager({user: this.user, config: this.config })
+    this.globalMediator = new GlobalPageMediator({
+      user: this.user,
+      config: this.config,
+      timelineManager: this.timelineManager,
+      router: lRouter,
+    })
   }
 }

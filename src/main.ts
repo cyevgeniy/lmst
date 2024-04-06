@@ -4,14 +4,13 @@ import { TimelinePage } from './pages/timeline'
 import { ProfilePage } from './pages/profile'
 import { OAuthPage } from './pages/oauth'
 import { ComposePage } from './pages/compose'
-import { App } from './app'
-import { ProfileTimelineManager } from './appManager'
+import { ProfileTimelineManager, AppManager } from './appManager'
 
-const app = new App()
-const composePage = new ComposePage(app)
-const timelinePage = new TimelinePage(app)
+const appManager = new AppManager()
+const composePage = new ComposePage(appManager)
+const timelinePage = new TimelinePage(appManager)
 
-const oauthPage = new OAuthPage(app)
+const oauthPage = new OAuthPage(appManager)
 
 lRouter.on('/', () => timelinePage.mount())
 
@@ -21,9 +20,9 @@ lRouter.on('/', () => timelinePage.mount())
 // of creation of new instances each time
 function createProfilePage() {
   const p = new ProfilePage({
-    pm: new ProfileTimelineManager({user: app.user}),
-    pageMediator: app.globalMediator,
-    sm: app.statusManager
+    pm: new ProfileTimelineManager({user: appManager.user}),
+    pageMediator: appManager.globalMediator,
+    sm: appManager.statusManager
   })
 
   return p

@@ -60,22 +60,34 @@ export class LStatus {
 
     this.sensitiveBtn = button('', 'Show sensitive content')
 
-    this.sensitiveEl = this._status.sensitive ? h('div', {class: 'show-sensitive-content'}, [this.sensitiveBtn]) : undefined
+    this.sensitiveEl = this._status.sensitive
+      ? h('div', {class: 'show-sensitive-content'}, [this.sensitiveBtn])
+      : undefined
 
-    this.avatarLink = h('a', {attrs: {href: `/profile/${this._status.account.id}`}}, [this.avatar.el])
+    this.avatarLink = h('a', {
+      attrs: {
+        href: `/profile/${this._status.account.id}`
+      }
+    }, [this.avatar.el])
 
     this.el = div('status', [
-      this.isReblogged ? div('status--boosted', [span('', `${dispName} boosted: `)]) : undefined,
+      this.isReblogged
+        ? div('status--boosted', [span('', `${dispName} boosted: `)]) 
+        : undefined,
       div('status__header', [
         this.avatarLink,
         div('status__username', [
           span('', `${this._status.account?.display_name || ''}`),
-          a('username__acc', `${this._status.account?.url}`, `${this._status.account?.acct || ''}`),
+          this.linkToAccount(),
         ]),
-        span('status__create-date', `${fmtDate(this.renderedStatus.created_at) ?? ''}`),
+        span('status__create-date', `${this.getCreateDate()}`),
       ]),
-      this._status.sensitive ? undefined : h('div', { innerHTML: this._status.content }),
-      this._status.sensitive ? this.sensitiveEl : this.attachments,
+      this._status.sensitive 
+        ? undefined 
+        : h('div', { innerHTML: this._status.content }),
+      this._status.sensitive
+        ? this.sensitiveEl 
+        : this.attachments,
       this.statusButtons.el,
       //this.actions,
     ])
@@ -83,15 +95,31 @@ export class LStatus {
     this.addEventListeners()
   }
 
+  private linkToAccount() {
+    return a(
+      'username__acc',
+      this._status.account?.url,
+      this._status.account?.acct || ''
+    )
+  }
+
+  private getCreateDate() {
+    return fmtDate(this.renderedStatus.created_at) ?? ''
+  }
+
   private getAttachmentsEl(): HTMLElement | undefined {
     const mediaCnt = this._status.media_attachments.length
-    const contClass = mediaCnt > 1 ? 'status-attachment-container--2col' : 'status-attachment-container'
-    const result = mediaCnt > 0 ? div(contClass) : undefined
+    const contClass = mediaCnt > 1 
+      ? 'status-attachment-container--2col' 
+      : 'status-attachment-container'
+
+    const result = mediaCnt > 0 
+      ? div(contClass) 
+      : undefined
 
     result && this._status.media_attachments.forEach(attachment => {
       const node = this.attachmentNode(attachment)
-      if (node)
-        result!.appendChild(node)
+      node && result.appendChild(node)
     })
 
     return result
@@ -100,10 +128,19 @@ export class LStatus {
 
   private attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
     if (attachment.type === 'image')
-      return h('a', {attrs: {href: attachment.preview_url, target: '_blank'}, class: 'status-attachment--link' }, [h('img', {
+      return h('a', {
+        attrs: {
+          href: attachment.preview_url,
+          target: '_blank'
+        },
+        class: 'status-attachment--link' 
+      },
+      [
+        h('img', {
         class: 'status-attachment--image',
         attrs: { src: attachment.preview_url }
-      })])
+        })
+      ])
 
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {

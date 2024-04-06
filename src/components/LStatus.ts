@@ -84,7 +84,7 @@ export class LStatus {
       ]),
       this._status.sensitive 
         ? undefined 
-        : h('div', { innerHTML: this._status.content }),
+        : h('div', {class: 'status__content', innerHTML: this._status.content }),
       this._status.sensitive
         ? this.sensitiveEl 
         : this.attachments,

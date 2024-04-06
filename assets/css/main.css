@@ -185,6 +185,10 @@ body {
   width: 100%;
 }
 
+.status__content {
+  overflow: hidden;
+}
+
 .status__buttons {
   margin-top: 12px;
   display: flex;

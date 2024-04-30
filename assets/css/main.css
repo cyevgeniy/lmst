@@ -134,11 +134,20 @@ body {
   box-sizing: border-box;
   display: block;
   resize: vertical;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  border: 1px solid rgb(235, 238, 240);
+  outline: none !important;
+}
+
+.compose__text:focus {
+  border-color: darkgray;
 }
 
 .compose__post {
   margin-top: 16px;
   display: block;
+  margin-left: auto;
 }
 
 .statuses-list {

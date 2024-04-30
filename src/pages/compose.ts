@@ -7,7 +7,7 @@ import type { StatusManager, AppManager } from '../appManager'
 export class ComposePage extends Page implements IPage {
   private el: HTMLElement
   private text: HTMLTextAreaElement
-  private btn: HTMLElement
+  private btn: HTMLButtonElement
 
   private statusManager: StatusManager
 
@@ -25,7 +25,7 @@ export class ComposePage extends Page implements IPage {
       class: 'compose__text'
     }) as HTMLTextAreaElement
 
-    this.btn = h('button', {class: 'compose__post'}, 'Post')
+    this.btn = h('button', {class: ['compose__post', 'button'], attrs: {disabled: 'true'}}, 'Post') as HTMLButtonElement
 
     this.btn.addEventListener('click', async () => {
       try {
@@ -38,7 +38,18 @@ export class ComposePage extends Page implements IPage {
       }
     })
 
-    this.el = h('div', null, [this.text, this.btn])
+    this.text.addEventListener('input', (e) => {
+      const area = e.target as HTMLTextAreaElement
+      this.btn.disabled = area.value.length === 0
+    })
+
+    this.el = h(
+      'div',
+      null,
+      [
+        this.text,
+        h('div', null, [this.btn]),
+      ])
   }
 
   public mount() {

@@ -2,12 +2,13 @@ import { Page } from '../utils/page'
 import type { IPage } from '../utils/page'
 import { h } from '../utils/dom'
 import type { StatusManager, AppManager } from '../appManager'
+import { LButton } from '../components/LButton'
 
 
 export class ComposePage extends Page implements IPage {
   private el: HTMLElement
   private text: HTMLTextAreaElement
-  private btn: HTMLButtonElement
+  private btn: LButton
 
   private statusManager: StatusManager
 
@@ -25,9 +26,11 @@ export class ComposePage extends Page implements IPage {
       class: 'compose__text'
     }) as HTMLTextAreaElement
 
-    this.btn = h('button', {class: ['compose__post', 'button'], attrs: {disabled: 'true'}}, 'Post') as HTMLButtonElement
+    this.btn = new LButton('Post', ['compose__button'])
+    // By default the text in the 
+    this.setBtnStatus(this.text)
 
-    this.btn.addEventListener('click', async () => {
+    this.btn.onClick = async () => {
       try {
         await this.statusManager.postStatus({statusText: this.text.value})
         this.text.value = ''
@@ -36,11 +39,11 @@ export class ComposePage extends Page implements IPage {
         if (e instanceof Error)
           alert(e.message)
       }
-    })
+    }
 
     this.text.addEventListener('input', (e) => {
       const area = e.target as HTMLTextAreaElement
-      this.btn.disabled = area.value.length === 0
+      this.setBtnStatus(area)
     })
 
     this.el = h(
@@ -48,8 +51,12 @@ export class ComposePage extends Page implements IPage {
       null,
       [
         this.text,
-        h('div', null, [this.btn]),
+        h('div', { class: 'compose__post'}, [this.btn.el]),
       ])
+  }
+
+  private setBtnStatus(area: HTMLTextAreaElement) {
+    this.btn.disabled = area.value.length === 0
   }
 
   public mount() {

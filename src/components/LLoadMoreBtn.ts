@@ -1,8 +1,8 @@
-import { button } from '../utils/dom'
-import { onClick } from '../utils/events'
+import { LButton } from './LButton'
 
 export class LLoadMoreBtn {
-  public el: HTMLButtonElement
+  private btn: LButton
+  //public el: HTMLButtonElement
   private _loading: boolean
   private text: string
   private cb?: (() => void)
@@ -11,11 +11,15 @@ export class LLoadMoreBtn {
     text: string
     onClick?: () => void
   }) {
-    this.el = button('timeline__load-more', 'Load more')
+    this.btn = new LButton('Load more', ['timeline__load-more'])
     this._loading = false
     this.text = opts.text
     this.cb = opts.onClick
-    onClick(this.el, () => this._onClick())
+    this.btn.onClick =  () => this._onClick()
+  }
+
+  get el() {
+    return this.btn.el
   }
 
   set loading(v: boolean) {
@@ -23,13 +27,12 @@ export class LLoadMoreBtn {
       return
 
     this._loading = v
+    this.btn.disabled = v
 
     if (v) {
-      this.el.classList.add('button--disabled')
-      this.el.innerText = 'Loading...'
+      this.btn.text = 'Loading...'
     } else {
-      this.el.classList.remove('button--disabled')
-      this.el.innerText = this.text
+      this.btn.text = this.text
     }
   }
 

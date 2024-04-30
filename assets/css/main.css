@@ -146,7 +146,10 @@ body {
 
 .compose__post {
   margin-top: 16px;
-  display: block;
+  display: flex;
+}
+
+.compose__button {
   margin-left: auto;
 }
 
@@ -339,4 +342,5 @@ body {
 
 .button--disabled {
   background-color: #f9f9f9;
+  cursor: not-allowed;
 }

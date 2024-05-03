@@ -3,16 +3,16 @@ import { h } from "../utils/dom"
 const DISABLED_CLASS = 'button--disabled'
 
 export class LButton {
-	public readonly el: HTMLButtonElement
-	private _onClick: () => void
+  public readonly el: HTMLButtonElement
+  private _onClick: () => void
 
-	constructor(text: string, className: string[] = []) {
+  constructor(text: string, className: string[] = []) {
     this._onClick = () => {}
 
     this.el = h('button', {class: ['button', ...className]}, text) as HTMLButtonElement
     this.addClickListener()
 
-	}
+  }
 
   set text(v: string) {
     this.el.innerText = v
@@ -24,8 +24,6 @@ export class LButton {
 
   set disabled(v: boolean) {
     this.el.disabled = v
-
-    console.log('set disabled status = ', v)
 
     if (v)
       this.el.classList.add(DISABLED_CLASS)

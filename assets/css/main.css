@@ -129,6 +129,18 @@ body {
   text-decoration: underline;
 }
 
+.compose__wrapper {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media screen and (min-width: 1240px) {
+  .compose__wrapper {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 .compose__text {
   width: 100%;
   box-sizing: border-box;
@@ -150,7 +162,14 @@ body {
 }
 
 .compose__button {
-  margin-left: auto;
+  width: 100%;
+}
+
+@media screen and (min-width: 1240px) {
+  .compose__button {
+    width: auto;
+    margin-left: auto;
+  }
 }
 
 .statuses-list {

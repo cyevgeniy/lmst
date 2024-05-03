@@ -20,7 +20,6 @@ export class ComposePage extends Page implements IPage {
       attrs: {
         maxLength: '300',
         rows: '10',
-        autofocus: 'true',
         placeholder: 'What\'s on your mind?'
       },
       class: 'compose__text'
@@ -48,7 +47,7 @@ export class ComposePage extends Page implements IPage {
 
     this.el = h(
       'div',
-      null,
+      { class: 'compose__wrapper' },
       [
         this.text,
         h('div', { class: 'compose__post'}, [this.btn.el]),
@@ -62,5 +61,6 @@ export class ComposePage extends Page implements IPage {
   public mount() {
     super.mount()
     this.layout.middle.appendChild(this.el)
+    this.text.focus()
   }
 }

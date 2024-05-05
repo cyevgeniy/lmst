@@ -66,13 +66,13 @@ export class LStatus {
 
     this.avatarLink = h('a', {
       attrs: {
-        href: `/profile/${this._status.account.id}`
+        href: `/profile/${this._status.account.acct}/`
       }
     }, [this.avatar.el])
 
     this.el = div('status', [
       this.isReblogged
-        ? div('status--boosted', [span('', `${dispName} boosted: `)]) 
+        ? div('status--boosted', [span('', `${dispName} boosted: `)])
         : undefined,
       div('status__header', [
         this.avatarLink,
@@ -82,11 +82,11 @@ export class LStatus {
         ]),
         span('status__create-date', `${this.getCreateDate()}`),
       ]),
-      this._status.sensitive 
-        ? undefined 
-        : h('div', {class: 'status__content', innerHTML: this._status.content }),
       this._status.sensitive
-        ? this.sensitiveEl 
+        ? undefined
+        : h('div', {class: 'status__content', innerHTML: this.parseContent(this._status.content) }),
+      this._status.sensitive
+        ? this.sensitiveEl
         : this.attachments,
       this.statusButtons.el,
       //this.actions,
@@ -94,6 +94,55 @@ export class LStatus {
 
     this.addEventListeners()
   }
+
+  /**
+   * Parse a string with html content of a status, and
+   * replaces all links to profiles with links to our own
+   * url which performs accout lookup
+   */
+  private parseContent(s: string) {
+
+    // First thing to do is to check for usernames
+    // in a string.
+    // If we didn't found any, return original string
+    // without wasting time on parsing
+    if (s.search(/u-url/g) === -1)
+       return s
+
+
+    const parser = new DOMParser()
+
+    const d = parser.parseFromString(s, 'text/html')
+
+    const links = d.querySelectorAll('a.u-url') as NodeListOf<HTMLAnchorElement>
+
+    for (const l of links) {
+      const wf = this.genWebFinger(l.href)
+      const profileLink = !wf ? '' : `/profile/${wf}/`
+      l.href = profileLink ?? l.href
+      l.target = '_self'
+    }
+
+    return d.body.innerHTML
+  }
+
+  /**
+   * Generates a webfinger from a link to an account
+   *
+   * For example, if a link to the account is 'https://mstdn.social/@username',
+   * the webfinger is a string 'username@mstdn.social
+   */
+  private genWebFinger(l: string): string {
+    const reg = /https:\/\/(?<server>.*)\/\@(?<user>\w+)/g
+
+    const arr = Array.from(l.matchAll(reg))
+
+    const { user = '', server = '' } = arr[0].groups ?? {}
+
+    return user && server ? `${user}@${server}` : ''
+  }
+
+
 
   private linkToAccount() {
     return a(
@@ -109,12 +158,12 @@ export class LStatus {
 
   private getAttachmentsEl(): HTMLElement | undefined {
     const mediaCnt = this._status.media_attachments.length
-    const contClass = mediaCnt > 1 
-      ? 'status-attachment-container--2col' 
+    const contClass = mediaCnt > 1
+      ? 'status-attachment-container--2col'
       : 'status-attachment-container'
 
-    const result = mediaCnt > 0 
-      ? div(contClass) 
+    const result = mediaCnt > 0
+      ? div(contClass)
       : undefined
 
     result && this._status.media_attachments.forEach(attachment => {
@@ -133,7 +182,7 @@ export class LStatus {
           href: attachment.preview_url,
           target: '_blank'
         },
-        class: 'status-attachment--link' 
+        class: 'status-attachment--link'
       },
       [
         h('img', {
@@ -157,7 +206,7 @@ export class LStatus {
   private addEventListeners() {
     onClick(this.avatarLink, (e: MouseEvent) => {
       e.preventDefault()
-      lRouter.navigateTo(`/profile/${this._status.account.id}`)
+      lRouter.navigateTo(`/profile/${this._status.account.acct}/`)
     })
 
 

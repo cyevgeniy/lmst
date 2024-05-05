@@ -67,9 +67,15 @@ export class ProfilePage extends Page implements IPage {
   }
 
   public onParamsChange(params?: Record<string, string>) {
-    this.profileId = params?.id ?? ''
-    this.profileManager.profileId = this.profileId
-    this.profileManager.getAccount().then(resp => this.profileHeaderComponent.update(resp))
-    this.loadStatuses()
+    const idOrWebfinger = params?.id ?? ''
+
+    this.profileManager.profileWebfinger = idOrWebfinger
+
+    this.profileManager.getAccount()
+      .then(resp => {
+        this.profileId = resp.id
+        this.profileHeaderComponent.update(resp)
+      })
+      .then(() => this.loadStatuses())
   }
 }

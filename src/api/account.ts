@@ -3,6 +3,18 @@ import type { Account, PaginationParams } from '../types/shared.d'
 
 const appConfig = useAppConfig()
 
+export async function lookupAccount(webfinger: string): Promise<Account> {
+  const url = `${appConfig.server}/api/v1/accounts/lookup/?acct=${webfinger}`
+
+  const resp = await fetch(url, { method: 'GET' })
+
+  if (resp.status === 200)
+    return resp.json()
+
+  throw new Error('Cannot load account info')
+}
+
+
 export async function getAccount(id: string) : Promise<Account> {
   const url = `${appConfig.server}/api/v1/accounts/${id}`
 

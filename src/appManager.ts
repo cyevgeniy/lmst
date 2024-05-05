@@ -2,7 +2,7 @@ import { getPublicTimeline, getHomeTimeline } from './api/timeline'
 import type { Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { User } from './utils/user'
-import { getAccount, getStatuses } from './api/account'
+import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
 import type { Mediator } from './types/shared'
 import { useAppConfig } from './appConfig'
@@ -87,7 +87,8 @@ export class TimelineManager implements ITimelineManager {
 export class ProfileTimelineManager implements ITimelineManager {
   private maxId: string
   public statuses: Status[]
-  public profileId: string
+  private profileId: string
+  public profileWebfinger: string
   private user: User
 
   constructor(opts: {
@@ -95,6 +96,7 @@ export class ProfileTimelineManager implements ITimelineManager {
   }) {
     this.maxId = ''
     this.profileId = ''
+    this.profileWebfinger = ''
     this.statuses = []
     this.user = opts.user
   }
@@ -117,6 +119,14 @@ export class ProfileTimelineManager implements ITimelineManager {
   }
 
   public async getAccount() {
+    // Check whether profileId is a string
+    if (!this.profileId && this.profileWebfinger) {
+      const acc = await lookupAccount(this.profileWebfinger)
+      this.profileId = acc.id
+
+      return acc
+    }
+
     return await getAccount(this.profileId)
   }
 }

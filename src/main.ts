@@ -28,6 +28,6 @@ function createProfilePage() {
   return p
 }
 
-lRouter.on('/profile/:id', (params) => (createProfilePage()).mount(params))
+lRouter.on('/profile/:webfinger', (params) => (createProfilePage()).mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
 lRouter.on('/compose', () => composePage.mount())

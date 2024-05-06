@@ -67,9 +67,9 @@ export class ProfilePage extends Page implements IPage {
   }
 
   public onParamsChange(params?: Record<string, string>) {
-    const idOrWebfinger = params?.id ?? ''
+    const webfinger = params?.webfinger ?? ''
 
-    this.profileManager.profileWebfinger = idOrWebfinger
+    this.profileManager.profileWebfinger = webfinger
 
     this.profileManager.getAccount()
       .then(resp => {

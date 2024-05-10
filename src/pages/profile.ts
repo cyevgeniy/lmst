@@ -76,18 +76,22 @@ export class ProfilePage extends Page implements IPage {
     )
   }
 
-
-  public onParamsChange(params?: Record<string, string>) {
+  public async onParamsChange(params?: Record<string, string>) {
     const webfinger = params?.webfinger ?? ''
 
     this.profileManager.profileWebfinger = webfinger
 
-    this.profileManager.getAccount()
-      .then(resp => {
-        this.profileId = resp.id
-        this.profileHeaderComponent.update(resp)
-      })
-      .then(() => this.loadStatuses())
-      .catch(() => this.createNotFound(webfinger))
+
+    try {
+      const resp = await this.profileManager.getAccount()
+      this.profileId = resp.id
+      this.profileHeaderComponent.update(resp)
+    }
+    catch(e: unknown) {
+      this.createNotFound(webfinger)
+      console.error(e)
+    }
+
+    await this.loadStatuses()
   }
 }

@@ -66,6 +66,17 @@ export class ProfilePage extends Page implements IPage {
     this.statusesList.addStatuses(statuses)
   }
 
+  // Creates a 'not found' message
+  private createNotFound(webfinger: string) {
+    this.el.replaceChildren(
+      h('div', {
+        class: 'profile__notfound'},
+        `Account ${webfinger} was not found`
+       )
+    )
+  }
+
+
   public onParamsChange(params?: Record<string, string>) {
     const webfinger = params?.webfinger ?? ''
 
@@ -77,5 +88,6 @@ export class ProfilePage extends Page implements IPage {
         this.profileHeaderComponent.update(resp)
       })
       .then(() => this.loadStatuses())
+      .catch(() => this.createNotFound(webfinger))
   }
 }

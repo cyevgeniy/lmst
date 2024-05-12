@@ -47,3 +47,20 @@ export async function getHomeTimeline(
 
   return fail('Can not load home timeline')
 }
+
+export interface GetStatusesByTagOptions {
+  server: string
+  params: PaginationParams
+}
+
+export async function getTagTimeline(tag: string, opts: GetStatusesByTagOptions = {params: {}, server: '' }) {
+  const prm = getQueryParams(opts.params)
+  const url = `${opts.server}/api/v1/timelines/tag/${tag}${prm}`
+
+  const resp = await fetch(url, { method: 'GET' })
+
+  if (resp.status === 200)
+    return success<Status[]>(await resp.json())
+
+  return fail('Statuses was not loaded')
+}

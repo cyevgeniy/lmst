@@ -31,7 +31,7 @@ export class App {
 
     if (tmp)
       this.appInfo = JSON.parse(tmp) as Application
-    
+
     if (this.appInfo)
       return success({ appInfo: this.appInfo })
 

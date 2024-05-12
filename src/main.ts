@@ -2,6 +2,7 @@ import '../assets/css/main.css'
 import { lRouter } from './router'
 import { TimelinePage } from './pages/timeline'
 import { ProfilePage } from './pages/profile'
+import { TagsPage } from './pages/tags'
 import { OAuthPage } from './pages/oauth'
 import { ComposePage } from './pages/compose'
 import { ProfileTimelineManager, AppManager } from './appManager'
@@ -9,6 +10,7 @@ import { ProfileTimelineManager, AppManager } from './appManager'
 const appManager = new AppManager()
 const composePage = new ComposePage(appManager)
 const timelinePage = new TimelinePage(appManager)
+const tagsPage = new TagsPage(appManager)
 
 const oauthPage = new OAuthPage(appManager)
 
@@ -31,3 +33,4 @@ function createProfilePage() {
 lRouter.on('/profile/:webfinger', (params) => (createProfilePage()).mount(params))
 lRouter.on('/oauth', () => oauthPage.mount())
 lRouter.on('/compose', () => composePage.mount())
+lRouter.on('/tags/:tag', (params) => tagsPage.mount(params))

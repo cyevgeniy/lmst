@@ -1,4 +1,4 @@
-import { getPublicTimeline, getHomeTimeline } from './api/timeline'
+import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
 import type { Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { User } from './utils/user'
@@ -129,6 +129,54 @@ export class ProfileTimelineManager implements ITimelineManager {
 
     return await getAccount(this.profileId)
   }
+}
+
+export class TagsTimelineManager implements ITimelineManager {
+  private maxId: string
+  public statuses: Status[]
+  /**
+   * Stores last loaded statuses list
+   */
+  private _lastChunk: Status[]
+  private appConfig: AppConfig
+  private keepStatuses: boolean
+  public tag: string
+
+  constructor(opts: {
+    config: AppConfig
+    keepStatuses: boolean
+  }) {
+    this.maxId = ''
+    this.keepStatuses = opts.keepStatuses
+    this.tag = ''
+    this._lastChunk = []
+    this.statuses = []
+    this.appConfig = opts.config
+  }
+
+  get lastChunk() {
+    return this._lastChunk
+  }
+
+  public async loadStatuses() {
+    const resp = await getTagTimeline(this.tag, {server: this.appConfig.server, params: {max_id: this.maxId}})
+
+    if (resp.ok) {
+      const statuses = resp.value
+      this._lastChunk = statuses
+      this.keepStatuses && this.statuses.push(...statuses)
+      // We may get an empty list of statuses, so check for undefined
+      this.maxId = statuses[statuses.length - 1]?.id ?? ''
+    } else {
+      this._lastChunk = []
+    }
+  }
+
+  public clearStatuses() {
+    this.statuses = []
+    this._lastChunk = []
+  }
+
 }
 
 export interface IStatusManager {
@@ -288,12 +336,14 @@ export class AppManager {
   public statusManager: StatusManager
   public timelineManager: TimelineManager
   public globalMediator: GlobalPageMediator
+  public tagsManager: TagsTimelineManager
 
   constructor() {
     this.user = new User()
     this.config = useAppConfig()
     this.statusManager = new StatusManager({ user: this.user, config: this.config })
     this.timelineManager = new TimelineManager({user: this.user, config: this.config })
+    this.tagsManager = new TagsTimelineManager({config: this.config, keepStatuses: false})
     this.globalMediator = new GlobalPageMediator({
       user: this.user,
       config: this.config,

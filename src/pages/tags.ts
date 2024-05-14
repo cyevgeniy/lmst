@@ -8,12 +8,15 @@ export class TagsPage extends Page implements IPage {
   private el: HTMLElement
   private statusesList: LStatusesList
   private loadMoreBtn: LLoadMoreBtn
+  private tagHeader: HTMLHeadElement
 
   private tagsManager: TagsTimelineManager
 
   constructor(appManager: AppManager) {
     super(appManager.globalMediator)
     this.tagsManager = appManager.tagsManager
+    this.tagHeader = h('h2', null, '')
+
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses(this.tagsManager.tag) })
     const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
@@ -27,7 +30,8 @@ export class TagsPage extends Page implements IPage {
 
     timelineContainer.appendChild(loadMoreBtnContainer)
 
-    this.el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
+    this.el = h('div', {attrs: {id: 'timeline-root'}})
+    this.el.appendChild(this.tagHeader)
     this.el.appendChild(timelineContainer)
     this.el.appendChild(loadMoreBtnContainer)
   }
@@ -51,8 +55,10 @@ export class TagsPage extends Page implements IPage {
     const tag = params?.tag ?? ''
 
     this.tagsManager.tag = tag
+    this.tagHeader.innerText = `#${tag}`
 
     this.tagsManager.clearStatuses()
+
     await this.loadStatuses(tag)
   }
 }

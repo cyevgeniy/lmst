@@ -84,7 +84,7 @@ export class LStatus {
       ]),
       this._status.sensitive
         ? undefined
-        : h('div', {class: 'status__content', innerHTML: this.parseContent(this._status.content) }),
+        : h('div', {class: 'status__content', innerHTML: this.parseContent(this._status.content)} ),
       this._status.sensitive
         ? this.sensitiveEl
         : this.attachments,
@@ -106,9 +106,8 @@ export class LStatus {
     // in a string.
     // If we didn't found any, return original string
     // without wasting time on parsing
-    if (s.search(/u-url/g) === -1)
+    if (s.search(/u-url|hashtag/g) === -1)
        return s
-
 
     const parser = new DOMParser()
 
@@ -119,8 +118,17 @@ export class LStatus {
     for (const l of links) {
       const wf = this.genWebFinger(l.href)
       const profileLink = !wf ? '' : `/profile/${wf}/`
-      l.href = profileLink ?? l.href
+      const href = profileLink ?? l.href
+      l.href = href
       l.target = '_self'
+    }
+
+    const tags = d.querySelectorAll('a.hashtag') as NodeListOf<HTMLAnchorElement>
+
+    for (const h of tags) {
+      h.target = '_self'
+      const href = this.genTagHref(h.textContent ?? '')
+      h.href = href
     }
 
     return d.body.innerHTML
@@ -140,6 +148,21 @@ export class LStatus {
     const { user = '', server = '' } = arr[0].groups ?? {}
 
     return user && server ? `${user}@${server}` : ''
+  }
+
+  /**
+   * Generates the path for a hashtag
+   * Tag may be with or without the hash symbol
+   * ('#joy', '#sometag', 'sometag')
+   * If a tag is an empty string or single hashtag symbol,
+   * the link to the main page is returned.
+   */
+  private genTagHref(tag: string) {
+    const _t = tag[0] === '#' ? tag.substring(1) : tag
+
+    const href = _t ? `/tags/${_t}` : '/'
+
+    return href
   }
 
 

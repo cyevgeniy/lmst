@@ -17,13 +17,12 @@ export class LInfo {
       div('', [
         span('', 'Version: '),
         span('', appConfig.version),
+      ]),
+
+      div('', [
+        span('', 'Repository: '),
+        a('', appConfig.repo, appConfig.repo),
       ])
-
-
-      // div('', [
-      //   span('', 'Repository: '),
-      //   a('', appConfig.repo, appConfig.repo),
-      // ])
     ]))
 
     appConfig.addOnServerChangeCb((server) => {

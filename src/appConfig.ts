@@ -15,7 +15,7 @@ const SERVER_KEY = 'server'
 
 export class LmstConfig implements AppConfig {
   private static instance: LmstConfig
-  private readonly callbacks: CallbackFn[] = [] 
+  private readonly callbacks: CallbackFn[] = []
   private _server: string = ''
   public readonly clientName: string = ''
   public readonly repo: string = ''
@@ -28,7 +28,7 @@ export class LmstConfig implements AppConfig {
 
     this._server = ''
     this.clientName = 'lmst'
-    this.repo = 'https://git.sr.ht/~ychbn/lmst'
+    this.repo = import.meta.env.VITE_REPOSITORY_URL
     this.baseUrl = import.meta.env.VITE_BASE_URL
     this.version = import.meta.env.VITE_APP_VERSION
     this.callbacks = []
@@ -73,4 +73,3 @@ export class LmstConfig implements AppConfig {
 export function useAppConfig() {
   return new LmstConfig()
 }
-

@@ -22,6 +22,10 @@ export class LLoadMoreBtn {
     return this.btn.el
   }
 
+  set visible(v: boolean) {
+    this.btn.el.style.display = v ? 'block' : 'none'
+  }
+
   set loading(v: boolean) {
     if (this._loading === v)
       return

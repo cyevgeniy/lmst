@@ -53,10 +53,10 @@ export class TagsPage extends Page implements IPage {
 
     if (this.tagsManager.noMoreData) {
       this.noMoreDataText.style.display = 'block'
-      this.loadMoreBtn.el.style.display = 'none'
+      this.loadMoreBtn.visible = false
     } else {
       this.noMoreDataText.style.display = 'none'
-      this.loadMoreBtn.el.style.display = 'block'
+      this.loadMoreBtn.visible = true
     }
 
     this.loadMoreBtn.loading = false

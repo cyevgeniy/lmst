@@ -9,6 +9,7 @@ export class TagsPage extends Page implements IPage {
   private statusesList: LStatusesList
   private loadMoreBtn: LLoadMoreBtn
   private tagHeader: HTMLHeadElement
+  private noMoreDataText: HTMLDivElement
 
   private tagsManager: TagsTimelineManager
 
@@ -17,9 +18,11 @@ export class TagsPage extends Page implements IPage {
     this.tagsManager = appManager.tagsManager
     this.tagHeader = h('h2', null, '')
 
+    this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
+    this.noMoreDataText.style.display = 'none'
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses(this.tagsManager.tag) })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
+    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
 
     const timelineContainer = div('timeline-container', [])
     this.statusesList = new LStatusesList({
@@ -47,6 +50,15 @@ export class TagsPage extends Page implements IPage {
     this.loadMoreBtn.loading = true
     this.tagsManager.tag = tag
     await this.tagsManager.loadStatuses()
+
+    if (this.tagsManager.noMoreData) {
+      this.noMoreDataText.style.display = 'block'
+      this.loadMoreBtn.el.style.display = 'none'
+    } else {
+      this.noMoreDataText.style.display = 'none'
+      this.loadMoreBtn.el.style.display = 'block'
+    }
+
     this.loadMoreBtn.loading = false
     this.statusesList.addStatuses(this.tagsManager.lastChunk)
   }

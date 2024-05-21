@@ -24,7 +24,10 @@ export interface ITimelineManager {
    */
   clearStatuses: () => void
 
-  //onClearStatuses: (fn: () => void) => void
+  /**
+   * True if there're no more records in the timeline
+   */
+  noMoreData: boolean
 }
 
 export class TimelineManager implements ITimelineManager {
@@ -34,6 +37,7 @@ export class TimelineManager implements ITimelineManager {
   public onClearCallback?: () => void
   public statuses: Status[]
   public rendered: boolean
+  public noMoreData: boolean
 
 
   constructor(opts: {
@@ -46,6 +50,7 @@ export class TimelineManager implements ITimelineManager {
     this.config = opts.config
     this.onClearCallback = undefined
     this.rendered = false
+    this.noMoreData = false
   }
 
   public onClearStatuses(fn: () => void) {
@@ -64,9 +69,16 @@ export class TimelineManager implements ITimelineManager {
 
     if (st.ok) {
       const statuses = st.value
-      this.statuses.push(...statuses)
-      this.maxId = statuses[statuses.length - 1].id
-      return statuses
+
+      if (statuses.length) {
+
+        this.statuses.push(...statuses)
+        this.maxId = statuses[statuses.length - 1].id
+        return statuses
+      } else {
+        // no more records
+        this.noMoreData = true
+      }
     }
 
     return []
@@ -81,6 +93,7 @@ export class TimelineManager implements ITimelineManager {
     this.resetPagination()
     this.statuses = []
     this.onClearCallback && this.onClearCallback()
+    this.noMoreData = false
   }
 }
 
@@ -89,6 +102,7 @@ export class ProfileTimelineManager implements ITimelineManager {
   public statuses: Status[]
   private profileId: string
   public profileWebfinger: string
+  public noMoreData: boolean
   private user: User
 
   constructor(opts: {
@@ -99,14 +113,23 @@ export class ProfileTimelineManager implements ITimelineManager {
     this.profileWebfinger = ''
     this.statuses = []
     this.user = opts.user
+    this.noMoreData = false
   }
 
   public async loadStatuses(): Promise<Status[]> {
     this.user.loadTokenFromStore()
-    const statuses = await getStatuses(this.profileId, { max_id: this.maxId }, this.user.accessToken())
-    this.maxId = statuses[statuses.length - 1].id
+    const res = await getStatuses(this.profileId, { max_id: this.maxId }, this.user.accessToken())
 
-    return statuses
+    if (res.ok) {
+      if (res.value.length) {
+        this.maxId = res.value[res.value.length - 1].id
+        return res.value
+      }
+      else
+        this.noMoreData = true
+    }
+
+    return []
   }
 
   public resetPagination() {
@@ -116,6 +139,7 @@ export class ProfileTimelineManager implements ITimelineManager {
   public clearStatuses() {
     this.resetPagination()
     this.statuses = []
+    this.noMoreData = false
   }
 
   public async getAccount() {
@@ -141,6 +165,7 @@ export class TagsTimelineManager implements ITimelineManager {
   private appConfig: AppConfig
   private keepStatuses: boolean
   public tag: string
+  public noMoreData: boolean
 
   constructor(opts: {
     config: AppConfig
@@ -152,6 +177,7 @@ export class TagsTimelineManager implements ITimelineManager {
     this._lastChunk = []
     this.statuses = []
     this.appConfig = opts.config
+    this.noMoreData = false
   }
 
   get lastChunk() {
@@ -165,8 +191,11 @@ export class TagsTimelineManager implements ITimelineManager {
       const statuses = resp.value
       this._lastChunk = statuses
       this.keepStatuses && this.statuses.push(...statuses)
-      // We may get an empty list of statuses, so check for undefined
-      this.maxId = statuses[statuses.length - 1]?.id ?? ''
+
+      if (statuses.length)
+        this.maxId = statuses[statuses.length - 1]?.id ?? ''
+      else
+        this.noMoreData = true
     } else {
       this._lastChunk = []
     }
@@ -175,6 +204,7 @@ export class TagsTimelineManager implements ITimelineManager {
   public clearStatuses() {
     this.statuses = []
     this._lastChunk = []
+    this.noMoreData = false
   }
 
 }

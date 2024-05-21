@@ -8,6 +8,7 @@ import type { AppManager, TimelineManager } from '../appManager.ts'
 export class TimelinePage extends Page implements IPage {
   private el: HTMLElement
   private timelineContainer: HTMLElement
+  private noMoreDataText: HTMLDivElement
   private loadMoreBtn: LLoadMoreBtn
   private statusesList: LStatusesList
 
@@ -18,8 +19,11 @@ export class TimelinePage extends Page implements IPage {
 
     this.timelineManager = appManager.timelineManager
 
+    this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
+    this.noMoreDataText.style.display = 'none'
+
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadMore() })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
+    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
 
     const statusesListEl = h('div')
     this.statusesList = new LStatusesList({
@@ -32,13 +36,23 @@ export class TimelinePage extends Page implements IPage {
       this.statusesList.clearStatuses()
     })
 
+
+
     this.timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtnContainer])
-    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer, loadMoreBtnContainer])
+    this.el = h('div', {attrs: {id: 'timeline-root'}}, [this.timelineContainer])
   }
 
   private async loadMore() {
     this.loadMoreBtn.loading = true
     const st = await this.timelineManager.loadStatuses()
+    if (this.timelineManager.noMoreData) {
+      this.noMoreDataText.style.display = 'block'
+      this.loadMoreBtn.el.style.display = 'none'
+    } else {
+      this.noMoreDataText.style.display = 'none'
+      this.loadMoreBtn.el.style.display = 'block'
+    }
+
     this.loadMoreBtn.loading = false
     this.statusesList?.addStatuses(st)
   }

@@ -19,6 +19,7 @@ export class ProfilePage extends Page implements IPage {
   private profileHeaderComponent: LProfileHeader
   private profileId: string
   private loadMoreBtn: LLoadMoreBtn
+  private noMoreDataText: HTMLDivElement
 
   private profileManager: ProfileTimelineManager
 
@@ -28,8 +29,11 @@ export class ProfilePage extends Page implements IPage {
     this.profileManager = opts.pm
     this.profileId = ''
 
+    this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
+    this.noMoreDataText.style.display = 'none'
+
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses() })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el])
+    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
 
     const timelineContainer = div('timeline-container', [])
     this.statusesList = new LStatusesList({
@@ -43,8 +47,7 @@ export class ProfilePage extends Page implements IPage {
     this.el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
     this.profileHeaderComponent = new LProfileHeader(this.el)
     this.el.appendChild(timelineContainer)
-    this.el.appendChild(loadMoreBtnContainer)
-
+    //this.el.appendChild(this.loadMoreBtnContainer)
   }
 
   public mount(params?: Record<string, string>) {
@@ -62,6 +65,15 @@ export class ProfilePage extends Page implements IPage {
     // empty array?
     this.loadMoreBtn.loading = true
     const statuses = await this.profileManager.loadStatuses()
+
+    if (this.profileManager.noMoreData) {
+      this.noMoreDataText.style.display = 'block'
+      this.loadMoreBtn.el.style.display = 'none'
+    } else {
+      this.noMoreDataText.style.display = 'none'
+      this.loadMoreBtn.el.style.display = 'block'
+    }
+
     this.loadMoreBtn.loading = false
     this.statusesList.addStatuses(statuses)
   }

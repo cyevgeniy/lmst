@@ -1,4 +1,5 @@
 import {useAppConfig} from '../appConfig'
+import { success, fail } from '../utils/api'
 import type { Account, PaginationParams } from '../types/shared.d'
 
 const appConfig = useAppConfig()
@@ -42,7 +43,7 @@ export async function getStatuses(accountId: string, params: PaginationParams = 
   })
 
   if (resp.status === 200)
-    return resp.json()
+    return success(await resp.json())
 
-  throw new Error('Can not load account statuses')
+  return fail('Can not load account statuses')
 }

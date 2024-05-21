@@ -262,6 +262,12 @@ body {
   margin-top: auto;
 }
 
+.timelime-no-more-rows {
+  color: gray;
+  font-style: italic;
+  text-align: center;
+}
+
 .timeline__load-more {
   width: 100%;
   height: 100%;

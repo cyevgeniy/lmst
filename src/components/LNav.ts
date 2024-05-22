@@ -1,4 +1,4 @@
-import {h, div } from '../utils/dom'
+import {h, div, show, hide } from '../utils/dom'
 import { CredentialAccount, User } from '../utils/user'
 import { lRouter } from '../router'
 import type { Mediator } from '../types/shared'
@@ -49,7 +49,8 @@ export class LNav {
 
     this.user.addOnUserChangeCb(u => {
       this.composeLink.el.style.display = u.isLoaded() ? 'inline-flex' : 'none'
-    })
+      this.updLogoutVisibility()
+    });
 
     this.user.verifyCredentials()
 
@@ -68,7 +69,14 @@ export class LNav {
 
     onClick(this.composeLink.el, (e: MouseEvent) => {
       e.preventDefault()
-      lRouter.navigateTo('/compose')  
+      lRouter.navigateTo('/compose')
     })
+  }
+
+  private updLogoutVisibility() {
+      if (!this.user.isLoaded())
+        hide(this.logout)
+      else
+        show(this.logout)
   }
 }

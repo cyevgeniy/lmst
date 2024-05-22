@@ -80,3 +80,11 @@ export function button(classname: string | string[], text: string) {
 
   return h('button', {class: classes}, text)
 }
+
+export function hide(el: HTMLElement) {
+  el.style.display = 'none'
+}
+
+export function show(el: HTMLElement) {
+  el.style.display = ''
+}

@@ -32,7 +32,7 @@ export class LStatusButtons {
     if (this.status.reblogged)
       classes.push('status-button--boosted')
     this.boostBtn = h('button', {class: classes, innerHTML: boost})
-    this.deleteBtn = h('button', {class: classes, innerHTML: deleteIcon})
+    this.deleteBtn = h('button', {class: ['status-button', 'status-button__delete'], innerHTML: deleteIcon})
     this.el = h('div', {
       class: 'status__buttons' },
       [

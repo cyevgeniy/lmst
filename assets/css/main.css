@@ -245,6 +245,10 @@ body {
   color: red;
 }
 
+.status-button__delete {
+  margin-left:auto;
+}
+
 .status-button > * {
   height: 24px;
   width: 24px;

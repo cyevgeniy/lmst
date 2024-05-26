@@ -74,7 +74,7 @@ export class LStatus {
 
     this.el = div('status', [
       this.isReblogged
-        ? div('status--boosted', [span('', `${dispName} boosted: `)])
+        ? div( 'status-button--boosted', [span('', `${dispName} boosted: `)])
         : undefined,
       div('status__header', [
         this.avatarLink,

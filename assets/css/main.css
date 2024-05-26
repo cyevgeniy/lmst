@@ -226,7 +226,7 @@ body {
   gap: 12px;
 }
 
-.status__boost {
+.status-button {
   background-color: white;
   cursor: pointer;
   border: none;
@@ -237,15 +237,15 @@ body {
   border-radius: 99999px;
 }
 
-.status__boost:hover {
+.status-button:hover {
   background-color: rgb(235, 238, 240);
 }
 
-.status__boost--boosted {
+.status-button--boosted {
   color: red;
 }
 
-.status__boost > * {
+.status-button > * {
   height: 24px;
   width: 24px;
 }

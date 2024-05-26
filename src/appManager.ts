@@ -7,6 +7,7 @@ import type { Router } from './router'
 import type { Mediator } from './types/shared'
 import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
+import type { ActionPermissions } from './components/LStatusButtons'
 
 export interface ITimelineManager {
   /**
@@ -213,7 +214,8 @@ export interface IStatusManager {
   postStatus(params: {statusText: string}): Promise<void>
   boostStatus(id: Status['id']): Promise<void>
   unboostStatus(id: Status['id']): Promise<void>
-  actionsEnabled(): boolean
+  deleteStatus(id: Status['id']): Promise<void>
+  getPermissions: () => ActionPermissions
   ownStatus(s: Status): boolean
 }
 
@@ -296,10 +298,34 @@ export class StatusManager implements IStatusManager {
     }
   }
 
+  public async deleteStatus(id: Status['id']) {
+    await this.user.verifyCredentials()
+    await this.user.loadTokenFromStore()
+
+    try {
+       const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${this.user.accessToken()}`,
+        },
+       })
+
+      if (resp.status !== 200)
+        throw new Error('Error on post deletion')
+    }
+    catch (e: unknown) {
+      if (e instanceof Error)
+        console.error(e.message)
+    }
+  }
 
 
-  public actionsEnabled() {
-    return this.user.isLoaded()
+
+  public getPermissions(): ActionPermissions {
+    return {
+      canDelete: this.user.isLoaded(),
+      canBoost: this.user.isLoaded(),
+    }
   }
 
   public ownStatus(s: Status) {

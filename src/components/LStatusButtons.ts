@@ -1,32 +1,43 @@
 import { h } from '../utils/dom'
 import type { Status } from '../types/shared.d.ts'
-import { boost } from './Icons.ts'
+import { boost, deleteIcon } from './Icons.ts'
 import { onClick } from '../utils/events'
 
 type OnBoostCallback = (boosted: boolean) => void
+type OnDeleteCallback = (status: Status) => void
+
+export interface ActionPermissions {
+  canBoost?: Boolean
+  canDelete?: boolean
+}
+
 
 export class LStatusButtons {
   // @ts-ignore
   private readonly status: Status
   private boostBtn: HTMLButtonElement
+  private deleteBtn: HTMLButtonElement
   private boostCb: OnBoostCallback | undefined
-  private actionsEnabled: boolean
+  private deleteCb: OnDeleteCallback | undefined
+  private permissions: ActionPermissions
   public el: HTMLElement
 
   constructor(opts: {
     status: Status
-    actionsEnabled: boolean
+    permissions: ActionPermissions
   }) {
     this.status = opts.status.reblog ?? opts.status
-    this.actionsEnabled = opts.actionsEnabled
+    this.permissions = opts.permissions
     const classes: string[] = ['status__boost']
     if (this.status.reblogged)
       classes.push('status__boost--boosted')
     this.boostBtn = h('button', {class: classes, innerHTML: boost})
+    this.deleteBtn = h('button', {class: classes, innerHTML: deleteIcon})
     this.el = h('div', {
       class: 'status__buttons' },
       [
-        this.actionsEnabled ? this.boostBtn : undefined
+        this.permissions.canBoost ? this.boostBtn : undefined,
+        this.permissions.canDelete ? this.deleteBtn : undefined,
       ])
 
     this.boostCb = undefined
@@ -36,7 +47,7 @@ export class LStatusButtons {
 
   private addEventListeners() {
     onClick(this.boostBtn, () => {
-      if (this.actionsEnabled) {
+      if (this.permissions.canBoost) {
 
         if (this.boostCb) {
           this.boostCb(!this.status.reblogged)
@@ -51,9 +62,20 @@ export class LStatusButtons {
         this.status.reblogged !== undefined && (this.status.reblogged = !this.status.reblogged)
       }
     })
+
+    onClick(this.deleteBtn, () => {
+      if (!this.permissions.canDelete)
+        return
+
+      this.deleteCb && this.deleteCb(this.status)
+    })
   }
 
   public onBoostClick(fn: OnBoostCallback) {
     this.boostCb = fn
+  }
+
+  public onDeleteClick(fn: OnDeleteCallback) {
+    this.deleteCb = fn
   }
 }

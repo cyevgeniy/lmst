@@ -3,9 +3,11 @@ import { h, a, div, span, button } from '../utils/dom'
 import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
+import type { ActionPermissions } from './LStatusButtons'
 import { onClick } from '../utils/events'
 
 type StatusBoostCallback = (s: Status, boosted: boolean) => void
+type StatusDeleteCallback = (s: Status) => void
 
 export class LStatus {
   public el: HTMLElement
@@ -21,18 +23,15 @@ export class LStatus {
   private isReblogged: boolean
   private statusButtons: LStatusButtons
   private _onBoost: StatusBoostCallback  | undefined = undefined
+  private _onDelete: ((status: Status) => void) | undefined = undefined
 
   constructor(opts: {
     status: Status,
-
-    /**
-     * Can current user perform actions with this status (boost, bookmark etc)?
-     */
-    actionsEnabled?: boolean
+    permissions: ActionPermissions
   }) {
     const {
       status,
-      actionsEnabled = false
+      permissions = { canDelete: false, canBoost: false }
     } = opts
 
     this._status = status.reblog ?? status
@@ -40,9 +39,12 @@ export class LStatus {
     this.renderedStatus = status
 
     this.avatar = new LAvatar(this._status.account?.avatar)
-    this.statusButtons = new LStatusButtons({status, actionsEnabled})
+    this.statusButtons = new LStatusButtons({status, permissions})
     this.statusButtons.onBoostClick((boosted: boolean) => {
       this._onBoost && this._onBoost(this._status, boosted)
+    })
+    this.statusButtons.onDeleteClick((status) => {
+      this._onDelete && this._onDelete(status)
     })
     // xxx: Create Combobox component instead
     //  this.actions = h('select', null, [
@@ -250,6 +252,10 @@ export class LStatus {
 
   public onBoost(fn: StatusBoostCallback) {
     this._onBoost = fn
+  }
+
+  public onDelete(fn: StatusDeleteCallback) {
+    this._onDelete = fn
   }
 }
 

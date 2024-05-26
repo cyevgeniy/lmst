@@ -7,7 +7,7 @@ export class StatusActions {
   private readonly user: User
 
   constructor(config: AppConfig, user: User) {
-    this.config = config 
+    this.config = config
     this.user = user
   }
 
@@ -31,8 +31,26 @@ export class StatusActions {
         console.error(e.message)
     }
   }
+
+  public async delete(id: Status['id']) {
+    await this.user.verifyCredentials()
+    await this.user.loadTokenFromStore()
+
+    try {
+       const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${this.user.accessToken()}`,
+        },
+       })
+    }
+    catch (e: unknown) {
+      if (e instanceof Error)
+        console.error(e.message)
+    }
+  }
 }
-  
+
 
 /* export async function bookmark(id: Status['id'], server: string) {
   try {

@@ -241,13 +241,6 @@ export class LStatus {
       this._status.content && this.el.appendChild(h('div', { innerHTML: this._status.content }))
       this.attachments && this.el.appendChild(this.attachments)
     })
-
-    /* this.actions!.addEventListener('change', () => {
-      if (this.actions!.value === 'bookmark')
-        this.statusActions.bookmark(this.renderedStatus.id)
-
-      this.actions!.value = ''
-    }) */
   }
 
   public onBoost(fn: StatusBoostCallback) {

@@ -55,9 +55,9 @@ export class LStatusButtons {
 
         // Toggle boosted class
         if (!this.status.reblogged)
-          this.boostBtn.classList.add('status--button--boosted')
+          this.boostBtn.classList.add('status-button--boosted')
         else
-          this.boostBtn.classList.remove('status--button--boosted')
+          this.boostBtn.classList.remove('status-button--boosted')
 
         this.status.reblogged !== undefined && (this.status.reblogged = !this.status.reblogged)
       }

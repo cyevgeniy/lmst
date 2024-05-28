@@ -63,8 +63,6 @@ export class LStatusButtons {
 
   private addEventListeners() {
     this.boostBtn &&  onClick(this.boostBtn, () => {
-      if (this.permissions.canBoost) {
-
         if (this.boostCb) {
           this.boostCb(!this.status.reblogged)
         }
@@ -76,13 +74,9 @@ export class LStatusButtons {
           this.boostBtn?.classList.remove('status-button--boosted')
 
         this.status.reblogged !== undefined && (this.status.reblogged = !this.status.reblogged)
-      }
     })
 
     this.deleteBtn && onClick(this.deleteBtn, () => {
-      if (!this.permissions.canDelete)
-        return
-
       this.deleteCb && this.deleteCb(this.status)
     })
   }

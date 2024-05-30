@@ -1,6 +1,7 @@
 import { div } from '../utils/dom'
 import type { Account } from '../types/shared'
 import { LAvatar } from './Avatar'
+import { parseContent } from '../utils/shared'
 
 export class LProfileHeader {
   private el: HTMLElement
@@ -31,7 +32,8 @@ export class LProfileHeader {
    */
   update(account?: Account) {
     this.displayNameEl.innerText = account?.display_name ?? ''
-    this.noteEl.innerHTML = account?.note ?? ''
+    const parsedContent = parseContent(account?.note ?? '')
+    this.noteEl.innerHTML = parsedContent
     this.avatar.updateImage(account?.avatar)
   }
 }

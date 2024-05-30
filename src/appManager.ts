@@ -255,7 +255,6 @@ export class StatusManager implements IStatusManager {
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {
-    console.log('boost status: ', id)
     if (!this.user.isLoaded)
       return
 
@@ -277,7 +276,6 @@ export class StatusManager implements IStatusManager {
   }
 
   public async unboostStatus(id: Status['id']): Promise<void> {
-    console.log('unboost status: ', id)
     if (!this.user.isLoaded)
       return
 
@@ -300,7 +298,7 @@ export class StatusManager implements IStatusManager {
 
   public async deleteStatus(id: Status['id']) {
     await this.user.verifyCredentials()
-    await this.user.loadTokenFromStore()
+    this.user.loadTokenFromStore()
 
     try {
        const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}`, {

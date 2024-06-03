@@ -5,6 +5,7 @@ import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
 import type { ActionPermissions } from './LStatusButtons'
 import { onClick } from '../utils/events'
+import { parseContent } from '../utils/shared'
 
 type StatusBoostCallback = (s: Status, boosted: boolean) => void
 type StatusDeleteCallback = (s: Status) => void
@@ -86,7 +87,7 @@ export class LStatus {
       ]),
       this._status.sensitive
         ? undefined
-        : h('div', {class: 'status__content', innerHTML: this.parseContent(this._status.content)} ),
+        : h('div', {class: 'status__content', innerHTML: parseContent(this._status.content)} ),
       this._status.sensitive
         ? this.sensitiveEl
         : this.attachments,
@@ -96,78 +97,6 @@ export class LStatus {
 
     this.addEventListeners()
   }
-
-  /**
-   * Parse a string with html content of a status, and
-   * replaces all links to profiles with links to our own
-   * url which performs accout lookup
-   */
-  private parseContent(s: string) {
-
-    // First thing to do is to check for usernames
-    // in a string.
-    // If we didn't found any, return original string
-    // without wasting time on parsing
-    if (s.search(/u-url|hashtag/g) === -1)
-       return s
-
-    const parser = new DOMParser()
-
-    const d = parser.parseFromString(s, 'text/html')
-
-    const links = d.querySelectorAll('a.u-url') as NodeListOf<HTMLAnchorElement>
-
-    for (const l of links) {
-      const wf = this.genWebFinger(l.href)
-      const profileLink = !wf ? '' : `/profile/${wf}/`
-      const href = profileLink ?? l.href
-      l.href = href
-      l.target = '_self'
-    }
-
-    const tags = d.querySelectorAll('a.hashtag') as NodeListOf<HTMLAnchorElement>
-
-    for (const h of tags) {
-      h.target = '_self'
-      const href = this.genTagHref(h.textContent ?? '')
-      h.href = href
-    }
-
-    return d.body.innerHTML
-  }
-
-  /**
-   * Generates a webfinger from a link to an account
-   *
-   * For example, if a link to the account is 'https://mstdn.social/@username',
-   * the webfinger is a string 'username@mstdn.social
-   */
-  private genWebFinger(l: string): string {
-    const reg = /https:\/\/(?<server>.*)\/\@(?<user>\w+)/g
-
-    const arr = Array.from(l.matchAll(reg))
-
-    const { user = '', server = '' } = arr[0].groups ?? {}
-
-    return user && server ? `${user}@${server}` : ''
-  }
-
-  /**
-   * Generates the path for a hashtag
-   * Tag may be with or without the hash symbol
-   * ('#joy', '#sometag', 'sometag')
-   * If a tag is an empty string or single hashtag symbol,
-   * the link to the main page is returned.
-   */
-  private genTagHref(tag: string) {
-    const _t = tag[0] === '#' ? tag.substring(1) : tag
-
-    const href = _t ? `/tags/${_t}` : '/'
-
-    return href
-  }
-
-
 
   private linkToAccount() {
     return a(

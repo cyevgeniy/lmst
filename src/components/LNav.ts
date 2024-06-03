@@ -9,8 +9,12 @@ import globeIcon from '../../assets/icons/globe.svg?raw'
 
 export class LNav {
   public el: HTMLElement
-  private authorize: HTMLElement
-  private logout: HTMLElement
+  private authorize: HTMLDivElement
+  /**
+   * Link to the user profile
+   */
+  private profileLink: HTMLAnchorElement
+  private logout: HTMLAnchorElement
   private composeLink: LNavLink
   private signupContainer: HTMLElement
   private mainLink: LNavLink
@@ -21,17 +25,18 @@ export class LNav {
   constructor(root: HTMLElement, pm: Mediator) {
     this.pageMediator = pm
     this.user = new User()
-
+    this.profileLink = h('a', {attrs: { href: '/' } })
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
-    this.logout = h('div', {class: 'nav__logout' } , 'Logout')
+    this.logout = h('a', {attrs: { href: '#' }}  , 'Logout')
     this.composeLink = new LNavLink({text: 'Compose', link: '/compose', icon: penIcon})
     this.mainLink = new LNavLink({text: 'Lmst', link: '/', icon: globeIcon})
-    this.signupContainer = h('div',
-      {class: 'nav--signup-container'},
-      [
-        this.authorize,
-        this.logout,
-      ])
+    this.signupContainer = h('div', {
+      class: 'nav--signup-container'
+    },[
+      this.profileLink,
+      this.authorize,
+      this.logout,
+    ])
 
     // this.mainLink = h('a', {attrs: {href: '/'}}, [
     //     h('span', {attrs: {id: 'logo'}}, 'Lmst')
@@ -43,12 +48,25 @@ export class LNav {
     ])
 
     root.appendChild(this.el)
+
     this.user.addOnUserChangeCb((u: CredentialAccount) => {
-      this.authorize.innerText = u.id ? u.display_name : 'Login'
+      if (u.id) {
+        hide(this.authorize)
+        this.profileLink.innerText = u.display_name
+        this.profileLink.href = `/profile/${u.acct}/`
+        show(this.profileLink)
+      }
+      else {
+        this.profileLink.href = '/'
+        this.profileLink.innerText = ''
+        show(this.authorize)
+        hide(this.profileLink)
+      }
     })
 
     this.user.addOnUserChangeCb(u => {
       this.composeLink.el.style.display = u.isLoaded() ? 'inline-flex' : 'none'
+
       this.updLogoutVisibility()
     });
 
@@ -63,7 +81,8 @@ export class LNav {
       this.pageMediator.notify('navigate:login')
     })
 
-    onClick(this.logout, () => {
+    onClick(this.logout, (e: MouseEvent) => {
+      e.preventDefault()
       this.pageMediator.notify('navigate:logout')
     })
 

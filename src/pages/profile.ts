@@ -3,7 +3,7 @@ import type { Mediator } from '../types/shared'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
-import { h, div } from '../utils/dom'
+import { h, div, hide, show } from '../utils/dom'
 import { ProfileTimelineManager, StatusManager } from '../appManager'
 
 interface ProfilePageConstructorParams {
@@ -30,7 +30,7 @@ export class ProfilePage extends Page implements IPage {
     this.profileId = ''
 
     this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
-    this.noMoreDataText.style.display = 'none'
+    hide(this.noMoreDataText)
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses() })
     const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
@@ -67,10 +67,10 @@ export class ProfilePage extends Page implements IPage {
     const statuses = await this.profileManager.loadStatuses()
 
     if (this.profileManager.noMoreData) {
-      this.noMoreDataText.style.display = 'block'
+      show(this.noMoreDataText)
       this.loadMoreBtn.visible = false
     } else {
-      this.noMoreDataText.style.display = 'none'
+      hide(this.noMoreDataText)
       this.loadMoreBtn.visible = true
     }
 

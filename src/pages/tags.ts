@@ -1,7 +1,7 @@
 import { IPage, Page } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
-import { h, div } from '../utils/dom'
+import { h, div, hide, show } from '../utils/dom'
 import { TagsTimelineManager, AppManager } from '../appManager'
 
 export class TagsPage extends Page implements IPage {
@@ -19,7 +19,7 @@ export class TagsPage extends Page implements IPage {
     this.tagHeader = h('h2', null, '')
 
     this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
-    this.noMoreDataText.style.display = 'none'
+    hide(this.noMoreDataText)
 
     this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses(this.tagsManager.tag) })
     const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
@@ -52,10 +52,10 @@ export class TagsPage extends Page implements IPage {
     await this.tagsManager.loadStatuses()
 
     if (this.tagsManager.noMoreData) {
-      this.noMoreDataText.style.display = 'block'
+      show(this.noMoreDataText)
       this.loadMoreBtn.visible = false
     } else {
-      this.noMoreDataText.style.display = 'none'
+      hide(this.noMoreDataText)
       this.loadMoreBtn.visible = true
     }
 

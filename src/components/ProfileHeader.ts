@@ -23,7 +23,7 @@ export class LProfileHeader {
     ])
 
     root.appendChild(this.el)
-    this.update(account)  
+    this.update(account)
   }
 
   /**

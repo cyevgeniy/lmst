@@ -25,7 +25,6 @@ export class ProfilePage extends Page implements IPage {
 
   constructor(opts: ProfilePageConstructorParams) {
     super(opts.pageMediator)
-  //  this.pageMediator = pageMediator
     this.profileManager = opts.pm
     this.profileId = ''
 
@@ -47,7 +46,6 @@ export class ProfilePage extends Page implements IPage {
     this.el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
     this.profileHeaderComponent = new LProfileHeader(this.el)
     this.el.appendChild(timelineContainer)
-    //this.el.appendChild(this.loadMoreBtnContainer)
   }
 
   public mount(params?: Record<string, string>) {

@@ -14,7 +14,6 @@ export class LProfileHeader {
     this.noteEl = div('account__note')
 
     this.avatar = new LAvatar('', 'lg')
-    // avatarEl = avatarComp.mount()
     this.el = div('account', [
       div('account__userinfo', [
         this.avatar.el,

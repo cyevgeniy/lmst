@@ -18,7 +18,6 @@ export class LStatus {
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined
   private sensitiveBtn: HTMLButtonElement | undefined
-  //private actions: HTMLSelectElement | undefined
   private _status: Status
   private renderedStatus: Status
   private isReblogged: boolean
@@ -47,14 +46,6 @@ export class LStatus {
     this.statusButtons.onDeleteClick((status) => {
       this._onDelete && this._onDelete(status)
     })
-    // xxx: Create Combobox component instead
-    //  this.actions = h('select', null, [
-    //   h('option', {attrs: {value: ''}}, 'Actions:'),
-    //   h('option', {attrs: {value: 'bookmark'}}, 'Bookmark'),
-    //   h('option', {attrs: {value: 'reply'}}, 'Reply'),
-    //   h('option', {attrs: {value: 'report'}}, 'Report'),
-    // ]) as HTMLSelectElement
-
 
     if (!this._status.sensitive)
       this.attachments = this.getAttachmentsEl()
@@ -92,7 +83,6 @@ export class LStatus {
         ? this.sensitiveEl
         : this.attachments,
       this.statusButtons.el,
-      //this.actions,
     ])
 
     this.addEventListeners()

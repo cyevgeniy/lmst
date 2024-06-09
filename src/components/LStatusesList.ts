@@ -27,7 +27,6 @@ export class LStatusesList {
       const own = this.sm.ownStatus(status.reblog ?? status)
       const perm = this.sm.getPermissions()
       const permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
-      //const actionsEnabled = this.sm.actionsEnabled() && !this.sm.ownStatus(status.reblog ?? status)
       console.log(this.sm.ownStatus(status.reblog ?? status))
 
       const statusComp = new LStatus({status, permissions})

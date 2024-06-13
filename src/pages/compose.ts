@@ -3,14 +3,14 @@ import type { IPage } from '../utils/page'
 import { h } from '../utils/dom'
 import type { StatusManager, AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
-
+import { LComposeZen } from '../components/LComposeZen'
 
 export class ComposePage extends Page implements IPage {
   private el: HTMLElement
   private text: HTMLTextAreaElement
   private btn: LButton
-
   private statusManager: StatusManager
+  private composeZen: LComposeZen
 
   constructor(appManager: AppManager) {
     super(appManager.globalMediator)
@@ -26,7 +26,7 @@ export class ComposePage extends Page implements IPage {
     }) as HTMLTextAreaElement
 
     this.btn = new LButton('Post', ['compose__button'])
-    // By default the text in the 
+    // By default the text in the
     this.setBtnStatus(this.text)
 
     this.btn.onClick = async () => {
@@ -45,13 +45,15 @@ export class ComposePage extends Page implements IPage {
       this.setBtnStatus(area)
     })
 
-    this.el = h(
-      'div',
-      { class: 'compose__wrapper' },
-      [
-        this.text,
-        h('div', { class: 'compose__post'}, [this.btn.el]),
-      ])
+    // this.el = h(
+    //   'div',
+    //   { class: 'compose__wrapper' },
+    //   [
+    //     this.text,
+    //     h('div', { class: 'compose__post'}, [this.btn.el]),
+    //   ])
+    this.el = h('div')
+    this.composeZen = new LComposeZen(this.el)
   }
 
   private setBtnStatus(area: HTMLTextAreaElement) {
@@ -62,5 +64,6 @@ export class ComposePage extends Page implements IPage {
     super.mount()
     this.layout.middle.appendChild(this.el)
     this.text.focus()
+    this.composeZen.setFocus()
   }
 }

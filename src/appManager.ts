@@ -376,7 +376,10 @@ export class GlobalPageMediator implements Mediator {
       if (this.user.isLoaded())
         this.goHome()
       else {
-        const server = prompt('Enter server:') ?? ''
+        const server = prompt('Enter server:')
+        if (!server)
+          return
+
         this.config.server = server
         await this.user.authorize()
       }

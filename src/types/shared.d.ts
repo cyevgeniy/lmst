@@ -7,7 +7,7 @@ export interface Account {
   /**
    * Avatar's url
    */
-  avatar?: string
+  avatar: string
 
   /**
    * User name to display

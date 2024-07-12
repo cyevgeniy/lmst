@@ -134,6 +134,32 @@ body {
   padding-right: 1rem;
 }
 
+.compose-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.compose-toolbar__zen {
+  margin-left: auto;
+  background-color: white;
+  cursor: pointer;
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99999px;
+}
+.compose-toolbar__zen > svg {
+  width: 24px;
+  height: 24px;
+  color: darkgray;
+}
+
+.compose-toolbar__zen > svg:hover {
+  color: black;
+}
+
 @media screen and (min-width: 1240px) {
   .compose__wrapper {
     padding-left: 0;
@@ -392,6 +418,7 @@ body {
   font-size: 20px;
   height: 100%;
   border: none;
+  padding: 16px;
 }
 
 .compose-zen__textarea:focus {
@@ -399,7 +426,9 @@ body {
 }
 
 .compose-zen__button {
-  margin-top: auto;
+  position: absolute;
+  top: 16px;
+  right: 16px;
 }
 
 .compose-zen-wrapper {

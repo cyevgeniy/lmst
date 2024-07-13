@@ -5,7 +5,6 @@ import type { Mediator } from '../types/shared'
 import { onClick } from '../utils/events'
 import { LNavLink } from './LNavLink'
 import penIcon from '../../assets/icons/pen.svg?raw'
-import globeIcon from '../../assets/icons/globe.svg?raw'
 import { globe } from './Icons'
 
 export class LNav {

@@ -38,7 +38,7 @@ export class LStatus {
     this.isReblogged = Boolean(status.reblog)
     this.renderedStatus = status
 
-    this.avatar = new LAvatar(this._status.account?.avatar)
+    this.avatar = new LAvatar(this._status.account.avatar)
     this.statusButtons = new LStatusButtons({status, permissions})
     this.statusButtons.onBoostClick((boosted: boolean) => {
       this._onBoost && this._onBoost(this._status, boosted)

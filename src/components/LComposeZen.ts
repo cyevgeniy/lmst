@@ -1,15 +1,15 @@
 import { div, h } from '../utils/dom'
-import { LButton } from './LButton'
 import { onClick } from '../utils/events'
+import { exitFullScreen } from '../components/Icons'
 
 export class LComposeZen {
   public readonly el: HTMLElement
   private textarea: HTMLTextAreaElement
-  private btn: LButton
+  private btn: HTMLButtonElement
   private onCloseCb: () => void
 
   constructor(root: HTMLElement) {
-    this.btn = new LButton('Post', ['compose-zen__button'])
+    this.btn = h('button',{class: 'compose-zen__button', innerHTML: exitFullScreen})
     this.el = div('compose-zen')
     const wrapper = div('compose-zen-wrapper')
     this.textarea = h('textarea', {
@@ -20,12 +20,17 @@ export class LComposeZen {
     })
 
     wrapper.appendChild(this.textarea)
-    wrapper.appendChild(this.btn.el)
+    wrapper.appendChild(this.btn)
     this.el.appendChild(wrapper)
     root.appendChild(this.el)
     this.setFocus()
     this.onCloseCb = () => {}
-    onClick(this.btn.el, () => this.onCloseCb())
+    onClick(this.btn, () => this.onCloseCb())
+
+    this.textarea.addEventListener('keyup', (e: KeyboardEvent) => {
+      if (e.key === 'Escape')
+	this.onCloseCb()
+    })
   }
 
   public getText() {

@@ -4,8 +4,7 @@ import { lRouter } from '../router'
 import type { Mediator } from '../types/shared'
 import { onClick } from '../utils/events'
 import { LNavLink } from './LNavLink'
-import penIcon from '../../assets/icons/pen.svg?raw'
-import { globe } from './Icons'
+import { globe, pen } from './Icons'
 
 export class LNav {
   public el: HTMLElement
@@ -28,7 +27,7 @@ export class LNav {
     this.profileLink = h('a', {attrs: { href: '/' } })
     this.authorize = h('div', {class: 'nav__login' } , 'Login')
     this.logout = h('a', {attrs: { href: '#' }}  , 'Logout')
-    this.composeLink = new LNavLink({text: 'Compose', link: '/compose', icon: penIcon})
+    this.composeLink = new LNavLink({text: 'Compose', link: '/compose', icon: pen})
     this.mainLink = new LNavLink({text: 'Lmst', link: '/', icon: globe})
     this.signupContainer = h('div', {
       class: 'nav--signup-container'

@@ -27,7 +27,7 @@ export class LStatus {
 
   constructor(opts: {
     status: Status,
-    permissions: ActionPermissions
+    permissions?: ActionPermissions
   }) {
     const {
       status,

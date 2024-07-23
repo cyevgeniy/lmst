@@ -8,6 +8,7 @@ import type { Mediator } from './types/shared'
 import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
+import { ApiResult, fail, success } from './utils/api.ts'
 
 export interface ITimelineManager {
   /**
@@ -315,6 +316,33 @@ export class StatusManager implements IStatusManager {
       if (e instanceof Error)
         console.error(e.message)
     }
+  }
+
+  public async getStatus(id: Status['id']): Promise<ApiResult<Status>> {
+    
+    let result: ApiResult<Status>
+    
+    try {
+      const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}`, {
+        method: 'GET'
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Status was not fetched')
+
+      result = success(await resp.json())
+    }
+    catch(e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message)
+
+        result = fail(e.message)
+      }
+
+      result = fail('')
+    }
+
+    return result
   }
 
 

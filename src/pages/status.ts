@@ -1,20 +1,32 @@
 import { IPage, Page } from '../utils/page'
-import { h, div, hide, show } from '../utils/dom'
+import { div } from '../utils/dom'
 import { Status } from '../types/shared'
 import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
+import { LStatusesList } from '../components/LStatusesList'
 
 export class StatusPage extends Page implements IPage {
 
     private el: HTMLDivElement
     private status: Status | undefined
+    private statusesList: LStatusesList
+    private statusRoot: HTMLDivElement
+    private descendantsRoot: HTMLDivElement
     private appManager: AppManager
 
     constructor(appManager: AppManager) {
         super(appManager.globalMediator)
         this.appManager = appManager
         this.status = undefined
-        this.el = div('status') as HTMLDivElement
+        this.descendantsRoot = div('status-descendants') as HTMLDivElement
+        this.statusesList = new LStatusesList({
+            sm: appManager.statusManager,
+            root: this.descendantsRoot,
+            statuses: [],
+        })
+        this.statusRoot = div('status-root') as HTMLDivElement
+        this.el = div('', [this.statusRoot, this.descendantsRoot]) as HTMLDivElement
+        
     }
 
     private async loadStatus(id: Status['id']) {
@@ -27,12 +39,20 @@ export class StatusPage extends Page implements IPage {
         this.renderStatus()
     }
 
+    private async loadDescendants(id: Status['id']) {
+        this.statusesList.clearStatuses()
+
+        const res = await this.appManager.statusManager.getStatusContext(id)
+        if (res.ok)
+            this.statusesList.addStatuses(res.value.descendants)
+    }
+
     private renderStatus() {
         if (this.status) {
             const st = new LStatus({status: this.status})
-            this.el.appendChild(st.el)
+            this.statusRoot.appendChild(st.el)
         } else {
-            this.el.innerText = 'No status'
+            this.statusRoot.innerText = 'No status'
         }
     }
 
@@ -47,6 +67,7 @@ export class StatusPage extends Page implements IPage {
         const statusId = params?.id ?? ''
     
         await this.loadStatus(statusId)
+        await this.loadDescendants(statusId)
       }
 
 }

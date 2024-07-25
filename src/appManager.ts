@@ -1,5 +1,5 @@
 import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
-import type { Status } from './types/shared.d.ts'
+import type { Context, Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { User } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
@@ -329,6 +329,33 @@ export class StatusManager implements IStatusManager {
 
       if (resp.status !== 200)
         throw new Error('Status was not fetched')
+
+      result = success(await resp.json())
+    }
+    catch(e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message)
+
+        result = fail(e.message)
+      }
+
+      result = fail('')
+    }
+
+    return result
+  }
+
+  public async getStatusContext(id: Status['id']): Promise<ApiResult<Context>> {
+    
+    let result: ApiResult<Context>
+    
+    try {
+      const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}/context`, {
+        method: 'GET'
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Context was not fetched')
 
       result = success(await resp.json())
     }

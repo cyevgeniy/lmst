@@ -88,6 +88,11 @@ export interface Status {
   reblogged?: boolean
 }
 
+export interface Context {
+  ancestors: Status[]
+  descendants: Status[]
+}
+
 export interface PaginationParams {
   limit?: number
   since_id?: string

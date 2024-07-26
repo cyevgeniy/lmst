@@ -71,7 +71,7 @@ export class LStatus {
 
     this.statusContent = this._status.sensitive
       ? undefined
-      : h('div', {class: ['status__content', this.clickableContent ? 'status__content--clickable': undefined], innerHTML: parseContent(this._status.content)} )
+      : h('div', {class: ['status__content', this.clickableContent ? 'status__content--clickable': ''], innerHTML: parseContent(this._status.content)} )
 
     this.el = div('status', [
       this.isReblogged

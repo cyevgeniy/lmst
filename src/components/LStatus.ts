@@ -17,7 +17,9 @@ export class LStatus {
   private avatar: LAvatar
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined
+  private statusContent: HTMLDivElement | undefined
   private sensitiveBtn: HTMLButtonElement | undefined
+  private clickableContent: boolean
   private _status: Status
   private renderedStatus: Status
   private isReblogged: boolean
@@ -27,13 +29,16 @@ export class LStatus {
 
   constructor(opts: {
     status: Status,
-    permissions?: ActionPermissions
+    permissions?: ActionPermissions,
+	clickableContent?: boolean
   }) {
     const {
       status,
-      permissions = { canDelete: false, canBoost: false }
+      permissions = { canDelete: false, canBoost: false },
+	  clickableContent = true
     } = opts
 
+	this.clickableContent = clickableContent
     this._status = status.reblog ?? status
     this.isReblogged = Boolean(status.reblog)
     this.renderedStatus = status
@@ -64,6 +69,10 @@ export class LStatus {
       }
     }, [this.avatar.el])
 
+    this.statusContent = this._status.sensitive
+      ? undefined
+      : h('div', {class: ['status__content', this.clickableContent ? 'status__content--clickable': undefined], innerHTML: parseContent(this._status.content)} )
+
     this.el = div('status', [
       this.isReblogged
         ? div( 'status--boosted', [span('', `${dispName} boosted: `)])
@@ -76,9 +85,7 @@ export class LStatus {
         ]),
         span('status__create-date', `${this.getCreateDate()}`),
       ]),
-      this._status.sensitive
-        ? undefined
-        : h('div', {class: 'status__content', innerHTML: parseContent(this._status.content)} ),
+      this.statusContent,
       this._status.sensitive
         ? this.sensitiveEl
         : this.attachments,
@@ -160,6 +167,17 @@ export class LStatus {
       this._status.content && this.el.appendChild(h('div', { innerHTML: this._status.content }))
       this.attachments && this.el.appendChild(this.attachments)
     })
+
+	this.clickableContent && this.statusContent?.addEventListener('click', (e: MouseEvent) => {
+    if (e.target instanceof HTMLParagraphElement) {
+      // Don't redirect to the single status view if some text is selected -
+      // we only redirect on click
+      const selection = window.getSelection()
+      if (selection?.type !== 'Range')
+        lRouter.navigateTo(`/status/${this._status.id}`)
+    }
+
+  })
   }
 
   public onBoost(fn: StatusBoostCallback) {

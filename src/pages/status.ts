@@ -26,7 +26,7 @@ export class StatusPage extends Page implements IPage {
         })
         this.statusRoot = div('status-root') as HTMLDivElement
         this.el = div('', [this.statusRoot, this.descendantsRoot]) as HTMLDivElement
-        
+
     }
 
     private async loadStatus(id: Status['id']) {
@@ -49,7 +49,7 @@ export class StatusPage extends Page implements IPage {
 
     private renderStatus() {
         if (this.status) {
-            const st = new LStatus({status: this.status})
+            const st = new LStatus({status: this.status, clickableContent: false})
             this.statusRoot.appendChild(st.el)
         } else {
             this.statusRoot.innerText = 'No status'
@@ -59,13 +59,14 @@ export class StatusPage extends Page implements IPage {
     public mount (params?: Record<string, string>) {
         super.mount()
         this.layout.middle.innerHTML = ''
+		this.statusRoot.innerHTML = ''
         this.layout.middle.appendChild(this.el)
         this.onParamsChange(params)
     }
 
     public async onParamsChange(params?: Record<string, string>) {
         const statusId = params?.id ?? ''
-    
+
         await this.loadStatus(statusId)
         await this.loadDescendants(statusId)
       }

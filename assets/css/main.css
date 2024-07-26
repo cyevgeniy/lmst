@@ -246,6 +246,10 @@ body {
   overflow: hidden;
 }
 
+.status__content--clickable > p {
+	cursor: pointer;
+}
+
 .status-root .status__content {
   font-size: 1.25rem;
 }

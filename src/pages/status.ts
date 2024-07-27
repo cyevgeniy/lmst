@@ -13,6 +13,8 @@ export class StatusPage extends Page implements IPage {
     private statusRoot: HTMLDivElement
     private descendantsRoot: HTMLDivElement
     private appManager: AppManager
+    private server: string
+    private statusId: string
 
     constructor(appManager: AppManager) {
         super(appManager.globalMediator)
@@ -26,20 +28,21 @@ export class StatusPage extends Page implements IPage {
         })
         this.statusRoot = div('status-root') as HTMLDivElement
         this.el = div('', [this.statusRoot, this.descendantsRoot]) as HTMLDivElement
-
+        this.server = ''
+        this.statusId = ''
     }
 
-    private async loadStatus(server: string, id: Status['id']) {
-        const resp = await this.appManager.statusManager.getStatus(id, {server})
+    private async loadStatus() {
+        const resp = await this.appManager.statusManager.getStatus(this.statusId, {server: this.server})
         this.status = resp.ok ? resp.value : undefined
 
         this.renderStatus()
     }
 
-    private async loadDescendants(server: string, id: Status['id']) {
+    private async loadDescendants() {
         this.statusesList.clearStatuses()
 
-        const res = await this.appManager.statusManager.getStatusContext(id, {server})
+        const res = await this.appManager.statusManager.getStatusContext(this.statusId, {server: this.server})
         if (res.ok)
             this.statusesList.addStatuses(res.value.descendants)
     }
@@ -62,11 +65,11 @@ export class StatusPage extends Page implements IPage {
     }
 
     public async onParamsChange(params?: Record<string, string>) {
-        const statusId = params?.id ?? ''
-        const server = `https://${params?.server ?? ''}`
+        this.statusId = params?.id ?? ''
+        this.server = `https://${params?.server ?? ''}`
 
-        await this.loadStatus(server, statusId)
-        await this.loadDescendants(server, statusId)
+        await this.loadStatus()
+        await this.loadDescendants()
       }
 
 }

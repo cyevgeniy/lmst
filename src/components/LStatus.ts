@@ -9,6 +9,7 @@ import { parseContent } from '../utils/shared'
 
 type StatusBoostCallback = (s: Status, boosted: boolean) => void
 type StatusDeleteCallback = (s: Status) => void
+type StatusContentClickCallback = (s: Status) => void
 
 export class LStatus {
   public el: HTMLElement
@@ -25,12 +26,13 @@ export class LStatus {
   private isReblogged: boolean
   private statusButtons: LStatusButtons
   private _onBoost: StatusBoostCallback  | undefined = undefined
-  private _onDelete: ((status: Status) => void) | undefined = undefined
+  private _onDelete: StatusDeleteCallback | undefined = undefined
+  private _onContentClick: StatusContentClickCallback | undefined = undefined
 
   constructor(opts: {
     status: Status,
     permissions?: ActionPermissions,
-	clickableContent?: boolean
+    clickableContent?: boolean
   }) {
     const {
       status,
@@ -174,9 +176,8 @@ export class LStatus {
       // we only redirect on click
       const selection = window.getSelection()
       if (selection?.type !== 'Range')
-        lRouter.navigateTo(`/status/${this._status.id}`)
+          this._onContentClick?.(this._status)
     }
-
   })
   }
 
@@ -186,6 +187,10 @@ export class LStatus {
 
   public onDelete(fn: StatusDeleteCallback) {
     this._onDelete = fn
+  }
+
+  public onContentClick(fn: StatusContentClickCallback) {
+    this._onContentClick = fn
   }
 }
 

@@ -9,6 +9,7 @@ import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
+import { genWebFinger } from './utils/shared.ts'
 
 export interface ITimelineManager {
   /**
@@ -229,6 +230,16 @@ export class StatusManager implements IStatusManager {
     this.config = opts.config
   }
 
+  public getLinkToStatus(status: Status): string {
+    const webfinger = genWebFinger(status.account.url)
+    const server = this.config.server.slice(8)
+    return `/status/${server}/${webfinger}/${status.id}`
+  }
+
+  public navigateToStatus(status: Status): void {
+    lRouter.navigateTo(this.getLinkToStatus(status))
+  }
+
   public async postStatus(params: {statusText: string}) {
     this.user.loadTokenFromStore()
 
@@ -318,12 +329,12 @@ export class StatusManager implements IStatusManager {
     }
   }
 
-  public async getStatus(id: Status['id']): Promise<ApiResult<Status>> {
+  public async getStatus(id: Status['id'], opts?: {server?: string}): Promise<ApiResult<Status>> {
     
     let result: ApiResult<Status>
     
     try {
-      const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}`, {
+      const resp = await fetch(`${opts?.server ?? this.config.server}/api/v1/statuses/${id}`, {
         method: 'GET'
       })
 
@@ -345,12 +356,12 @@ export class StatusManager implements IStatusManager {
     return result
   }
 
-  public async getStatusContext(id: Status['id']): Promise<ApiResult<Context>> {
+  public async getStatusContext(id: Status['id'], opts?: {server: string}): Promise<ApiResult<Context>> {
     
     let result: ApiResult<Context>
     
     try {
-      const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}/context`, {
+      const resp = await fetch(`${opts?.server ?? this.config.server}/api/v1/statuses/${id}/context`, {
         method: 'GET'
       })
 

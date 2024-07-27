@@ -41,6 +41,10 @@ export class LStatusesList {
         this.sm.deleteStatus(s.id)
 
       })
+
+      statusComp.onContentClick((s) => {
+        this.sm.navigateToStatus(s)
+      })
       statusComp.el.classList.add('statuses-list__status')
       this.el?.appendChild(statusComp.el)
     }

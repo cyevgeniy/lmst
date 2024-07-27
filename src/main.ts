@@ -36,4 +36,4 @@ lRouter.on('/profile/:webfinger', (params) => (createProfilePage()).mount(params
 lRouter.on('/oauth', () => oauthPage.mount())
 lRouter.on('/compose', () => composePage.mount())
 lRouter.on('/tags/:tag', (params) => tagsPage.mount(params))
-lRouter.on('/status/:id', (params) => statusPage.mount(params))
+lRouter.on('/status/:server/:webfinger/:id', (params) => statusPage.mount(params))

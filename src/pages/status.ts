@@ -29,8 +29,8 @@ export class StatusPage extends Page implements IPage {
 
     }
 
-    private async loadStatus(id: Status['id']) {
-        const resp = await this.appManager.statusManager.getStatus(id)
+    private async loadStatus(server: string, id: Status['id']) {
+        const resp = await this.appManager.statusManager.getStatus(id, {server})
         if (resp.ok)
             this.status = resp.value
         else
@@ -39,10 +39,10 @@ export class StatusPage extends Page implements IPage {
         this.renderStatus()
     }
 
-    private async loadDescendants(id: Status['id']) {
+    private async loadDescendants(server: string, id: Status['id']) {
         this.statusesList.clearStatuses()
 
-        const res = await this.appManager.statusManager.getStatusContext(id)
+        const res = await this.appManager.statusManager.getStatusContext(id, {server})
         if (res.ok)
             this.statusesList.addStatuses(res.value.descendants)
     }
@@ -66,9 +66,10 @@ export class StatusPage extends Page implements IPage {
 
     public async onParamsChange(params?: Record<string, string>) {
         const statusId = params?.id ?? ''
+        const server = `https://${params?.server ?? ''}`
 
-        await this.loadStatus(statusId)
-        await this.loadDescendants(statusId)
+        await this.loadStatus(server, statusId)
+        await this.loadDescendants(server, statusId)
       }
 
 }

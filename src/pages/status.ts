@@ -31,10 +31,7 @@ export class StatusPage extends Page implements IPage {
 
     private async loadStatus(server: string, id: Status['id']) {
         const resp = await this.appManager.statusManager.getStatus(id, {server})
-        if (resp.ok)
-            this.status = resp.value
-        else
-            this.status = undefined
+        this.status = resp.ok ? resp.value : undefined
 
         this.renderStatus()
     }

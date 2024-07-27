@@ -1,16 +1,29 @@
 /**
-   * Generates a webfinger from a link to an account
-   *
-   * For example, if a link to the account is 'https://mstdn.social/@username',
-   * the webfinger is a string 'username@mstdn.social
-   */
-export function genWebFinger(l: string): string {
+ * Returns the username and a server from a link to an account
+ *
+ * For example, if a link to the account is 'https://mstdn.social/@username',
+ * the result is `{user: 'username', server: 'mstdn.social'
+ */
+export function getWebfingerParts(l: string): { user: string, server: string} {
     const reg = /https:\/\/(?<server>.*)\/\@(?<user>\w+)/g
 
     const arr = Array.from(l.matchAll(reg))
 
     const { user = '', server = '' } = arr[0].groups ?? {}
 
+    return {
+        user,
+        server,
+    }
+}
+/**
+   * Generates a webfinger from a link to an account
+   *
+   * For example, if a link to the account is 'https://mstdn.social/@username',
+   * the webfinger is a string 'username@mstdn.social
+   */
+export function genWebFinger(l: string): string {
+    const {user, server } = getWebfingerParts(l)
     return user && server ? `${user}@${server}` : ''
 }
 

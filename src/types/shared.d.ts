@@ -86,6 +86,16 @@ export interface Status {
    * Is a status was boosted by the current user
    */
   reblogged?: boolean
+
+  /**
+   * Url
+   */
+  url: string
+}
+
+export interface Context {
+  ancestors: Status[]
+  descendants: Status[]
 }
 
 export interface PaginationParams {

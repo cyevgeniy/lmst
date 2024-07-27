@@ -251,6 +251,14 @@ body {
   overflow: hidden;
 }
 
+.status__content--clickable > p {
+	cursor: pointer;
+}
+
+.status-root .status__content {
+  font-size: 1.25rem;
+}
+
 .status__buttons {
   margin-top: 12px;
   display: flex;
@@ -283,6 +291,10 @@ body {
 .status-button > * {
   height: 24px;
   width: 24px;
+}
+
+.status-descendants {
+  margin-top: 2rem;
 }
 
 #timeline-root {

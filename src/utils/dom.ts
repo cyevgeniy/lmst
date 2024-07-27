@@ -34,7 +34,7 @@ export function h<T extends TagName>(nodeName: T, props?: NodeProps | null, chil
     : props.class
   : undefined
 
-  _class?.forEach(className => el.classList.add(className))
+  _class?.forEach(className => className && el.classList.add(className))
 
   if (props?.attrs) {
     for (const attr in props.attrs) {

@@ -1,5 +1,5 @@
 import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
-import type { Status } from './types/shared.d.ts'
+import type { Context, Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { User } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
@@ -8,6 +8,8 @@ import type { Mediator } from './types/shared'
 import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
+import { ApiResult, fail, success } from './utils/api.ts'
+import { genWebFinger } from './utils/shared.ts'
 
 export interface ITimelineManager {
   /**
@@ -228,6 +230,16 @@ export class StatusManager implements IStatusManager {
     this.config = opts.config
   }
 
+  public getLinkToStatus(status: Status): string {
+    const webfinger = genWebFinger(status.account.url)
+    const server = this.config.server.slice(8)
+    return `/status/${server}/${webfinger}/${status.id}`
+  }
+
+  public navigateToStatus(status: Status): void {
+    lRouter.navigateTo(this.getLinkToStatus(status))
+  }
+
   public async postStatus(params: {statusText: string}) {
     this.user.loadTokenFromStore()
 
@@ -315,6 +327,60 @@ export class StatusManager implements IStatusManager {
       if (e instanceof Error)
         console.error(e.message)
     }
+  }
+
+  public async getStatus(id: Status['id'], opts?: {server?: string}): Promise<ApiResult<Status>> {
+    
+    let result: ApiResult<Status>
+    
+    try {
+      const resp = await fetch(`${opts?.server ?? this.config.server}/api/v1/statuses/${id}`, {
+        method: 'GET'
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Status was not fetched')
+
+      result = success(await resp.json())
+    }
+    catch(e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message)
+
+        result = fail(e.message)
+      }
+
+      result = fail('')
+    }
+
+    return result
+  }
+
+  public async getStatusContext(id: Status['id'], opts?: {server: string}): Promise<ApiResult<Context>> {
+    
+    let result: ApiResult<Context>
+    
+    try {
+      const resp = await fetch(`${opts?.server ?? this.config.server}/api/v1/statuses/${id}/context`, {
+        method: 'GET'
+      })
+
+      if (resp.status !== 200)
+        throw new Error('Context was not fetched')
+
+      result = success(await resp.json())
+    }
+    catch(e: unknown) {
+      if (e instanceof Error) {
+        console.error(e.message)
+
+        result = fail(e.message)
+      }
+
+      result = fail('')
+    }
+
+    return result
   }
 
 

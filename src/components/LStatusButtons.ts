@@ -45,7 +45,7 @@ export class LStatusButtons {
   }
 
   private createBoostBtn() {
-    const classes: string[] = ['status-button']
+    const classes: string[] = ['icon-button', 'status-button']
     if (this.status.reblogged)
       classes.push('status-button--boosted')
 
@@ -53,7 +53,7 @@ export class LStatusButtons {
   }
 
   private createDeleteBtn() {
-    return h('button', {class: ['status-button', 'status-button__delete'], innerHTML: deleteIcon})
+    return h('button', {class: ['icon-button', 'status-button', 'ml-auto'], innerHTML: deleteIcon})
   }
 
   private createButtons() {

@@ -1,3 +1,6 @@
+/**
+ * Base button.
+ */
 .button {
   border: 1px solid rgb(203 213 225);
   background-color: white;
@@ -11,4 +14,29 @@
 .button--disabled {
   background-color: #f9f9f9;
   cursor: not-allowed;
+}
+
+/**
+ * This button is used for icons that
+ * should be used as a buttons.
+ * 
+ * This class should be used like this:
+ *     <button class="icon-button">
+ *         <svg ...>
+ *     </button>
+ */
+.icon-button {
+  background-color: white;
+  cursor: pointer;
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 99999px;
+}
+
+.icon-button > * {
+  height: 24px;
+  width: 24px;
 }

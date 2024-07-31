@@ -30,7 +30,7 @@ export class ComposePage extends Page implements IPage {
     }) as HTMLTextAreaElement
 
     this.btn = new LButton('Post', ['compose__button'])
-    this.zenModeBtn = h('button',{class: 'compose-toolbar__zen', innerHTML: fullScreen})
+    this.zenModeBtn = h('button',{class: ['icon-button', 'ml-auto', 'compose-toolbar__zen'], innerHTML: fullScreen})
 
     this.textToolbar = h('div', {class: 'compose-toolbar'}, [this.zenModeBtn])
     // By default the text in the

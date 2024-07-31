@@ -6,6 +6,7 @@
 @import "avatar.css";
 @import "infoblock.css";
 @import "account.css";
+@import "utils.css";
 
 body {
   margin: 0;
@@ -85,32 +86,12 @@ body {
   gap: 12px;
 }
 
-.status-button {
-  background-color: white;
-  cursor: pointer;
-  border: none;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 99999px;
-}
-
 .status-button:hover {
   background-color: rgb(235, 238, 240);
 }
 
 .status-button--boosted {
   color: red;
-}
-
-.status-button__delete {
-  margin-left:auto;
-}
-
-.status-button > * {
-  height: 24px;
-  width: 24px;
 }
 
 .status-descendants {

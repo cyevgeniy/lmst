@@ -8,20 +8,7 @@
   gap: 8px;
 }
 
-.compose-toolbar__zen {
-  margin-left: auto;
-  background-color: white;
-  cursor: pointer;
-  border: none;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 99999px;
-}
 .compose-toolbar__zen > svg {
-  width: 24px;
-  height: 24px;
   color: darkgray;
 }
 
@@ -96,19 +83,9 @@
   position: absolute;
   top: 16px;
   right: 16px;
-  background-color: white;
-  cursor: pointer;
-  border: none;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 99999px;
 }
 
 .compose-zen__button > svg {
-  width: 24px;
-  height: 24px;
   color: darkgray;
 }
 

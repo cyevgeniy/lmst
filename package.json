@@ -10,7 +10,9 @@
   },
   "devDependencies": {
     "@types/jsdom": "^21.1.5",
+    "browserslist": "^4.23.2",
     "jsdom": "^22.1.0",
+    "lightningcss": "^1.25.1",
     "tap": "^18.5.7",
     "typescript": "^5.3.3",
     "vite": "^4.4.5"

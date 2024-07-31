@@ -1,0 +1,29 @@
+#timeline-root {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.timeline__load-more-container {
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-top: auto;
+}
+
+.timelime-no-more-rows {
+  color: gray;
+  font-style: italic;
+  text-align: center;
+}
+
+.timeline__load-more {
+  width: 100%;
+  height: 100%;
+  font-size: 1rem;
+}
+
+@media screen and (min-width: 1240px) {
+  .timeline__load-more {
+    font-size: 14px;
+  }
+}

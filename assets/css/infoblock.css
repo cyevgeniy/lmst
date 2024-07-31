@@ -1,0 +1,15 @@
+.infoblock {
+  border-radius: 8px;
+  border: 1px solid rgb(235, 238, 240);
+  padding: 8px;
+  font-size: 14px;
+}
+
+.infoblock > h2 {
+  margin-top: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.infoblock   a {
+  color: gray;
+}

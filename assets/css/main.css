@@ -1,3 +1,4 @@
+@import "base.css";
 @import "layout.css";
 @import "navigation.css";
 @import "compose.css";
@@ -7,14 +8,6 @@
 @import "infoblock.css";
 @import "account.css";
 @import "utils.css";
-
-body {
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
-  color: #212427;
-  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
-}
 
 .show-sensitive-content {
   margin-top: 8px;

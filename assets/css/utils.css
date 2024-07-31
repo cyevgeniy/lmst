@@ -1,0 +1,13 @@
+/**
+ * This is the base class to center something
+ * inside a container vertically and horizontally
+ */
+.centered {
+	display: flex;
+	justify-content: center;
+	align-content: center;
+}
+
+.ml-auto {
+	margin-left: auto;
+}

@@ -6,7 +6,7 @@
 @import "button.css";
 @import "avatar.css";
 @import "infoblock.css";
-@import "account.css";
+@import "profileHeader.css";
 @import "utils.css";
 
 .show-sensitive-content {
@@ -123,4 +123,14 @@
   margin-left: auto;
   align-self: start;
   font-size: 14px;
+}
+
+.status__response-container {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.status__response-btn {
+ 
 }

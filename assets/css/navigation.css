@@ -1,14 +1,5 @@
-.nav {
-  height: 40px;
-  position: sticky;
-  top: 0;
-  margin-bottom: 16px;
-  display: flex;
-  place-items: center;
-  padding-left: 16px;
-  padding-right: 16px;
-  border-bottom: 1px solid rgb(235, 238, 240);
-  background-color: white;
+/*.nav {
+
 }
 
 .nav--link {
@@ -50,4 +41,46 @@
 
 .nav__login:hover, .nav__logout:hover {
   text-decoration: underline;
+}*/
+
+
+
+
+/* The navigation bar container */
+.navBar {
+  height: 40px;
+  position: sticky;
+  top: 0;
+  margin-bottom: 16px;
+  display: flex;
+  place-items: center;
+  padding-left: 16px;
+  padding-right: 16px;
+  border-bottom: 1px solid rgb(235, 238, 240);
+  background-color: white;
+}
+
+/* A link inside the navigation bar */
+.navBar-link {
+  display: inline-flex;
+  place-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  line-height: 40px;
+  font-variant: small-caps;
+  color: #212427;
+  text-decoration: none;  
+}
+
+/* Set the size of an icon in the link, if any */
+.navBar-link > svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* A container that holds links that should be aligned to the right side of a sidebar */
+.navBar-rightItems {
+  margin-left: auto;
+  display: flex;
+  gap: 16px; 
 }

@@ -7,6 +7,8 @@ body {
 }
 
 textarea {
+  width: 100%;
+  resize: vertical;
   box-sizing: border-box;
   display: block;
   padding: 0.5rem;

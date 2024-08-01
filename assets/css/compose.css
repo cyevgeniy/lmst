@@ -23,11 +23,6 @@
   }
 }
 
-.compose__text {
-  width: 100%;
-  resize: vertical;
-}
-
 .compose__post {
   margin-top: 16px;
   display: flex;

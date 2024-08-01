@@ -12,8 +12,8 @@ export class LNav {
   /**
    * Link to the user profile
    */
-  private profileLink: HTMLAnchorElement
-  private logout: HTMLAnchorElement
+  private profileLink: LNavLink
+  private logoutLink: LNavLink
   private composeLink: LNavLink
   private signupContainer: HTMLElement
   private mainLink: LNavLink
@@ -24,23 +24,23 @@ export class LNav {
   constructor(root: HTMLElement, pm: Mediator) {
     this.pageMediator = pm
     this.user = new User()
-    this.profileLink = h('a', {attrs: { href: '/' } })
-    this.authorize = h('div', {class: 'nav__login' } , 'Login')
-    this.logout = h('a', {attrs: { href: '#' }}  , 'Logout')
+    this.profileLink = new LNavLink({text: '', link: '/'}) //h('a', {attrs: { href: '/' } })
+    this.authorize = h('div', {class: 'navBar-link' } , 'Login')
+    this.logoutLink = new LNavLink({text: 'Logout', link: '#'}) //h('a', {attrs: { href: '#' }}  , 'Logout')
     this.composeLink = new LNavLink({text: 'Compose', link: '/compose', icon: pen})
     this.mainLink = new LNavLink({text: 'Lmst', link: '/', icon: globe})
     this.signupContainer = h('div', {
-      class: 'nav--signup-container'
+      class: 'navBar-rightItems'
     },[
-      this.profileLink,
+      this.profileLink.el,
       this.authorize,
-      this.logout,
+      this.logoutLink.el,
     ])
 
     // this.mainLink = h('a', {attrs: {href: '/'}}, [
     //     h('span', {attrs: {id: 'logo'}}, 'Lmst')
     //   ])
-    this.el = div('nav', [
+    this.el = div('navBar', [
       this.mainLink.el,
       this.composeLink.el,
       this.signupContainer,
@@ -51,15 +51,15 @@ export class LNav {
     this.user.addOnUserChangeCb((u: CredentialAccount) => {
       if (u.id) {
         hide(this.authorize)
-        this.profileLink.innerText = u.display_name
-        this.profileLink.href = `/profile/${u.acct}/`
-        show(this.profileLink)
+        this.profileLink.setText(u.display_name)
+        this.profileLink.setLink(`/profile/${u.acct}/`)
+        this.profileLink.show()
       }
       else {
-        this.profileLink.href = '/'
-        this.profileLink.innerText = ''
+        this.profileLink.setLink('/')
+        this.profileLink.setText('')
         show(this.authorize)
-        hide(this.profileLink)
+        this.profileLink.hide()
       }
     })
 
@@ -80,7 +80,7 @@ export class LNav {
       this.pageMediator.notify('navigate:login')
     })
 
-    onClick(this.logout, (e: MouseEvent) => {
+    onClick(this.logoutLink.el, (e: MouseEvent) => {
       e.preventDefault()
       this.pageMediator.notify('navigate:logout')
     })
@@ -93,8 +93,8 @@ export class LNav {
 
   private updLogoutVisibility() {
       if (!this.user.isLoaded())
-        hide(this.logout)
+        this.logoutLink.hide()
       else
-        show(this.logout)
+        this.logoutLink.show()
   }
 }

@@ -26,7 +26,6 @@ export class ComposePage extends Page implements IPage {
         rows: '10',
         placeholder: 'What\'s on your mind?'
       },
-      class: 'compose__text'
     }) as HTMLTextAreaElement
 
     this.btn = new LButton('Post', ['compose__button'])

@@ -10,12 +10,12 @@ export class LProfileHeader {
   private avatar: LAvatar
 
   constructor(root: HTMLElement, account?: Account) {
-    this.displayNameEl = div('account__name')
-    this.noteEl = div('account__note')
+    this.displayNameEl = div('profileHeader-name')
+    this.noteEl = div('profileHeader-note')
 
     this.avatar = new LAvatar('', 'lg')
-    this.el = div('account', [
-      div('account__userinfo', [
+    this.el = div('profileHeader', [
+      div('profileHeader-userInfo', [
         this.avatar.el,
         this.displayNameEl
       ]),

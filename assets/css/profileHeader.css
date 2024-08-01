@@ -1,0 +1,29 @@
+/* The main wrapper for the profile header */
+.profileHeader {
+  padding: 1rem;
+}
+
+/* The wrapper for avatar and user name */
+.profileHeader-userInfo {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+/* Profile name */
+.profileHeader-name {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Profile description */
+.profileHeader-note {
+  font-size: 14px;
+  padding-top: 14px;
+}
+
+.profileHeader-note p {
+  margin-top: 0;
+  margin-bottom: 0;
+}

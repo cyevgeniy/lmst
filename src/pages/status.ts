@@ -26,7 +26,7 @@ export class StatusPage extends Page implements IPage {
             root: this.descendantsRoot,
             statuses: [],
         })
-        this.statusRoot = div('status-root') as HTMLDivElement
+        this.statusRoot = div('status-root')
         this.el = div('', [this.statusRoot, this.descendantsRoot]) as HTMLDivElement
         this.server = ''
         this.statusId = ''
@@ -49,7 +49,7 @@ export class StatusPage extends Page implements IPage {
 
     private renderStatus() {
         if (this.status) {
-            const st = new LStatus({status: this.status, clickableContent: false})
+            const st = new LStatus({status: this.status, clickableContent: false, singleView: true})
             this.statusRoot.appendChild(st.el)
         } else {
             this.statusRoot.innerText = 'No status'

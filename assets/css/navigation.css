@@ -1,51 +1,3 @@
-/*.nav {
-
-}
-
-.nav--link {
-  display: inline-flex;
-  place-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-}
-
-.nav--link > svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.nav a {
-  line-height: 40px;
-  font-variant: small-caps;
-  color: #212427;
-  text-decoration: none;
-}
-
-.nav a:hover {
-  color: black;
-}
-
-.nav a+a {
-  margin-left: 1rem;
-}
-
-.nav--signup-container {
-  margin-left: auto;
-  display: flex;
-  gap: 16px;
-}
-
-.nav__login, .nav__logout {
-  cursor: pointer;
-}
-
-.nav__login:hover, .nav__logout:hover {
-  text-decoration: underline;
-}*/
-
-
-
-
 /* The navigation bar container */
 .navBar {
   height: 40px;
@@ -72,6 +24,10 @@
   text-decoration: none;  
 }
 
+.navBar-link + .navBar-link {
+  margin-left: 16px;
+}
+
 /* Set the size of an icon in the link, if any */
 .navBar-link > svg {
   width: 1rem;
@@ -80,7 +36,5 @@
 
 /* A container that holds links that should be aligned to the right side of a sidebar */
 .navBar-rightItems {
-  margin-left: auto;
-  display: flex;
-  gap: 16px; 
+  margin-left: auto; 
 }

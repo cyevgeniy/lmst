@@ -33,6 +33,7 @@ export class LStatus {
     status: Status,
     permissions?: ActionPermissions,
     clickableContent?: boolean
+    singleView?: boolean
   }) {
     const {
       status,
@@ -59,10 +60,10 @@ export class LStatus {
 
     const dispName = this.renderedStatus.account.display_name
 
-    this.sensitiveBtn = button('', 'Show sensitive content')
+    this.sensitiveBtn = button('status-showSensitiveContent', 'Show sensitive content')
 
     this.sensitiveEl = this._status.sensitive
-      ? h('div', {class: 'show-sensitive-content'}, [this.sensitiveBtn])
+      ? h('div', {class: 'status-sensitiveContent'}, [this.sensitiveBtn])
       : undefined
 
     this.avatarLink = h('a', {
@@ -73,19 +74,19 @@ export class LStatus {
 
     this.statusContent = this._status.sensitive
       ? undefined
-      : h('div', {class: ['status__content', this.clickableContent ? 'status__content--clickable': ''], innerHTML: parseContent(this._status.content)} )
+      : h('div', {class: ['status-content', this.clickableContent ? 'status-content--clickable': ''], innerHTML: parseContent(this._status.content)} )
 
-    this.el = div('status', [
+    this.el = div(['status', opts.singleView ? 'status--isSingle' : ''], [
       this.isReblogged
-        ? div( 'status--boosted', [span('', `${dispName} boosted: `)])
+        ? div( 'status-boostedText', [span('', `${dispName} boosted: `)])
         : undefined,
-      div('status__header', [
+      div('status-header', [
         this.avatarLink,
-        div('status__username', [
-          span('', `${this._status.account?.display_name || ''}`),
+        div('status-profileInfo', [
+          span('status-profileName', `${this._status.account?.display_name || ''}`),
           this.linkToAccount(),
         ]),
-        span('status__create-date', `${this.getCreateDate()}`),
+        span('status-createDate', `${this.getCreateDate()}`),
       ]),
       this.statusContent,
       this._status.sensitive
@@ -97,9 +98,13 @@ export class LStatus {
     this.addEventListeners()
   }
 
+  set withBorder(v: boolean) {
+    v && this.el.classList.add('status--withBorder')
+  }
+
   private linkToAccount() {
     return a(
-      'username__acc',
+      'status-profileLink',
       this._status.account?.url,
       this._status.account?.acct || ''
     )
@@ -112,8 +117,8 @@ export class LStatus {
   private getAttachmentsEl(): HTMLElement | undefined {
     const mediaCnt = this._status.media_attachments.length
     const contClass = mediaCnt > 1
-      ? 'status-attachment-container--2col'
-      : 'status-attachment-container'
+      ? 'status-attachment2Col'
+      : 'status-attachment'
 
     const result = mediaCnt > 0
       ? div(contClass)
@@ -135,18 +140,18 @@ export class LStatus {
           href: attachment.preview_url,
           target: '_blank'
         },
-        class: 'status-attachment--link'
+        class: 'status-linkAttachment'
       },
       [
         h('img', {
-        class: 'status-attachment--image',
+        class: 'status-imageAttachment',
         attrs: { src: attachment.preview_url }
         })
       ])
 
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {
-        class: 'status-attachment--video',
+        class: 'status-videoAttachment',
         attrs: {
           src: attachment.url,
           controls: '',

@@ -1,0 +1,141 @@
+/* The main container for the list of statuses */
+.statusesList {
+	padding: 4px;
+}
+
+/* The 'Load more' button */
+.statusesList-loadMore {}
+
+
+/* A single status */
+.status {
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+/* This modifier adds border to the top of the status, so it looks better inside a list of statuses */
+.status--withBorder {
+  border-top: 1px solid rgb(235, 238, 240);  
+}
+
+/* When we view a single status, increase its font size */
+.status--isSingle {
+  font-size: 1.1rem;
+}
+
+/* A block with a text that indicates that the status was boosted */
+.status-boostedText {
+  margin-bottom: 8px;
+  color: darkgray;
+}
+
+/* A header block of a status, with avatar, username and status date */
+.status-header {
+	display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+/* A profile avatar */
+.status-avatarLink {}
+
+/* A wrapper around profile info - profile name and link to the profile */
+.status-profileInfo {
+	display: flex;
+  gap: 2px;
+  flex-direction: column;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Profile name, empty for now */
+.status-profileName {
+	font-weight: 500;
+}
+
+/* Link to a profile */
+.status-profileLink {
+	font-size: 14px;
+  color: gray;
+  text-decoration: none;
+}
+
+.status-profileLink:hover {
+	text-decoration: underline;
+}
+
+/* Status creation date */
+.status-createDate {
+	color: gray;
+  font-style: italic;
+  margin-left: auto;
+  align-self: start;
+  font-size: 14px;
+}
+
+/* A wrapper arount status content */
+.status-content {
+	overflow: hidden;
+}
+
+/* A state that indicates that status content can be clicked with a mouse */
+.status-content--clickable p {
+	cursor: pointer;
+}
+
+/* A wrapper around buttons with status actions */
+.status-buttons {
+	margin-top: 12px;
+  display: flex;
+  gap: 12px;
+}
+
+/* Each status action button has a background on hover */
+.status-button:hover {
+	background-color: rgb(235, 238, 240);
+}
+
+/* This state is used for the 'boost' button when the status is already boosted */
+.status-button-isBoosted {
+	color: red;
+}
+
+/* Basic container for attachments */
+.status-attachment {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* 2-column grid container for attachments */
+.status-attachment2Col {
+	display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.status-imageAttachment {
+  height: 100%;
+  border-radius: 4px;
+}
+/* .status-linkAttachment is used to wrap image in a link */
+.status-imageAttachment, .status-videoAttachment, .status-linkAttachment {
+	width: 100%;
+}
+
+/* Container for sensitive content */
+.status-sensitiveContent {
+  margin-top: 8px;
+}
+
+/* A button that shows sensitive content */
+.status-showSensitiveContent {
+  width: 100%;
+}
+
+

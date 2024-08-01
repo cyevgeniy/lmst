@@ -33,7 +33,7 @@ export class LStatusButtons {
     this.createButtons()
 
     this.el = h('div', {
-      class: 'status__buttons' },
+      class: 'status-buttons' },
       [
         this.boostBtn,
         this.deleteBtn,
@@ -47,7 +47,7 @@ export class LStatusButtons {
   private createBoostBtn() {
     const classes: string[] = ['icon-button', 'status-button']
     if (this.status.reblogged)
-      classes.push('status-button--boosted')
+      classes.push('status-button-isBoosted')
 
     return h('button', {class: classes, innerHTML: boost})
   }
@@ -69,9 +69,9 @@ export class LStatusButtons {
 
         // Toggle boosted class
         if (!this.status.reblogged)
-          this.boostBtn?.classList.add('status-button--boosted')
+          this.boostBtn?.classList.add('status-button-isBoosted')
         else
-          this.boostBtn?.classList.remove('status-button--boosted')
+          this.boostBtn?.classList.remove('status-button-isBoosted')
 
         this.status.reblogged !== undefined && (this.status.reblogged = !this.status.reblogged)
     })

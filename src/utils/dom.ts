@@ -58,7 +58,7 @@ export function h<T extends TagName>(nodeName: T, props?: NodeProps | null, chil
   return el
 }
 
-export function div(classname: string | string[], childs: Array<HTMLElement | undefined> = []): HTMLElement {
+export function div(classname: string | string[], childs: Array<HTMLElement | undefined> = []) {
   return h('div', {class: classname }, childs)
 }
 

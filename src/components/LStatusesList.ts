@@ -1,6 +1,6 @@
 import type { Status } from '../types/shared.d.ts'
 import { LStatus } from './LStatus'
-import { h } from '../utils/dom'
+import { div } from '../utils/dom'
 import { StatusManager } from '../appManager.ts'
 
 interface StatusesListConstructorParams {
@@ -15,7 +15,7 @@ export class LStatusesList {
 
   constructor(opts: StatusesListConstructorParams) {
     this.sm = opts.sm
-    this.el = h('div', {class: 'statuses-list'})
+    this.el = div('statusesList')
 
     this.addStatuses(opts.statuses)
 
@@ -45,7 +45,7 @@ export class LStatusesList {
       statusComp.onContentClick((s) => {
         this.sm.navigateToStatus(s)
       })
-      statusComp.el.classList.add('statuses-list__status')
+      statusComp.el.classList.add('status--withBorder')
       this.el?.appendChild(statusComp.el)
     }
   }

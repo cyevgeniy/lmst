@@ -1,30 +1,27 @@
 import { LInfo } from "../components/LInfo"
-import { Layout } from "../components/Layout"
+import { createLayout } from "../components/Layout"
 import type { Mediator } from '../types/shared'
 
-export interface IPage {
+export interface Page {
   mount: (params?: Record<string, string>) => void
 }
 
-export class Page  {
-  protected root: HTMLElement | undefined
-  protected layout: Layout
-  private pageMediator: Mediator
+export function createMainPage(pm: Mediator) {
+  const root = document.getElementById('app')
 
-  constructor(pm: Mediator) {
-    this.pageMediator = pm
-    this.root = document.getElementById('app') ?? undefined
+  if (!root)
+    throw new Error('Unable to locate application root element')
 
-    if (!this.root)
-      throw new Error('Unable to locate application root element')
+  let layout= createLayout(root, pm)
+  new LInfo(layout.right)
 
-    this.layout = new Layout(this.root, this.pageMediator)
-    new LInfo(this.layout.right)
+  function clearPage() {
+    root && (root.innerHTML = '')
   }
 
-  public mount() {
-    this.root!.innerHTML = ''
-    this.layout = new Layout(this.root!, this.pageMediator)
-    new LInfo(this.layout.right)
+  return {
+    root,
+    ...layout,
+    clearPage,
   }
 }

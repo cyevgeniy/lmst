@@ -1,89 +1,75 @@
-import { Page } from '../utils/page'
-import type { IPage } from '../utils/page'
 import { onClick } from '../utils/events'
 import { h } from '../utils/dom'
-import type { StatusManager, AppManager } from '../appManager'
+import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
 import { fullScreen } from '../components/Icons'
 
-export class ComposePage extends Page implements IPage {
-  private el: HTMLElement
-  private textToolbar: HTMLDivElement
-  private text: HTMLTextAreaElement
-  private btn: LButton
-  private zenModeBtn: HTMLButtonElement
-  private statusManager: StatusManager
-  private composeZen?: LComposeZen
+export function createComposePage(root: HTMLElement, appManager: AppManager) {
+  root.innerHTML = ''
+  const text = h('textarea', {
+    attrs: {
+      maxLength: '300',
+      rows: '10',
+      placeholder: 'What\'s on your mind?'
+    },
+    onInput,
+  })
 
-  constructor(appManager: AppManager) {
-    super(appManager.globalMediator)
-    this.statusManager = appManager.statusManager
+  const btn = new LButton('Post', ['compose__button'])
+  const zenModeBtn = h('button',{class: ['icon-button', 'ml-auto', 'compose-toolbar__zen'], innerHTML: fullScreen})
 
-    this.text = h('textarea', {
-      attrs: {
-        maxLength: '300',
-        rows: '10',
-        placeholder: 'What\'s on your mind?'
-      },
-    }) as HTMLTextAreaElement
+  const textToolbar = h('div', {class: 'compose-toolbar'}, [zenModeBtn])
 
-    this.btn = new LButton('Post', ['compose__button'])
-    this.zenModeBtn = h('button',{class: ['icon-button', 'ml-auto', 'compose-toolbar__zen'], innerHTML: fullScreen})
+  let composeZen: LComposeZen
 
-    this.textToolbar = h('div', {class: 'compose-toolbar'}, [this.zenModeBtn])
-    // By default the text in the
-    this.setBtnStatus(this.text)
+  function setBtnStatus(area: HTMLTextAreaElement) {
+    btn.disabled = area.value.length === 0
+  }
 
-    onClick(this.zenModeBtn, () => this.showZen())
+  function onComposeZenClose() {
+    const msg = composeZen!.getText()
+    text.value = msg
+    setBtnStatus(text)
+    composeZen!.el.remove()
+  }
 
-    this.btn.onClick = async () => {
-      try {
-        await this.statusManager.postStatus({statusText: this.text.value})
-        this.text.value = ''
-      } catch (e: unknown) {
-        // show error to the user
-        if (e instanceof Error)
-          alert(e.message)
-      }
+  function showZen() {
+    composeZen = new LComposeZen(el)
+    composeZen.setText(text.value)
+    composeZen.onClose(() => onComposeZenClose())
+  }
+
+  // By default the text in the
+  setBtnStatus(text)
+
+  onClick(zenModeBtn, () => showZen())
+
+  btn.onClick = async () => {
+    try {
+      await appManager.statusManager.postStatus({statusText: text.value})
+      text.value = ''
+    } catch (e: unknown) {
+      // show error to the user
+      if (e instanceof Error)
+        alert(e.message)
     }
-
-    this.text.addEventListener('input', (e) => {
-      const area = e.target as HTMLTextAreaElement
-      this.setBtnStatus(area)
-    })
-
-     this.el = h(
-       'div',
-       { class: 'compose__wrapper' },
-       [
-	 this.textToolbar,
-         this.text,
-         h('div', { class: 'compose__post'}, [this.btn.el]),
-       ])
   }
 
-  private showZen() {
-    this.composeZen = new LComposeZen(this.el)
-    this.composeZen.setText(this.text.value)
-    this.composeZen.onClose(() => this.onComposeZenClose())
+  function onInput(e: Event) {
+    const area = e.target as HTMLTextAreaElement
+    setBtnStatus(area)
   }
 
-  private onComposeZenClose() {
-    const text = this.composeZen!.getText()
-    this.text.value = text
-    this.setBtnStatus(this.text)
-    this.composeZen!.el.remove()
+  const el = h(
+     'div',
+     { class: 'compose__wrapper' },
+     [
+        textToolbar,
+        text,
+        h('div', { class: 'compose__post'}, [btn.el]),
+  ])
 
-  }
-
-  private setBtnStatus(area: HTMLTextAreaElement) {
-    this.btn.disabled = area.value.length === 0
-  }
-
-  public mount() {
-    super.mount()
-    this.layout.middle.appendChild(this.el)
-    this.text.focus()
-  }
+  root.appendChild(el)
+  text.focus()
 }

@@ -1,39 +1,44 @@
 import '../assets/css/main.css'
 import { lRouter } from './router'
-import { TimelinePage } from './pages/timeline'
-import { ProfilePage } from './pages/profile'
+import { createTimelinePage } from './pages/timeline'
+import { createProfilePage } from './pages/profile'
 import { TagsPage } from './pages/tags'
-import { OAuthPage } from './pages/oauth'
-import { ComposePage } from './pages/compose'
+import { createOAuthPage } from './pages/oauth'
+import { createComposePage } from './pages/compose'
 import { ProfileTimelineManager, AppManager } from './appManager'
-import { StatusPage } from './pages/status'
+import { createStatusPage } from './pages/status'
+import { createMainPage } from './utils/page'
 
 const appManager = new AppManager()
-const composePage = new ComposePage(appManager)
-const timelinePage = new TimelinePage(appManager)
-const tagsPage = new TagsPage(appManager)
-const statusPage = new StatusPage(appManager)
+const mainPage = createMainPage(appManager.globalMediator)
+// const somePage = composePage(mainPage.middle, appManager)
+// lRouter.on('/', (params) => createComposePage(mainPage.middle, appManager))
 
-const oauthPage = new OAuthPage(appManager)
+// const composePage = new ComposePage(appManager)
+// const timelinePage = new TimelinePage(appManager)
+// const tagsPage = new TagsPage(appManager)
 
-lRouter.on('/', () => timelinePage.mount())
+// const oauthPage = new OAuthPage(appManager)
+
+lRouter.on('/', () => createTimelinePage(mainPage.middle, appManager))
 
 // For profiles, always create new instances of profilePages, so that they won't
 // share the same timeline cache
 // BTW, maybe we want to "reset" timeline manager state in mount() function instead
 // of creation of new instances each time
-function createProfilePage() {
-  const p = new ProfilePage({
+function _createProfilePage(params?: Record<string, string>) {
+  const p = createProfilePage(mainPage.middle, {
     pm: new ProfileTimelineManager({user: appManager.user}),
     pageMediator: appManager.globalMediator,
-    sm: appManager.statusManager
+    sm: appManager.statusManager,
+    params,
   })
 
   return p
 }
 
-lRouter.on('/profile/:webfinger', (params) => (createProfilePage()).mount(params))
-lRouter.on('/oauth', () => oauthPage.mount())
-lRouter.on('/compose', () => composePage.mount())
-lRouter.on('/tags/:tag', (params) => tagsPage.mount(params))
-lRouter.on('/status/:server/:webfinger/:id', (params) => statusPage.mount(params))
+lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
+lRouter.on('/oauth', () => createOAuthPage(mainPage.root, appManager))
+lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
+// lRouter.on('/tags/:tag', (params) => tagsPage.mount(params))
+lRouter.on('/status/:server/:webfinger/:id', (params) => createStatusPage(mainPage.middle, appManager, params))

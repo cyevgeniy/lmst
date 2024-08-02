@@ -1,4 +1,3 @@
-import { IPage, Page } from '../utils/page'
 import type { Mediator } from '../types/shared'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
@@ -9,33 +8,25 @@ import { ProfileTimelineManager, StatusManager } from '../appManager'
 interface ProfilePageConstructorParams {
   pm: ProfileTimelineManager
   pageMediator: Mediator
-  sm: StatusManager
+  sm: StatusManager,
+  params?: Record<string, string>
 }
 
+export function createProfilePage(
+  root: HTMLElement,
+  opts: ProfilePageConstructorParams
+) {
+    root.innerHTML = ''
+    let profileId = ''
 
-export class ProfilePage extends Page implements IPage {
-  private el: HTMLElement
-  private statusesList: LStatusesList
-  private profileHeaderComponent: LProfileHeader
-  private profileId: string
-  private loadMoreBtn: LLoadMoreBtn
-  private noMoreDataText: HTMLDivElement
+    const noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
+    hide(noMoreDataText)
 
-  private profileManager: ProfileTimelineManager
+    const loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() })
+    const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
-  constructor(opts: ProfilePageConstructorParams) {
-    super(opts.pageMediator)
-    this.profileManager = opts.pm
-    this.profileId = ''
-
-    this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
-    hide(this.noMoreDataText)
-
-    this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses() })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
-
-    const timelineContainer = div('timeline-container', [])
-    this.statusesList = new LStatusesList({
+    const timelineContainer = div('timeline-container')
+    let statusesList = new LStatusesList({
       root: timelineContainer,
       statuses: [],
       sm: opts.sm
@@ -43,65 +34,59 @@ export class ProfilePage extends Page implements IPage {
 
     timelineContainer.appendChild(loadMoreBtnContainer)
 
-    this.el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
-    this.profileHeaderComponent = new LProfileHeader(this.el)
-    this.el.appendChild(timelineContainer)
-  }
+    const el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
+    const profileHeaderComponent = new LProfileHeader(el)
+    el.appendChild(timelineContainer)
+    root.appendChild(el)
 
-  public mount(params?: Record<string, string>) {
-    super.mount()
-    this.layout.middle.innerHTML = ''
-    this.layout.middle.appendChild(this.el)
-    this.onParamsChange(params)
-  }
-
-  private async loadStatuses() {
-    if (!this.profileId)
-      return
-
-    // xxx: check for errors here or in profileManager and return an
-    // empty array?
-    this.loadMoreBtn.loading = true
-    const statuses = await this.profileManager.loadStatuses()
-
-    if (this.profileManager.noMoreData) {
-      show(this.noMoreDataText)
-      this.loadMoreBtn.visible = false
-    } else {
-      hide(this.noMoreDataText)
-      this.loadMoreBtn.visible = true
+    async function loadStatuses() {
+      if (!profileId)
+        return
+  
+      // xxx: check for errors here or in profileManager and return an
+      // empty array?
+      loadMoreBtn.loading = true
+      const statuses = await opts.pm.loadStatuses()
+  
+      if (opts.pm.noMoreData) {
+        show(noMoreDataText)
+        loadMoreBtn.visible = false
+      } else {
+        hide(noMoreDataText)
+        loadMoreBtn.visible = true
+      }
+  
+      loadMoreBtn.loading = false
+      statusesList.addStatuses(statuses)
     }
 
-    this.loadMoreBtn.loading = false
-    this.statusesList.addStatuses(statuses)
-  }
-
-  // Creates a 'not found' message
-  private createNotFound(webfinger: string) {
-    this.el.replaceChildren(
-      h('div', {
-        class: 'profile__notfound'},
-        `Account ${webfinger} was not found`
-       )
-    )
-  }
-
-  public async onParamsChange(params?: Record<string, string>) {
-    const webfinger = params?.webfinger ?? ''
-
-    this.profileManager.profileWebfinger = webfinger
-
-
-    try {
-      const resp = await this.profileManager.getAccount()
-      this.profileId = resp.id
-      this.profileHeaderComponent.update(resp)
-    }
-    catch(e: unknown) {
-      this.createNotFound(webfinger)
-      console.error(e)
+    // Creates a 'not found' message
+    function createNotFound(webfinger: string) {
+      el.replaceChildren(
+        h('div', {
+          class: 'profile__notfound'},
+          `Account ${webfinger} was not found`
+        )
+      )
     }
 
-    await this.loadStatuses()
-  }
+    async function loadProfileInfo(params?: Record<string, string>) {
+      const webfinger = params?.webfinger ?? ''
+  
+      opts.pm.profileWebfinger = webfinger
+  
+      try {
+        const resp = await opts.pm.getAccount()
+        profileId = resp.id
+        profileHeaderComponent.update(resp)
+      }
+      catch(e: unknown) {
+        createNotFound(webfinger)
+        console.error(e)
+      }
+  
+      await loadStatuses()
+    }
+
+    loadProfileInfo(opts.params) 
 }

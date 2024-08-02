@@ -1,75 +1,56 @@
-import { IPage, Page } from '../utils/page'
 import { div } from '../utils/dom'
 import { Status } from '../types/shared'
 import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
 import { LStatusesList } from '../components/LStatusesList'
 
-export class StatusPage extends Page implements IPage {
+export async function createStatusPage(
+  root: HTMLElement,
+  appManager: AppManager,
+  params?: Record<string, string>
+) {
+  const statusId = params?.id ?? ''
+  const server = `https://${params?.server ?? ''}`
 
-    private el: HTMLDivElement
-    private status: Status | undefined
-    private statusesList: LStatusesList
-    private statusRoot: HTMLDivElement
-    private descendantsRoot: HTMLDivElement
-    private appManager: AppManager
-    private server: string
-    private statusId: string
+  root.innerHTML = ''
 
-    constructor(appManager: AppManager) {
-        super(appManager.globalMediator)
-        this.appManager = appManager
-        this.status = undefined
-        this.descendantsRoot = div('status-descendants') as HTMLDivElement
-        this.statusesList = new LStatusesList({
-            sm: appManager.statusManager,
-            root: this.descendantsRoot,
-            statuses: [],
-        })
-        this.statusRoot = div('')
-        this.el = div('', [this.statusRoot, this.descendantsRoot]) as HTMLDivElement
-        this.server = ''
-        this.statusId = ''
+  let status: Status | undefined = undefined
+
+  const descendantsRoot = div('status-descendants')
+  const statusesList = new LStatusesList({
+      sm: appManager.statusManager,
+      root: descendantsRoot,
+      statuses: [],
+  })
+  const statusRoot = div('')
+  const el = div('', [statusRoot, descendantsRoot])
+
+  root.appendChild(el)
+
+  async function loadStatus() {
+    const resp = await appManager.statusManager.getStatus(statusId, {server: server})
+    status = resp.ok ? resp.value : undefined
+
+    renderStatus()
+}
+
+    async function loadDescendants() {
+      statusesList.clearStatuses()
+
+      const res = await appManager.statusManager.getStatusContext(statusId, {server: server})
+      if (res.ok)
+        statusesList.addStatuses(res.value.descendants)
     }
 
-    private async loadStatus() {
-        const resp = await this.appManager.statusManager.getStatus(this.statusId, {server: this.server})
-        this.status = resp.ok ? resp.value : undefined
-
-        this.renderStatus()
+  function renderStatus() {
+    if (status) {
+        const st = new LStatus({status: status, clickableContent: false, singleView: true})
+        statusRoot.appendChild(st.el)
+    } else {
+        statusRoot.innerText = 'No status'
     }
+  }
 
-    private async loadDescendants() {
-        this.statusesList.clearStatuses()
-
-        const res = await this.appManager.statusManager.getStatusContext(this.statusId, {server: this.server})
-        if (res.ok)
-            this.statusesList.addStatuses(res.value.descendants)
-    }
-
-    private renderStatus() {
-        if (this.status) {
-            const st = new LStatus({status: this.status, clickableContent: false, singleView: true})
-            this.statusRoot.appendChild(st.el)
-        } else {
-            this.statusRoot.innerText = 'No status'
-        }
-    }
-
-    public mount (params?: Record<string, string>) {
-        super.mount()
-        this.layout.middle.innerHTML = ''
-		this.statusRoot.innerHTML = ''
-        this.layout.middle.appendChild(this.el)
-        this.onParamsChange(params)
-    }
-
-    public async onParamsChange(params?: Record<string, string>) {
-        this.statusId = params?.id ?? ''
-        this.server = `https://${params?.server ?? ''}`
-
-        await this.loadStatus()
-        await this.loadDescendants()
-      }
-
+  await loadStatus()
+  await loadDescendants()
 }

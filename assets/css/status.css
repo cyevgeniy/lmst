@@ -139,3 +139,7 @@
 }
 
 
+/* A container for the status replies on the single-status page */
+.status-descendants {
+  margin-top: 2rem;
+}

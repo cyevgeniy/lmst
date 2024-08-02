@@ -26,7 +26,7 @@ export class StatusPage extends Page implements IPage {
             root: this.descendantsRoot,
             statuses: [],
         })
-        this.statusRoot = div('status-root')
+        this.statusRoot = div('')
         this.el = div('', [this.statusRoot, this.descendantsRoot]) as HTMLDivElement
         this.server = ''
         this.statusId = ''

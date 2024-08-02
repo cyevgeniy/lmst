@@ -4,6 +4,15 @@ export interface NodeProps {
   attrs?: Record<string, string>
 }
 
+// Normalizes T | T[] to T[]
+function toArray<T>(p: T | T[] | null | undefined): T[] {
+  return p
+    ? Array.isArray(p)
+      ? p
+      : [p]
+    : []
+}
+
 /**
  * This function is something like `h` function in Vue, but much simpler
  * It's just a convenient way to create Html elements and apply styles and
@@ -25,31 +34,40 @@ export interface NodeProps {
 
  */
 type TagName = keyof HTMLElementTagNameMap
-export function h<T extends TagName>(nodeName: T, props?: NodeProps | null, childs?: Array<HTMLElement | undefined> | string) {
+type HTMLEventHandler = {
+  [K in keyof HTMLElementEventMap as `on${Capitalize<K>}`]? : (evt: HTMLElementEventMap[K]) => void
+}
+export function h<T extends TagName>(
+  nodeName: T,
+  props?: NodeProps & HTMLEventHandler | null,
+  childs?: Array<HTMLElement | undefined> | string
+) {
   const el = document.createElement<T>(nodeName)
 
-  const _class = props?.class ?
-    typeof props.class === 'string'
-    ? [props.class]
-    : props.class
-  : undefined
+  // class shouldn't be an empty string, so filter them
+  const _class = toArray(props?.class).filter(Boolean)
 
-  _class?.forEach(className => className && el.classList.add(className))
+  _class && el.classList.add(..._class)
 
-  if (props?.attrs) {
-    for (const attr in props.attrs) {
-      el.setAttribute(attr, props.attrs[attr])
+  for (const k in props) {
+    if (k.startsWith('on')) {
+      const evt = k.slice(2).toLowerCase()
+      // @ts-expect-error We know that props[k] will be a valid event handler
+      el.addEventListener(evt, props[k])
     }
   }
 
-  if (props?.innerHTML)
-    el.innerHTML = props.innerHTML
+  if (props?.attrs) {
+    for (const attr in props.attrs)
+      el.setAttribute(attr, props.attrs[attr])
+  }
+
+  props?.innerHTML && (el.innerHTML = props.innerHTML)
 
   if (childs) {
     if (Array.isArray(childs))
-      childs?.forEach(child => {
-        if (child)
-          el.appendChild(child)
+      childs.forEach(child => {
+        child && el.appendChild(child)
       })
     else if (typeof childs === 'string')
       el.textContent = childs

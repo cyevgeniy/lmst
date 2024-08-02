@@ -55,3 +55,16 @@ t.test('h with childs', t => {
 
   t.end()
 })
+
+t.test('h with event handlers', t => {
+  let v = 0
+  function inc() {
+    v += 1
+  }
+
+  const el = h('div', {onClick: inc})
+  el.click()
+  t.equal(v, 1)
+
+  t.end()
+})

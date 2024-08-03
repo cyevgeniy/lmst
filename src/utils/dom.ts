@@ -106,3 +106,23 @@ export function hide(el: HTMLElement) {
 export function show(el: HTMLElement) {
   el.style.display = ''
 }
+
+export function useCommonEl<T extends HTMLElement>(el: T) {
+  function _show() {
+    show(el)
+  }
+
+  function _hide() {
+    hide(el)
+  }
+
+  function setText(t: string) {
+    el.innerText = t
+  }
+
+  return {
+    show: _show,
+    hide: _hide,
+    setText,
+  }
+}

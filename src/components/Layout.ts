@@ -7,8 +7,7 @@ export function createLayout(root: HTMLElement, pm: Mediator) {
   const right = div('layout__right')
   const footer = div('layout__footer')
 
-  new LNav(root, pm)
-
+  root.appendChild(LNav(pm).el)
   root.appendChild(div('layout__container', [
     middle,
     right,

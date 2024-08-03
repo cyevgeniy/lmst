@@ -1,4 +1,4 @@
-import { h } from '../utils/dom'
+import { childs, h } from '../utils/dom'
 import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
@@ -27,23 +27,23 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
   const textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn])
 
-  let composeZen: LComposeZen
+  let composeZen: ReturnType<typeof LComposeZen>
 
   function setBtnStatus(area: HTMLTextAreaElement) {
     btn.disabled = area.value.length === 0
   }
 
   function onComposeZenClose() {
-    const msg = composeZen!.getText()
+    const msg = composeZen!.text
     text.value = msg
     setBtnStatus(text)
     composeZen!.el.remove()
   }
 
   function showZen() {
-    composeZen = new LComposeZen(el)
-    composeZen.setText(text.value)
-    composeZen.onClose(() => onComposeZenClose())
+    composeZen = LComposeZen({onClose: () => onComposeZenClose(), text: text.value})
+    childs(el, [composeZen])
+    composeZen.setFocus()
   }
 
   // By default the text in the

@@ -1,51 +1,46 @@
 import { childs, div, h } from '../utils/dom'
-import { onClick } from '../utils/events'
 import { exitFullScreen } from '../components/Icons'
 
-export class LComposeZen {
-  public readonly el: HTMLElement
-  private textarea: HTMLTextAreaElement
-  private btn: HTMLButtonElement
-  private onCloseCb: () => void
+export interface ComposeZenProps {
+  text?: string
+  onClose: () => void
+}
 
-  constructor(root: HTMLElement) {
-    this.btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: exitFullScreen})
-    this.el = div('compose-zen')
-    const wrapper = div('compose-zen-wrapper')
-    this.textarea = h('textarea', {
-      className: 'compose-zen__textarea',
-      attrs: {
-        placeholder: 'What is on your mind?'
-      }
-    })
+export function LComposeZen(props: ComposeZenProps) {
+  const { onClose = () => {}} = props
+  const btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: exitFullScreen, onClick: onClose})
+  const el = div('compose-zen')
+  const wrapper = div('compose-zen-wrapper')
+  const textarea = h('textarea', {
+    className: 'compose-zen__textarea',
+    attrs: {
+      placeholder: 'What is on your mind?'
+    },
+    onKeyup,
+  })
+  props.text && (textarea.value = props.text)
 
-    childs(wrapper, [this.textarea, this.btn])
+  function setFocus() {
+    textarea.focus()
+  }
+
+  function onKeyup(e: KeyboardEvent) {
+    if (e.key === 'Escape')
+      onClose() 
+  }
+
+  childs(wrapper, [textarea, btn])
   
-    this.el.appendChild(wrapper)
-    root.appendChild(this.el)
-    this.setFocus()
-    this.onCloseCb = () => {}
-    onClick(this.btn, () => this.onCloseCb())
+  el.appendChild(wrapper)
 
-    this.textarea.addEventListener('keyup', (e: KeyboardEvent) => {
-      if (e.key === 'Escape')
-	this.onCloseCb()
-    })
-  }
-
-  public getText() {
-    return this.textarea.value
-  }
-
-  public setText(t: string) {
-    this.textarea.value = t
-  }
-
-  public setFocus() {
-    this.textarea.focus()
-  }
-
-  public onClose(cb: () => void) {
-    this.onCloseCb = cb
+  return {
+    el,
+    get text() {
+      return textarea.value
+    },
+    set text(t: string) {
+      textarea.value = t
+    },
+    setFocus,
   }
 }

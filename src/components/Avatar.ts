@@ -1,17 +1,26 @@
-import { h } from '../utils/dom'
+import { HTMLEventHandler, h } from '../utils/dom'
 
-export class LAvatar {
-  public el: HTMLElement
+export type AvatarProps = {
+  img: string
+  size?: 'md' | 'lg'
+} & HTMLEventHandler
 
-  constructor(img: string, size: 'md' | 'lg' = 'md') {
-    this.el = h('img', {className: ['avatar', size === 'md' ? 'avatar--md' : 'avatar--lg'], attrs: {src: img }})
-  }
+export function LAvatar(props: AvatarProps) {
+  const { img, size = 'md', ...handlers } = props
+  const el = h(
+    'img',
+    {
+      className: ['avatar', size === 'md' ? 'avatar--md' : 'avatar--lg'],
+      attrs: {src: img },
+      ...handlers
+    }
+  )
 
-  /**
-   * Update avatar's image
-   */
-  updateImage(img?: string) {
-    // clear image on empty avatar url
-    this.el.setAttribute('src', img ?? '')
+  return {
+    el,
+    set img(v: string) {
+      el.setAttribute('src', v ?? '')
+    }
   }
 }
+

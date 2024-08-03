@@ -7,13 +7,13 @@ export class LProfileHeader {
   private el: HTMLElement
   private displayNameEl: HTMLElement
   private noteEl: HTMLElement
-  private avatar: LAvatar
+  private avatar: ReturnType<typeof LAvatar>
 
   constructor(root: HTMLElement, account?: Account) {
     this.displayNameEl = div('profileHeader-name')
     this.noteEl = div('profileHeader-note')
 
-    this.avatar = new LAvatar('', 'lg')
+    this.avatar = LAvatar({img: '', size: 'lg'})
     this.el = div('profileHeader', [
       div('profileHeader-userInfo', [
         this.avatar.el,
@@ -33,6 +33,6 @@ export class LProfileHeader {
     this.displayNameEl.innerText = account?.display_name ?? ''
     const parsedContent = parseContent(account?.note ?? '')
     this.noteEl.innerHTML = parsedContent
-    this.avatar.updateImage(account?.avatar)
+    this.avatar.img = account?.avatar ?? ''
   }
 }

@@ -15,7 +15,7 @@ export class LStatus {
   public el: HTMLElement
   // Link wrapper for avatar
   private avatarLink: HTMLAnchorElement
-  private avatar: LAvatar
+  private avatar: ReturnType<typeof LAvatar>
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined
   private statusContent: HTMLDivElement | undefined
@@ -46,7 +46,7 @@ export class LStatus {
     this.isReblogged = Boolean(status.reblog)
     this.renderedStatus = status
 
-    this.avatar = new LAvatar(this._status.account.avatar)
+    this.avatar = LAvatar({img: this._status.account.avatar})
     this.statusButtons = new LStatusButtons({status, permissions})
     this.statusButtons.onBoostClick((boosted: boolean) => {
       this._onBoost && this._onBoost(this._status, boosted)

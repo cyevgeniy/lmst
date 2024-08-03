@@ -88,5 +88,9 @@ export function createProfilePage(
       await loadStatuses()
     }
 
-    loadProfileInfo(opts.params) 
+    loadProfileInfo(opts.params)
+
+    return {
+      el,
+    }
 }

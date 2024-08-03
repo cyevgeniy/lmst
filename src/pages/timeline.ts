@@ -3,7 +3,7 @@ import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { div, h, hide } from '../utils/dom'
 import type { AppManager } from '../appManager.ts'
 
-export async function createTimelinePage(
+export function createTimelinePage(
   root: HTMLElement,
   appManager: AppManager,
 ) {
@@ -46,6 +46,10 @@ export async function createTimelinePage(
 
     root.appendChild(el)
     loadMore()
+
+    return {
+      el,
+    }
     // For the home timeline, we want to cache already loaded timeline,
     // so that when the user returns to it, he can scroll from
     // the previous position

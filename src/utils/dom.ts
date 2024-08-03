@@ -116,7 +116,7 @@ export function useCommonEl<T extends HTMLElement>(el: T) {
   }
 }
 
-export interface ElLike<T extends HTMLElement> {
+export interface ElLike<T extends HTMLElement = HTMLElement> {
   el: T
 }
 

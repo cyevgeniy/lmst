@@ -1,6 +1,10 @@
 import { sanitizePath, getPathParameters } from './router-utils'
 
-export type RouteCallback = (params?: Record<string, string>) => void
+export interface RouteParams {
+  _path: string
+  [k: string]: string
+}
+export type RouteCallback = (params: RouteParams) => void
 
 export interface Router {
   /**
@@ -27,9 +31,12 @@ function createRouter(): Router {
 
     for (const [routePath, cb] of entries) {
       const matched = getPathParameters(routePath, path)
+      // Always store path in callback parameters
+      // It's used for caching content as a key for the history Map structure
+      const patchedParams = { ...matched.params, _path: path}
 
       if (matched.matched) {
-        _callback = () => cb(matched.params)
+        _callback = () => cb(patchedParams)
         break
       }
     }
@@ -45,7 +52,7 @@ function createRouter(): Router {
     findCallback(window.location.pathname)()
   })
 
-  function on(path: string, cb: (params?: Record<string, string>) => void) {
+  function on(path: string, cb: (params: RouteParams) => void) {
     callbacks.set(sanitizePath(path), cb)
   }
 

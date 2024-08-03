@@ -55,4 +55,8 @@ export function createTagsPage(
     appManager.tagsManager.clearStatuses()
 
     loadStatuses(tag)
+
+    return {
+      el,
+    }
 }

@@ -4,7 +4,7 @@ import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
 import { LStatusesList } from '../components/LStatusesList'
 
-export async function createStatusPage(
+export function createStatusPage(
   root: HTMLElement,
   appManager: AppManager,
   params?: Record<string, string>
@@ -51,6 +51,9 @@ export async function createStatusPage(
     }
   }
 
-  await loadStatus()
-  await loadDescendants()
+  loadStatus().then(loadDescendants)
+
+  return {
+    el,
+  }
 }

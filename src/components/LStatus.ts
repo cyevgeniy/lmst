@@ -63,7 +63,7 @@ export class LStatus {
     this.sensitiveBtn = button('status-showSensitiveContent', 'Show sensitive content')
 
     this.sensitiveEl = this._status.sensitive
-      ? h('div', {class: 'status-sensitiveContent'}, [this.sensitiveBtn])
+      ? h('div', {className: 'status-sensitiveContent'}, [this.sensitiveBtn])
       : undefined
 
     this.avatarLink = h('a', {
@@ -74,7 +74,7 @@ export class LStatus {
 
     this.statusContent = this._status.sensitive
       ? undefined
-      : h('div', {class: ['status-content', this.clickableContent ? 'status-content--clickable': ''], innerHTML: parseContent(this._status.content)} )
+      : h('div', {className: ['status-content', this.clickableContent ? 'status-content--clickable': ''], innerHTML: parseContent(this._status.content)} )
 
     this.el = div(['status', opts.singleView ? 'status--isSingle' : ''], [
       this.isReblogged
@@ -140,18 +140,18 @@ export class LStatus {
           href: attachment.preview_url,
           target: '_blank'
         },
-        class: 'status-linkAttachment'
+        className: 'status-linkAttachment'
       },
       [
         h('img', {
-        class: 'status-imageAttachment',
+        className: 'status-imageAttachment',
         attrs: { src: attachment.preview_url }
         })
       ])
 
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {
-        class: 'status-videoAttachment',
+        className: 'status-videoAttachment',
         attrs: {
           src: attachment.url,
           controls: '',

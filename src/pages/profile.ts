@@ -19,7 +19,7 @@ export function createProfilePage(
     root.innerHTML = ''
     let profileId = ''
 
-    const noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
+    const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
     hide(noMoreDataText)
 
     const loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() })
@@ -64,7 +64,7 @@ export function createProfilePage(
     function createNotFound(webfinger: string) {
       el.replaceChildren(
         h('div', {
-          class: 'profile__notfound'},
+          className: 'profile__notfound'},
           `Account ${webfinger} was not found`
         )
       )

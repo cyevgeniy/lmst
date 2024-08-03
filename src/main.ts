@@ -2,7 +2,7 @@ import '../assets/css/main.css'
 import { lRouter } from './router'
 import { createTimelinePage } from './pages/timeline'
 import { createProfilePage } from './pages/profile'
-import { TagsPage } from './pages/tags'
+import { createTagsPage } from './pages/tags'
 import { createOAuthPage } from './pages/oauth'
 import { createComposePage } from './pages/compose'
 import { ProfileTimelineManager, AppManager } from './appManager'
@@ -40,5 +40,5 @@ function _createProfilePage(params?: Record<string, string>) {
 lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
 lRouter.on('/oauth', () => createOAuthPage(mainPage.root, appManager))
 lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
-// lRouter.on('/tags/:tag', (params) => tagsPage.mount(params))
+lRouter.on('/tags/:tag', (params) => createTagsPage(mainPage.middle, appManager, params))
 lRouter.on('/status/:server/:webfinger/:id', (params) => createStatusPage(mainPage.middle, appManager, params))

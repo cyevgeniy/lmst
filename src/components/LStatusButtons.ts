@@ -33,7 +33,7 @@ export class LStatusButtons {
     this.createButtons()
 
     this.el = h('div', {
-      class: 'status-buttons' },
+      className: 'status-buttons' },
       [
         this.boostBtn,
         this.deleteBtn,
@@ -45,15 +45,15 @@ export class LStatusButtons {
   }
 
   private createBoostBtn() {
-    const classes: string[] = ['icon-button', 'status-button']
+    const className: string[] = ['icon-button', 'status-button']
     if (this.status.reblogged)
-      classes.push('status-button-isBoosted')
+      className.push('status-button-isBoosted')
 
-    return h('button', {class: classes, innerHTML: boost})
+    return h('button', {className, innerHTML: boost})
   }
 
   private createDeleteBtn() {
-    return h('button', {class: ['icon-button', 'status-button', 'ml-auto'], innerHTML: deleteIcon})
+    return h('button', {className: ['icon-button', 'status-button', 'ml-auto'], innerHTML: deleteIcon})
   }
 
   private createButtons() {

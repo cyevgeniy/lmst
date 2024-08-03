@@ -25,12 +25,12 @@ export class LNav {
     this.pageMediator = pm
     this.user = new User()
     this.profileLink = new LNavLink({text: '', link: '/'}) //h('a', {attrs: { href: '/' } })
-    this.authorize = h('div', {class: 'navBar-link' } , 'Login')
+    this.authorize = h('div', {className: 'navBar-link' } , 'Login')
     this.logoutLink = new LNavLink({text: 'Logout', link: '#'}) //h('a', {attrs: { href: '#' }}  , 'Logout')
     this.composeLink = new LNavLink({text: 'Compose', link: '/compose', icon: pen})
     this.mainLink = new LNavLink({text: 'Lmst', link: '/', icon: globe})
     this.signupContainer = h('div', {
-      class: 'navBar-rightItems'
+      className: 'navBar-rightItems'
     },[
       this.profileLink.el,
       this.authorize,

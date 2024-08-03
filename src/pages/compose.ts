@@ -1,4 +1,3 @@
-import { onClick } from '../utils/events'
 import { h } from '../utils/dom'
 import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
@@ -16,10 +15,17 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     onInput,
   })
 
-  const btn = new LButton('Post', ['compose__button'])
-  const zenModeBtn = h('button',{class: ['icon-button', 'ml-auto', 'compose-toolbar__zen'], innerHTML: fullScreen})
+  const btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick})
+  const zenModeBtn = h(
+    'button',
+    {
+      className: ['icon-button', 'ml-auto', 'compose-toolbar__zen'],
+      innerHTML: fullScreen,
+      onClick: showZen,
+    }
+  )
 
-  const textToolbar = h('div', {class: 'compose-toolbar'}, [zenModeBtn])
+  const textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn])
 
   let composeZen: LComposeZen
 
@@ -43,9 +49,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   // By default the text in the
   setBtnStatus(text)
 
-  onClick(zenModeBtn, () => showZen())
-
-  btn.onClick = async () => {
+  async function onPostClick() {
     try {
       await appManager.statusManager.postStatus({statusText: text.value})
       text.value = ''
@@ -63,11 +67,11 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
   const el = h(
      'div',
-     { class: 'compose__wrapper' },
+     { className: 'compose__wrapper' },
      [
         textToolbar,
         text,
-        h('div', { class: 'compose__post'}, [btn.el]),
+        h('div', { className: 'compose__post'}, [btn.el]),
   ])
 
   root.appendChild(el)

@@ -1,7 +1,7 @@
 import { LButton } from './LButton'
 
 export class LLoadMoreBtn {
-  private btn: LButton
+  private btn: ReturnType<typeof LButton>
   //public el: HTMLButtonElement
   private _loading: boolean
   private text: string
@@ -11,11 +11,14 @@ export class LLoadMoreBtn {
     text: string
     onClick?: () => void
   }) {
-    this.btn = new LButton('Load more', ['timeline__load-more'])
+    this.btn = LButton({
+      text: 'Load more',
+      className: ['timeline__load-more'],
+      onClick: () => this.onClick()
+    })
     this._loading = false
     this.text = opts.text
     this.cb = opts.onClick
-    this.btn.onClick =  () => this._onClick()
   }
 
   get el() {
@@ -40,7 +43,7 @@ export class LLoadMoreBtn {
     }
   }
 
-  private _onClick() {
+  private onClick() {
     if (this._loading)
       return
 

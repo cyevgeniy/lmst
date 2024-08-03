@@ -1,45 +1,34 @@
 import { h } from "../utils/dom"
+import type { NodeProps, HTMLEventHandler} from '../utils/dom'
 
 const DISABLED_CLASS = 'button--disabled'
 
-export class LButton {
-  public readonly el: HTMLButtonElement
-  private _onClick: () => void
+export type ButtonProps = {
+  text: string
+} & Pick<NodeProps, 'className'> & HTMLEventHandler
 
-  constructor(text: string, className: string[] = []) {
-    this._onClick = () => {}
+export function LButton(props: ButtonProps) {
+  const { text, ...restProps} = props
+  const el = h('button', restProps, text)
+  el.classList.add('button')
 
-    this.el = h('button', {class: ['button', ...className]}, text) as HTMLButtonElement
-    this.addClickListener()
-
-  }
-
-  set text(v: string) {
-    this.el.innerText = v
-  }
-
-  get disabled() {
-    return this.el.disabled
-  }
-
-  set disabled(v: boolean) {
-    this.el.disabled = v
-
-    if (v)
-      this.el.classList.add(DISABLED_CLASS)
-    else
-      this.el.classList.remove(DISABLED_CLASS)
-  }
-
-  get onClick() {
-    return this._onClick
-  }
-
-  set onClick(cb: () => void) {
-    this._onClick = cb
-  }
-
-  private addClickListener() {
-    this.el.addEventListener('click', () => this._onClick())
+  return {
+    el, 
+    set text(v: string) {
+      el.innerText = v
+    },
+  
+    get disabled() {
+      return el.disabled
+    },
+  
+    set disabled(v: boolean) {
+      el.disabled = v
+  
+      if (v)
+        el.classList.add(DISABLED_CLASS)
+      else
+        el.classList.remove(DISABLED_CLASS)
+    },
   }
 }

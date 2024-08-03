@@ -1,31 +1,25 @@
-import { IPage, Page } from '../utils/page'
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { h, div, hide, show } from '../utils/dom'
-import { TagsTimelineManager, AppManager } from '../appManager'
+import { AppManager } from '../appManager'
 
-export class TagsPage extends Page implements IPage {
-  private el: HTMLElement
-  private statusesList: LStatusesList
-  private loadMoreBtn: LLoadMoreBtn
-  private tagHeader: HTMLHeadElement
-  private noMoreDataText: HTMLDivElement
+export function createTagsPage(
+  root: HTMLElement,
+  appManager: AppManager,
+  params?: Record<string, string>
+) {
+  root.innerHTML = ''
 
-  private tagsManager: TagsTimelineManager
+    const tagHeader = h('h2')
 
-  constructor(appManager: AppManager) {
-    super(appManager.globalMediator)
-    this.tagsManager = appManager.tagsManager
-    this.tagHeader = h('h2', null, '')
+    const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
+    hide(noMoreDataText)
 
-    this.noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
-    hide(this.noMoreDataText)
-
-    this.loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => this.loadStatuses(this.tagsManager.tag) })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [this.loadMoreBtn.el, this.noMoreDataText])
+    const loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses(appManager.tagsManager.tag) })
+    const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
     const timelineContainer = div('timeline-container', [])
-    this.statusesList = new LStatusesList({
+    const statusesList = new LStatusesList({
       root: timelineContainer,
       statuses: [],
       sm: appManager.statusManager
@@ -33,44 +27,32 @@ export class TagsPage extends Page implements IPage {
 
     timelineContainer.appendChild(loadMoreBtnContainer)
 
-    this.el = h('div', {attrs: {id: 'timeline-root'}})
-    this.el.appendChild(this.tagHeader)
-    this.el.appendChild(timelineContainer)
-    this.el.appendChild(loadMoreBtnContainer)
-  }
-
-  public mount(params?: Record<string, string>) {
-    super.mount()
-    this.layout.middle.innerHTML = ''
-    this.layout.middle.appendChild(this.el)
-    this.onParamsChange(params)
-  }
-
-  private async loadStatuses(tag: string) {
-    this.loadMoreBtn.loading = true
-    this.tagsManager.tag = tag
-    await this.tagsManager.loadStatuses()
-
-    if (this.tagsManager.noMoreData) {
-      show(this.noMoreDataText)
-      this.loadMoreBtn.visible = false
-    } else {
-      hide(this.noMoreDataText)
-      this.loadMoreBtn.visible = true
+    const el = h('div', {attrs: {id: 'timeline-root'}}, [tagHeader, timelineContainer, loadMoreBtnContainer])
+    root.appendChild(el)
+    
+    async function loadStatuses(tag: string) {
+      loadMoreBtn.loading = true
+      appManager.tagsManager.tag = tag
+      await appManager.tagsManager.loadStatuses()
+  
+      if (appManager.tagsManager.noMoreData) {
+        show(noMoreDataText)
+        loadMoreBtn.visible = false
+      } else {
+        hide(noMoreDataText)
+        loadMoreBtn.visible = true
+      }
+  
+      loadMoreBtn.loading = false
+      statusesList.addStatuses(appManager.tagsManager.lastChunk)
     }
 
-    this.loadMoreBtn.loading = false
-    this.statusesList.addStatuses(this.tagsManager.lastChunk)
-  }
-
-  public async onParamsChange(params?: Record<string, string>) {
     const tag = params?.tag ?? ''
 
-    this.tagsManager.tag = tag
-    this.tagHeader.innerText = `#${tag}`
+    appManager.tagsManager.tag = tag
+    tagHeader.innerText = `#${tag}`
 
-    this.tagsManager.clearStatuses()
+    appManager.tagsManager.clearStatuses()
 
-    await this.loadStatuses(tag)
-  }
+    loadStatuses(tag)
 }

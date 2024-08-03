@@ -17,9 +17,9 @@ t.test('h with a single parameter', t => {
   t.end()
 })
 
-t.test('h with a single string class', t => {
+t.test('h with a single string className', t => {
 
-  const el = h('div', {class:'test-class'})
+  const el = h('div', {className:'test-class'})
 
   t.ok(el.classList.contains('test-class'))
   t.end()
@@ -28,7 +28,7 @@ t.test('h with a single string class', t => {
 t.test('h with an array of classes', t => {
 
   const classes = ['class1', 'class2']
-  const el = h('div', {class:classes})
+  const el = h('div', {className:classes})
 
   t.same(el.classList, classes)
   t.end()
@@ -44,8 +44,8 @@ t.test('h with attributes', t => {
 })
 
 t.test('h with childs', t => {
-  const child1 = h('div', {class: 'child1'})
-  const child2 = h('div', {class: 'child2'})
+  const child1 = h('div', {className: 'child1'})
+  const child2 = h('div', {className: 'child2'})
 
   const el = h('div', null, [child1, child2])
 

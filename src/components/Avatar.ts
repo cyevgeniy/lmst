@@ -4,7 +4,7 @@ export class LAvatar {
   public el: HTMLElement
 
   constructor(img: string, size: 'md' | 'lg' = 'md') {
-    this.el = h('img', {class: ['avatar', size === 'md' ? 'avatar--md' : 'avatar--lg'], attrs: {src: img }})
+    this.el = h('img', {className: ['avatar', size === 'md' ? 'avatar--md' : 'avatar--lg'], attrs: {src: img }})
   }
 
   /**

@@ -9,7 +9,7 @@ export async function createTimelinePage(
 ) {
   root.innerHTML = ''
 
-    const noMoreDataText = h('div', {class: 'timelime-no-more-rows'}, 'No more records')
+    const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
     hide(noMoreDataText)
 
     const loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => loadMore() })
@@ -26,7 +26,7 @@ export async function createTimelinePage(
       statusesList.clearStatuses()
     })
 
-    const timelineContainer = h('div', {class: 'timeline-container'}, [statusesListEl, loadMoreBtnContainer])
+    const timelineContainer = h('div', {className: 'timeline-container'}, [statusesListEl, loadMoreBtnContainer])
     const el = h('div', {attrs: {id: 'timeline-root'}}, [timelineContainer])
 
     async function loadMore() {

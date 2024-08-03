@@ -9,11 +9,11 @@ export class LComposeZen {
   private onCloseCb: () => void
 
   constructor(root: HTMLElement) {
-    this.btn = h('button',{class: ['icon-button', 'compose-zen__button'], innerHTML: exitFullScreen})
+    this.btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: exitFullScreen})
     this.el = div('compose-zen')
     const wrapper = div('compose-zen-wrapper')
     this.textarea = h('textarea', {
-      class: 'compose-zen__textarea',
+      className: 'compose-zen__textarea',
       attrs: {
         placeholder: 'What is on your mind?'
       }

@@ -9,7 +9,7 @@ export class LNavLink {
     icon?: string
   }) {
     this.el = h('a', {
-      class: 'navBar-link',
+      className: 'navBar-link',
       innerHTML: `${opts.icon ?? ''}${opts.text}`,
       attrs: { href: opts.link}
     })

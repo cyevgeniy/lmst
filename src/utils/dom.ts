@@ -1,5 +1,5 @@
 export interface NodeProps {
-  class?: string | string[]
+  className?: string | string[]
   innerHTML?: string
   attrs?: Record<string, string>
 }
@@ -21,10 +21,10 @@ function toArray<T>(p: T | T[] | null | undefined): T[] {
  * Examples:
  *
  *    const el = h('div') // Create div element
- *    const el = h('div', {class: 'avatar'}) // Create div element with 'avatar' class
- *    const el = h('div', {class: ['avatar', 'rounded']}) // Create div element with 'avatar' and 'rounded' classes
+ *    const el = h('div', {className: 'avatar'}) // Create div element with 'avatar' className
+ *    const el = h('div', {className: ['avatar', 'rounded']}) // Create div element with 'avatar' and 'rounded' classes
  *    const el = h('img', {attrs: { src: 'https://domain.com/pic.webp' } }) // Create image with src attribute
- *    const el = h('div', null, [h('div', {class: 'header'})]) // <div><div class="header"></div>
+ *    const el = h('div', null, [h('div', {className: 'header'})]) // <div><div class="header"></div>
  *
  *    If the last parameter is a string, it becomes `textContent` of the element:
  *    const el = h('span', null, 'User: Alex') // <span>User:Alex</span>
@@ -34,7 +34,7 @@ function toArray<T>(p: T | T[] | null | undefined): T[] {
 
  */
 type TagName = keyof HTMLElementTagNameMap
-type HTMLEventHandler = {
+export type HTMLEventHandler = {
   [K in keyof HTMLElementEventMap as `on${Capitalize<K>}`]? : (evt: HTMLElementEventMap[K]) => void
 }
 export function h<T extends TagName>(
@@ -45,9 +45,9 @@ export function h<T extends TagName>(
   const el = document.createElement<T>(nodeName)
 
   // class shouldn't be an empty string, so filter them
-  const _class = toArray(props?.class).filter(Boolean)
+  const _className = toArray(props?.className).filter(Boolean)
 
-  _class && el.classList.add(..._class)
+  _className && el.classList.add(..._className)
 
   for (const k in props) {
     if (k.startsWith('on')) {
@@ -76,27 +76,27 @@ export function h<T extends TagName>(
   return el
 }
 
-export function div(classname: string | string[], childs: Array<HTMLElement | undefined> = []) {
-  return h('div', {class: classname }, childs)
+export function div(className: string | string[], childs: Array<HTMLElement | undefined> = []) {
+  return h('div', {className }, childs)
 }
 
-export function span(classname: string | string[], text: string): HTMLElement {
-  return h('span', {class: classname }, text)
+export function span(className: string | string[], text: string): HTMLElement {
+  return h('span', {className }, text)
 }
 
-export function a(classname: string | string[], href: string, text: string) {
-  return h('a', { class: classname, attrs: { href, target: '_blank'}}, text)
+export function a(className: string | string[], href: string, text: string) {
+  return h('a', { className, attrs: { href, target: '_blank'}}, text)
 }
 
-export function button(classname: string | string[], text: string) {
+export function button(className: string | string[], text: string) {
   const classes = ['button']
-  if (Array.isArray(classname))
-    classes.push(...classname)
+  if (Array.isArray(className))
+    classes.push(...className)
   // Ignore empty strings
-  else if (classname)
-    classes.push(classname)
+  else if (className)
+    classes.push(className)
 
-  return h('button', {class: classes}, text)
+  return h('button', {className: classes}, text)
 }
 
 export function hide(el: HTMLElement) {

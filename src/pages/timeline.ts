@@ -12,7 +12,7 @@ export async function createTimelinePage(
     const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
     hide(noMoreDataText)
 
-    const loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => loadMore() })
+    const loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadMore() })
     const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
     const statusesListEl = h('div')

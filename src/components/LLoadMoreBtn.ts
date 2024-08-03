@@ -1,52 +1,43 @@
+import { HTMLEventHandler } from '../utils/dom'
 import { LButton } from './LButton'
 
-export class LLoadMoreBtn {
-  private btn: ReturnType<typeof LButton>
-  //public el: HTMLButtonElement
-  private _loading: boolean
-  private text: string
-  private cb?: (() => void)
+export interface LoadMoreBtnProps {
+  text: string
+}
+export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
+  const { text, onClick, ...handlers } = props
 
-  constructor(opts: {
-    text: string
-    onClick?: () => void
-  }) {
-    this.btn = LButton({
-      text: 'Load more',
-      className: ['timeline__load-more'],
-      onClick: () => this.onClick()
-    })
-    this._loading = false
-    this.text = opts.text
-    this.cb = opts.onClick
+  let loading = false
+
+  const btn = LButton({
+    text: 'Load more',
+    className: ['timeline__load-more'],
+    ...handlers,
+    onClick: _onClick,
+  })
+
+  function _onClick(e: MouseEvent) {
+    !loading && onClick?.(e)
   }
 
-  get el() {
-    return this.btn.el
-  }
+  return {
+    el: btn.el,
 
-  set visible(v: boolean) {
-    this.btn.el.style.display = v ? 'block' : 'none'
-  }
+    set visible(v: boolean) {
+      btn.el.style.display = v ? 'block' : 'none'
+    },
+    set loading(v: boolean) {
+      if (loading === v)
+        return
 
-  set loading(v: boolean) {
-    if (this._loading === v)
-      return
+      loading = v
+      btn.disabled = v
 
-    this._loading = v
-    this.btn.disabled = v
-
-    if (v) {
-      this.btn.text = 'Loading...'
-    } else {
-      this.btn.text = this.text
+      if (v) {
+        btn.text = 'Loading...'
+      } else {
+        btn.text = text
+      }
     }
-  }
-
-  private onClick() {
-    if (this._loading)
-      return
-
-    this.cb?.()
   }
 }

@@ -22,7 +22,7 @@ export function createProfilePage(
     const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
     hide(noMoreDataText)
 
-    const loadMoreBtn = new LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() })
+    const loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() })
     const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
     const timelineContainer = div('timeline-container')

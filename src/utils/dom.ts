@@ -115,3 +115,32 @@ export function useCommonEl<T extends HTMLElement>(el: T) {
     setText,
   }
 }
+
+export interface ElLike<T extends HTMLElement> {
+  el: T
+}
+
+function isElLike<T extends HTMLElement>(v: T | ElLike<T>): v is ElLike<T> {
+  return 'el' in v
+}
+
+/**
+ * Appends childs to the specified element
+ * Each of elements can be a 'native' html element,
+ * or 'ElLike' object - an object that has an 'el' field, which is
+ * html element node.
+ * @param el Root element
+ * @param childs A list of nodes to append to the root
+ */
+export function childs<T extends HTMLElement, K extends HTMLElement>(
+  el: T | ElLike<T>,
+  childs: (K | ElLike<K>)[]
+): void {
+  const _el = isElLike(el) ? el.el : el
+  childs.forEach(c => {
+    if (isElLike(c))
+      _el.appendChild(c.el)
+    else
+      _el.appendChild(c)
+  })
+}

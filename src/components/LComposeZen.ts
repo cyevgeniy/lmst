@@ -1,4 +1,4 @@
-import { div, h } from '../utils/dom'
+import { childs, div, h } from '../utils/dom'
 import { onClick } from '../utils/events'
 import { exitFullScreen } from '../components/Icons'
 
@@ -19,8 +19,8 @@ export class LComposeZen {
       }
     })
 
-    wrapper.appendChild(this.textarea)
-    wrapper.appendChild(this.btn)
+    childs(wrapper, [this.textarea, this.btn])
+  
     this.el.appendChild(wrapper)
     root.appendChild(this.el)
     this.setFocus()

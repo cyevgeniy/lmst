@@ -49,6 +49,8 @@ export function LNav(pm: Mediator) {
     updLogoutVisibility()
   });
 
+  user.verifyCredentials()
+
   function onMainLinkClick(e: MouseEvent) {
     e.preventDefault()
     pm.notify('navigate:main')  

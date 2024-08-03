@@ -1,11 +1,12 @@
 import type { Status, MediaAttachment } from '../types/shared'
-import { h, a, div, span, button } from '../utils/dom'
+import { h, a, div, span } from '../utils/dom'
 import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
 import type { ActionPermissions } from './LStatusButtons'
 import { onClick } from '../utils/events'
 import { parseContent } from '../utils/shared'
+import { LButton } from './LButton'
 
 type StatusBoostCallback = (s: Status, boosted: boolean) => void
 type StatusDeleteCallback = (s: Status) => void
@@ -19,7 +20,6 @@ export class LStatus {
   private attachments: HTMLElement | undefined
   private sensitiveEl: HTMLElement | undefined
   private statusContent: HTMLDivElement | undefined
-  private sensitiveBtn: HTMLButtonElement | undefined
   private clickableContent: boolean
   private _status: Status
   private renderedStatus: Status
@@ -60,10 +60,8 @@ export class LStatus {
 
     const dispName = this.renderedStatus.account.display_name
 
-    this.sensitiveBtn = button('status-showSensitiveContent', 'Show sensitive content')
-
     this.sensitiveEl = this._status.sensitive
-      ? h('div', {className: 'status-sensitiveContent'}, [this.sensitiveBtn])
+      ? h('div', {className: 'status-sensitiveContent'}, [this.createSensitiveButton().el])
       : undefined
 
     this.avatarLink = h('a', {
@@ -96,6 +94,10 @@ export class LStatus {
     ])
 
     this.addEventListeners()
+  }
+
+  private createSensitiveButton() {
+    return LButton({className: 'status-showSensitiveContent', text: 'Show sensitive content', onClick: () => this.onShowSensitiveClick()})
   }
 
   set withBorder(v: boolean) {
@@ -161,18 +163,17 @@ export class LStatus {
       return undefined
   }
 
+  private onShowSensitiveClick()  {
+    this.sensitiveEl?.remove()
+    this.attachments = this.getAttachmentsEl()
+    this._status.content && this.el.appendChild(h('div', { innerHTML: this._status.content }))
+    this.attachments && this.el.appendChild(this.attachments)
+  }
+
   private addEventListeners() {
     onClick(this.avatarLink, (e: MouseEvent) => {
       e.preventDefault()
       lRouter.navigateTo(`/profile/${this._status.account.acct}/`)
-    })
-
-
-    this.sensitiveBtn?.addEventListener('click', () => {
-      this.sensitiveEl?.remove()
-      this.attachments = this.getAttachmentsEl()
-      this._status.content && this.el.appendChild(h('div', { innerHTML: this._status.content }))
-      this.attachments && this.el.appendChild(this.attachments)
     })
 
 	this.clickableContent && this.statusContent?.addEventListener('click', (e: MouseEvent) => {

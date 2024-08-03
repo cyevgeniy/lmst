@@ -88,17 +88,6 @@ export function a(className: string | string[], href: string, text: string) {
   return h('a', { className, attrs: { href, target: '_blank'}}, text)
 }
 
-export function button(className: string | string[], text: string) {
-  const classes = ['button']
-  if (Array.isArray(className))
-    classes.push(...className)
-  // Ignore empty strings
-  else if (className)
-    classes.push(className)
-
-  return h('button', {className: classes}, text)
-}
-
 export function hide(el: HTMLElement) {
   el.style.display = 'none'
 }

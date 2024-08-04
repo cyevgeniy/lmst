@@ -1,6 +1,7 @@
 import { LInfo } from "../components/LInfo"
 import { createLayout } from "../components/Layout"
 import type { Mediator } from '../types/shared'
+import { childs } from "./dom"
 
 export interface Page {
   mount: (params?: Record<string, string>) => void
@@ -13,7 +14,7 @@ export function createMainPage(pm: Mediator) {
     throw new Error('Unable to locate application root element')
 
   let layout= createLayout(root, pm)
-  new LInfo(layout.right)
+  childs(layout.right, [LInfo()])
 
   function clearPage() {
     root && (root.innerHTML = '')

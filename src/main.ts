@@ -9,19 +9,13 @@ import { ProfileTimelineManager, AppManager } from './appManager'
 import { createStatusPage } from './pages/status'
 import { createMainPage } from './utils/page'
 import { ElLike } from './utils/dom'
+import { usePageHistory } from './utils/pageHistory'
 
 const appManager = new AppManager()
 const mainPage = createMainPage(appManager.globalMediator)
-// const somePage = composePage(mainPage.middle, appManager)
-// lRouter.on('/', (params) => createComposePage(mainPage.middle, appManager))
 
-// const composePage = new ComposePage(appManager)
-// const timelinePage = new TimelinePage(appManager)
-// const tagsPage = new TagsPage(appManager)
-
-// const oauthPage = new OAuthPage(appManager)
-
-const hist = new Map<string, HTMLElement>()
+// const hist = new Map<string, HTMLElement>()
+const hist = usePageHistory()
 
 function cacheAndNavigate(path: string, mountpoint: HTMLElement, cb: () => ElLike): void {
   let el = hist.get(path)
@@ -39,10 +33,6 @@ lRouter.on('/', (params) =>{
   cacheAndNavigate(params._path, mainPage.middle, () => createTimelinePage(mainPage.middle, appManager))
 })
 
-// For profiles, always create new instances of profilePages, so that they won't
-// share the same timeline cache
-// BTW, maybe we want to "reset" timeline manager state in mount() function instead
-// of creation of new instances each time
 function _createProfilePage(params: RouteParams) {
   const cb = () => createProfilePage(mainPage.middle, {
     pm: new ProfileTimelineManager({user: appManager.user}),

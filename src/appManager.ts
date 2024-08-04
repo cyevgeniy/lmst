@@ -10,6 +10,7 @@ import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
 import { genWebFinger } from './utils/shared.ts'
+import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 
 export interface ITimelineManager {
   /**
@@ -39,7 +40,6 @@ export class TimelineManager implements ITimelineManager {
   private config: AppConfig
   public onClearCallback?: () => void
   public statuses: Status[]
-  public rendered: boolean
   public noMoreData: boolean
 
 
@@ -52,7 +52,6 @@ export class TimelineManager implements ITimelineManager {
     this.user = opts.user
     this.config = opts.config
     this.onClearCallback = undefined
-    this.rendered = false
     this.noMoreData = false
   }
 
@@ -406,17 +405,20 @@ export class GlobalPageMediator implements Mediator {
   private timelineManager: TimelineManager
   private router: Router
   private config: AppConfig
+  private pageHistoryManager: PageHistoryManager
 
   constructor(opts: {
     user: User
     timelineManager: TimelineManager
     router: Router
     config: AppConfig
+    pageHistoryManager: PageHistoryManager
   }) {
     this.user = opts.user
     this.timelineManager = opts.timelineManager
     this.router = opts.router
     this.config = opts.config
+    this.pageHistoryManager = opts.pageHistoryManager
   }
 
   private goHome() {
@@ -431,8 +433,12 @@ export class GlobalPageMediator implements Mediator {
 
     if (msg === 'navigate:logout') {
       this.user.logOut()
+      // After logout, we clear all pages cache, so the user will navigate
+      // pages like in the first time
+      // Without this, the main page will be empty, because
+      // it exists in the cache, but the statuses list is empty (due to `timelineManager.clearStatuses` call)
+      this.pageHistoryManager.clear()
       this.timelineManager.clearStatuses()
-      this.timelineManager.rendered = false
       this.goHome()
       return
     }
@@ -460,6 +466,7 @@ export class AppManager {
   public timelineManager: TimelineManager
   public globalMediator: GlobalPageMediator
   public tagsManager: TagsTimelineManager
+  public pageHistoryManager: PageHistoryManager
 
   constructor() {
     this.user = new User()
@@ -467,11 +474,14 @@ export class AppManager {
     this.statusManager = new StatusManager({ user: this.user, config: this.config })
     this.timelineManager = new TimelineManager({user: this.user, config: this.config })
     this.tagsManager = new TagsTimelineManager({config: this.config, keepStatuses: false})
+    this.pageHistoryManager = usePageHistory()
+
     this.globalMediator = new GlobalPageMediator({
       user: this.user,
       config: this.config,
       timelineManager: this.timelineManager,
       router: lRouter,
+      pageHistoryManager: this.pageHistoryManager,
     })
   }
 }

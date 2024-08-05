@@ -28,7 +28,7 @@ export class LStatusesList {
       const perm = this.sm.getPermissions()
       const permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
 
-      const statusComp = new LStatus({status, permissions})
+      const statusComp = LStatus({status, permissions})
       statusComp.onBoost((s, boosted) => {
         if (boosted)
           this.sm.boostStatus(s.id)

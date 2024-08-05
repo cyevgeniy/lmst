@@ -44,7 +44,7 @@ export function createStatusPage(
 
   function renderStatus() {
     if (status) {
-        const st = new LStatus({status: status, clickableContent: false, singleView: true})
+        const st = LStatus({status: status, clickableContent: false, singleView: true})
         statusRoot.appendChild(st.el)
     } else {
         statusRoot.innerText = 'No status'

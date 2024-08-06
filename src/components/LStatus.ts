@@ -1,4 +1,4 @@
-import type { Status, MediaAttachment } from '../types/shared'
+import type { Status, MediaAttachment, StatusEventHandlers } from '../types/shared'
 import { h, a, div, span } from '../utils/dom'
 import { fmtDate } from '../utils/dates'
 import { lRouter } from '../router'
@@ -8,20 +8,21 @@ import type { ActionPermissions } from './LStatusButtons'
 import { parseContent } from '../utils/shared'
 import { LButton } from './LButton'
 
-type StatusBoostCallback = (s: Status, boosted: boolean) => void
-type StatusDeleteCallback = (s: Status) => void
-type StatusContentClickCallback = (s: Status) => void
-
-export function LStatus(opts: {
+type StatusProps = {
   status: Status,
   permissions?: ActionPermissions,
   clickableContent?: boolean
   singleView?: boolean
-}) {
+} & StatusEventHandlers
+
+export function LStatus(opts: StatusProps) {
   const {
     status,
     permissions = { canDelete: false, canBoost: false },
-    clickableContent = true
+    clickableContent = true,
+    singleView = false,
+    onContentClick = () => {},
+    ...statuButtonsHandlers
   } = opts
 
   const _status = status.reblog ?? status
@@ -29,32 +30,8 @@ export function LStatus(opts: {
   const renderedStatus = status
   const createDate = fmtDate(renderedStatus.created_at) ?? ''
 
-  let _onBoost: StatusBoostCallback  | undefined = undefined
-  let _onDelete: StatusDeleteCallback | undefined = undefined
-  let _onContentClick: StatusContentClickCallback | undefined = undefined
-
   const avatar = LAvatar({img: _status.account.avatar})
-  const statusButtons = new LStatusButtons({status, permissions})
-
-  statusButtons.onBoostClick((boosted: boolean) => {
-    _onBoost && _onBoost(_status, boosted)
-  })
-
-  statusButtons.onDeleteClick((status) => {
-    _onDelete && _onDelete(status)
-  })
-
-  function onBoost(fn: StatusBoostCallback) {
-    _onBoost = fn
-  }
-
-  function onDelete(fn: StatusDeleteCallback) {
-    _onDelete = fn
-  }
-
-  function onContentClick(fn: StatusContentClickCallback) {
-    _onContentClick = fn
-  }
+  const statusButtons = LStatusButtons({status, permissions, ...statuButtonsHandlers})
 
   const attachments = !_status.sensitive ? getAttachmentsEl() : undefined
 
@@ -94,7 +71,7 @@ export function LStatus(opts: {
           // we only redirect on click
           const selection = window.getSelection()
           if (selection?.type !== 'Range')
-            _onContentClick?.(_status)
+            onContentClick?.(_status)
         }
       }
     })
@@ -153,7 +130,7 @@ export function LStatus(opts: {
   }
 
 
-  const el = div(['status', opts.singleView ? 'status--isSingle' : ''], [
+  const el = div(['status', singleView ? 'status--isSingle' : ''], [
     isReblogged
       ? div( 'status-boostedText', [span('', `${dispName} boosted: `)])
       : undefined,
@@ -174,9 +151,6 @@ export function LStatus(opts: {
 
   return {
     el,
-    onBoost,
-    onDelete,
-    onContentClick,
   }
 
 }

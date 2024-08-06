@@ -108,3 +108,13 @@ export interface PaginationParams {
 export interface Mediator {
   notify(msg: string): void
 }
+
+export type StatusBoostCallback = (s: Status, boosted: boolean) => void
+export type StatusDeleteCallback = (s: Status) => void
+export type StatusContentClickCallback = (s: Status) => void
+
+export interface StatusEventHandlers {
+  onBoost?: StatusBoostCallback
+  onDelete?: StatusDeleteCallback
+  onContentClick?: StatusContentClickCallback
+}

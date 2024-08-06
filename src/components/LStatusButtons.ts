@@ -1,91 +1,65 @@
 import { h } from '../utils/dom'
-import type { Status } from '../types/shared.d.ts'
+import type { Status, StatusEventHandlers } from '../types/shared.d.ts'
 import { boost, deleteIcon } from './Icons.ts'
-import { onClick } from '../utils/events'
-
-type OnBoostCallback = (boosted: boolean) => void
-type OnDeleteCallback = (status: Status) => void
 
 export interface ActionPermissions {
   canBoost?: Boolean
   canDelete?: boolean
 }
 
+type StatusButtonsProps = {
+  status: Status
+  permissions: ActionPermissions
+} & StatusEventHandlers
 
-export class LStatusButtons {
-  // @ts-ignore
-  private readonly status: Status
-  private boostBtn: HTMLButtonElement | undefined
-  private deleteBtn: HTMLButtonElement | undefined
-  private boostCb: OnBoostCallback | undefined
-  private deleteCb: OnDeleteCallback | undefined
-  private permissions: ActionPermissions
-  public el: HTMLElement
+export function LStatusButtons(props: StatusButtonsProps) {
+  const status = props.status.reblog ?? props.status
 
-  constructor(opts: {
-    status: Status
-    permissions: ActionPermissions
-  }) {
-    this.status = opts.status.reblog ?? opts.status
-    this.permissions = opts.permissions
+  let boostBtn: HTMLButtonElement | undefined
+  let deleteBtn: HTMLButtonElement | undefined
 
-
-    this.createButtons()
-
-    this.el = h('div', {
-      className: 'status-buttons' },
-      [
-        this.boostBtn,
-        this.deleteBtn,
-      ])
-
-    this.boostCb = undefined
-
-    this.addEventListeners()
-  }
-
-  private createBoostBtn() {
+  function createBoostBtn() {
     const className: string[] = ['icon-button', 'status-button']
-    if (this.status.reblogged)
+    if (status.reblogged)
       className.push('status-button-isBoosted')
 
-    return h('button', {className, innerHTML: boost})
+    return h('button', {className, innerHTML: boost, onClick: onBoostClick})
   }
 
-  private createDeleteBtn() {
-    return h('button', {className: ['icon-button', 'status-button', 'ml-auto'], innerHTML: deleteIcon})
+  function createDeleteBtn() {
+    return h('button', {className: ['icon-button', 'status-button', 'ml-auto'], innerHTML: deleteIcon, onClick: onDeleteClick})
   }
 
-  private createButtons() {
-    this.permissions.canBoost && (this.boostBtn = this.createBoostBtn())
-    this.permissions.canDelete && (this.deleteBtn = this.createDeleteBtn())
+  props.permissions.canBoost && (boostBtn = createBoostBtn())
+  props.permissions.canDelete && (deleteBtn = createDeleteBtn())
+
+  const el = h('div', {
+    className: 'status-buttons' },
+    [
+      boostBtn,
+      deleteBtn,
+    ]
+  )
+
+  function onBoostClick() {
+      if (props.onBoost) {
+        props.onBoost(status, !status.reblogged)
+      }
+
+      // Toggle boosted class
+      if (!status.reblogged)
+        boostBtn?.classList.add('status-button-isBoosted')
+      else
+        boostBtn?.classList.remove('status-button-isBoosted')
+
+      status.reblogged !== undefined && (status.reblogged = !status.reblogged)
   }
 
-  private addEventListeners() {
-    this.boostBtn &&  onClick(this.boostBtn, () => {
-        if (this.boostCb) {
-          this.boostCb(!this.status.reblogged)
-        }
-
-        // Toggle boosted class
-        if (!this.status.reblogged)
-          this.boostBtn?.classList.add('status-button-isBoosted')
-        else
-          this.boostBtn?.classList.remove('status-button-isBoosted')
-
-        this.status.reblogged !== undefined && (this.status.reblogged = !this.status.reblogged)
-    })
-
-    this.deleteBtn && onClick(this.deleteBtn, () => {
-      this.deleteCb && this.deleteCb(this.status)
-    })
+  function onDeleteClick() {
+    props.onDelete && props.onDelete(status)
   }
 
-  public onBoostClick(fn: OnBoostCallback) {
-    this.boostCb = fn
-  }
-
-  public onDeleteClick(fn: OnDeleteCallback) {
-    this.deleteCb = fn
+  return {
+    el,
   }
 }

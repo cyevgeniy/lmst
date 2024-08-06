@@ -1,6 +1,6 @@
 import type { Status } from '../types/shared.d.ts'
 import { LStatus } from './LStatus'
-import { div } from '../utils/dom'
+import { div, ElLike } from '../utils/dom'
 import { StatusManager } from '../appManager.ts'
 
 interface StatusesListConstructorParams {
@@ -28,26 +28,33 @@ export class LStatusesList {
       const perm = this.sm.getPermissions()
       const permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
 
-      const statusComp = LStatus({status, permissions})
-      statusComp.onBoost((s, boosted) => {
-        if (boosted)
-          this.sm.boostStatus(s.id)
-        else
-          this.sm.unboostStatus(s.id)
+      const statusComp = LStatus({
+        status,
+        permissions, 
+        onBoost: (s, b) => this.onBoost(s, b),
+        onDelete: (s) => this.onDelete(statusComp, s),
+        onContentClick: (s) => this.onContentClick(s),
       })
 
-      statusComp.onDelete((s) => {
-        statusComp.el.remove()
-        this.sm.deleteStatus(s.id)
-
-      })
-
-      statusComp.onContentClick((s) => {
-        this.sm.navigateToStatus(s)
-      })
       statusComp.el.classList.add('status--withBorder')
       this.el?.appendChild(statusComp.el)
     }
+  }
+
+  private onDelete(statusComponent: ElLike, s: Status) {
+    statusComponent.el.remove()
+    this.sm.deleteStatus(s.id)
+  }
+
+  private onBoost(s: Status, boosted: boolean) {
+    if (boosted)
+      this.sm.boostStatus(s.id)
+    else
+      this.sm.unboostStatus(s.id)  
+  }
+
+  private onContentClick(s: Status) {
+    this.sm.navigateToStatus(s)  
   }
 
   clearStatuses() {

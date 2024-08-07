@@ -12,6 +12,8 @@ type StatusButtonsProps = {
   permissions: ActionPermissions
 } & StatusEventHandlers
 
+const BOOSTED_CLASS = 'status-button-isBoosted'
+
 export function LStatusButtons(props: StatusButtonsProps) {
   const status = props.status.reblog ?? props.status
 
@@ -48,9 +50,9 @@ export function LStatusButtons(props: StatusButtonsProps) {
 
       // Toggle boosted class
       if (!status.reblogged)
-        boostBtn?.classList.add('status-button-isBoosted')
+        boostBtn?.classList.add(BOOSTED_CLASS)
       else
-        boostBtn?.classList.remove('status-button-isBoosted')
+        boostBtn?.classList.remove(BOOSTED_CLASS)
 
       status.reblogged !== undefined && (status.reblogged = !status.reblogged)
   }

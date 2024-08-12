@@ -3,36 +3,33 @@ import type { Account } from '../types/shared'
 import { LAvatar } from './Avatar'
 import { parseContent } from '../utils/shared'
 
-export class LProfileHeader {
-  private el: HTMLElement
-  private displayNameEl: HTMLElement
-  private noteEl: HTMLElement
-  private avatar: ReturnType<typeof LAvatar>
+export function LProfileHeader(account?: Account) {
+  const displayNameEl = div('profileHeader-name')
+  const noteEl = div('profileHeader-note')
 
-  constructor(root: HTMLElement, account?: Account) {
-    this.displayNameEl = div('profileHeader-name')
-    this.noteEl = div('profileHeader-note')
+  const avatar = LAvatar({img: '', size: 'lg'})
+  const el = div('profileHeader', [
+    div('profileHeader-userInfo', [
+      avatar.el,
+      displayNameEl
+    ]),
+    noteEl
+  ])
 
-    this.avatar = LAvatar({img: '', size: 'lg'})
-    this.el = div('profileHeader', [
-      div('profileHeader-userInfo', [
-        this.avatar.el,
-        this.displayNameEl
-      ]),
-      this.noteEl
-    ])
-
-    root.appendChild(this.el)
-    this.update(account)
-  }
+  update(account)
 
   /**
    * Updates information about the account
    */
-  update(account?: Account) {
-    this.displayNameEl.innerText = account?.display_name ?? ''
+  function update(account?: Account) {
+    displayNameEl.innerText = account?.display_name ?? ''
     const parsedContent = parseContent(account?.note ?? '')
-    this.noteEl.innerHTML = parsedContent
-    this.avatar.img = account?.avatar ?? ''
+    noteEl.innerHTML = parsedContent
+    avatar.img = account?.avatar ?? ''
+  }
+
+  return {
+    el,
+    update,
   }
 }

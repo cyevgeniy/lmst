@@ -2,7 +2,7 @@ import type { Mediator } from '../types/shared'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
-import { h, div, hide, show } from '../utils/dom'
+import { h, div, hide, show, childs } from '../utils/dom'
 import { ProfileTimelineManager, StatusManager } from '../appManager'
 
 interface ProfilePageConstructorParams {
@@ -35,8 +35,8 @@ export function createProfilePage(
     timelineContainer.appendChild(loadMoreBtnContainer)
 
     const el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
-    const profileHeaderComponent = new LProfileHeader(el)
-    el.appendChild(timelineContainer)
+    const profileHeaderComponent = LProfileHeader()
+    childs(el, [profileHeaderComponent, timelineContainer])
     root.appendChild(el)
 
     async function loadStatuses() {

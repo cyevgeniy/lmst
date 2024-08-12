@@ -26,7 +26,7 @@ export function createProfilePage(
     const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
     const timelineContainer = div('timeline-container')
-    let statusesList = new LStatusesList({
+    let statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
       sm: opts.sm

@@ -16,7 +16,7 @@ export function createTimelinePage(
     const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
     const statusesListEl = h('div')
-    const statusesList = new LStatusesList({
+    const statusesList = LStatusesList({
       root:statusesListEl,
       statuses:[],
       sm: appManager.statusManager

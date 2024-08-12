@@ -29,7 +29,11 @@ export function LStatusButtons(props: StatusButtonsProps) {
   }
 
   function createDeleteBtn() {
-    return h('button', {className: ['icon-button', 'status-button', 'ml-auto'], innerHTML: deleteIcon, onClick: onDeleteClick})
+    return h('button', {
+      className: ['icon-button', 'status-button', 'ml-auto'],
+      innerHTML: deleteIcon,
+      onClick: onDeleteClick
+    })
   }
 
   props.permissions.canBoost && (boostBtn = createBoostBtn())

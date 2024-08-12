@@ -19,7 +19,7 @@ export function createTagsPage(
     const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
 
     const timelineContainer = div('timeline-container', [])
-    const statusesList = new LStatusesList({
+    const statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
       sm: appManager.statusManager
@@ -42,7 +42,7 @@ export function createTagsPage(
         hide(noMoreDataText)
         loadMoreBtn.visible = true
       }
-  
+
       loadMoreBtn.loading = false
       statusesList.addStatuses(appManager.tagsManager.lastChunk)
     }

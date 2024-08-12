@@ -17,7 +17,7 @@ export function createStatusPage(
   let status: Status | undefined = undefined
 
   const descendantsRoot = div('status-descendants')
-  const statusesList = new LStatusesList({
+  const statusesList = LStatusesList({
       sm: appManager.statusManager,
       root: descendantsRoot,
       statuses: [],

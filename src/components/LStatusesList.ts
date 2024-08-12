@@ -3,61 +3,63 @@ import { LStatus } from './LStatus'
 import { div, ElLike } from '../utils/dom'
 import { StatusManager } from '../appManager.ts'
 
-interface StatusesListConstructorParams {
+type StatusesListProps = {
   root: HTMLElement
   statuses: Status[]
   sm: StatusManager
 }
 
-export class LStatusesList {
-  private el: HTMLElement
-  private sm: StatusManager
+export function LStatusesList(props: StatusesListProps) {
+  const el = div('statusesList')
 
-  constructor(opts: StatusesListConstructorParams) {
-    this.sm = opts.sm
-    this.el = div('statusesList')
+  addStatuses(props.statuses)
 
-    this.addStatuses(opts.statuses)
+  props.root.appendChild(el)
 
-    opts.root.appendChild(this.el)
+  props.root.appendChild(el)
+
+  function onDelete(statusComponent: ElLike, s: Status) {
+    statusComponent.el.remove()
+    props.sm.deleteStatus(s.id)
   }
 
-  addStatuses(statuses: Status[]) {
+  function onBoost(s: Status, boosted: boolean) {
+    if (boosted)
+      props.sm.boostStatus(s.id)
+    else
+      props.sm.unboostStatus(s.id)  
+  }
+
+  function onContentClick(s: Status) {
+    props.sm.navigateToStatus(s)  
+  }
+
+  function clearStatuses() {
+    el.innerHTML = ''
+  }
+
+  function addStatuses(statuses: Status[]) {
     for (const status of statuses) {
-      const own = this.sm.ownStatus(status.reblog ?? status)
-      const perm = this.sm.getPermissions()
+      const own = props.sm.ownStatus(status.reblog ?? status)
+      const perm = props.sm.getPermissions()
       const permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
 
       const statusComp = LStatus({
         status,
         permissions, 
-        onBoost: (s, b) => this.onBoost(s, b),
-        onDelete: (s) => this.onDelete(statusComp, s),
-        onContentClick: (s) => this.onContentClick(s),
+        onBoost: (s, b) => onBoost(s, b),
+        onDelete: (s) => onDelete(statusComp, s),
+        onContentClick: (s) => onContentClick(s),
       })
 
       statusComp.el.classList.add('status--withBorder')
-      this.el?.appendChild(statusComp.el)
+      el?.appendChild(statusComp.el)
     }
   }
 
-  private onDelete(statusComponent: ElLike, s: Status) {
-    statusComponent.el.remove()
-    this.sm.deleteStatus(s.id)
-  }
-
-  private onBoost(s: Status, boosted: boolean) {
-    if (boosted)
-      this.sm.boostStatus(s.id)
-    else
-      this.sm.unboostStatus(s.id)  
-  }
-
-  private onContentClick(s: Status) {
-    this.sm.navigateToStatus(s)  
-  }
-
-  clearStatuses() {
-    this.el.innerHTML = ''
+  return {
+    addStatuses,
+    clearStatuses,
   }
 }
+

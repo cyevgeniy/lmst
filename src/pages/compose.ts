@@ -50,14 +50,12 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   setBtnStatus(text)
 
   async function onPostClick() {
-    try {
-      await appManager.statusManager.postStatus({statusText: text.value})
+    const res = await appManager.statusManager.postStatus({statusText: text.value})
+
+    if (res.ok)
       text.value = ''
-    } catch (e: unknown) {
-      // show error to the user
-      if (e instanceof Error)
-        alert(e.message)
-    }
+    else
+      alert(res.error)
   }
 
   function onInput(e: Event) {

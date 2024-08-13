@@ -91,6 +91,11 @@ export interface Status {
    * Url
    */
   url: string
+
+  /**
+   * ID of the status being replied to
+   */
+  in_reply_to_id: string | null
 }
 
 export interface Context {

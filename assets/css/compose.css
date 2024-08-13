@@ -85,3 +85,34 @@
   height: 100%;
   flex-direction: column;
 }
+
+/* A wrapper around 'reply' block in a single status view */
+.reply {
+  margin-top: 16px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+@media screen and (min-width: 1240px) {
+  .reply {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .reply-buttonContainer .button {
+    width: auto;
+  }
+}
+
+/* A wrapper arount 'post reply' button in a single status view */
+.reply-buttonContainer {
+  margin-top: 12px;
+}
+
+.reply-buttonContainer button {
+  margin-right: 0;
+  margin-left: auto;
+  display: block;
+  width: 100%;
+}
+

@@ -212,7 +212,7 @@ export class TagsTimelineManager implements ITimelineManager {
 }
 
 export interface IStatusManager {
-  postStatus(params: {statusText: string}): Promise<void>
+  postStatus(params: {statusText: string}): Promise<ApiResult<Status>>
   boostStatus(id: Status['id']): Promise<void>
   unboostStatus(id: Status['id']): Promise<void>
   deleteStatus(id: Status['id']): Promise<void>
@@ -239,11 +239,14 @@ export class StatusManager implements IStatusManager {
     lRouter.navigateTo(this.getLinkToStatus(status))
   }
 
-  public async postStatus(params: {statusText: string}) {
+  public async postStatus(params: {statusText: string, in_reply_to_id?: string}): Promise<ApiResult<Status>> {
     this.user.loadTokenFromStore()
 
     const payload = new FormData()
     payload.append('status', params.statusText)
+    params.in_reply_to_id && payload.append('in_reply_to_id', params.in_reply_to_id)
+
+    let result: ApiResult<Status>
 
     try {
       const resp = await fetch(`${this.config.server}/api/v1/statuses`, {
@@ -255,14 +258,21 @@ export class StatusManager implements IStatusManager {
       })
 
       if (resp.status !== 200)
-        throw new Error('Status was not posted')
+        result = fail('Status was not posted')
+
+      result = success(await resp.json())
 
     } catch(e: unknown) {
+      let msg = 'Post status error'
       if (e instanceof Error) {
         console.error(e.message)
-        throw e
+        msg = e.message
       }
+      
+      result = fail(msg)
     }
+
+    return result
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {

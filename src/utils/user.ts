@@ -193,7 +193,7 @@ export class User implements CredentialAccount{
     store.removeItem(USER_KEY)
     store.removeItem(TOKEN_KEY)
     this.clearUserData()
-    this.appConfig.clearServerInfo()
+    this.appConfig.server = ''
 
     this.processCallbacks()
   }

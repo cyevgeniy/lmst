@@ -1,75 +1,82 @@
-import { store } from "./store"
+import { store as localStore } from "./store"
 
 export interface AppConfig {
+  /**
+   * Current server
+   */
   server: string
+
+  /**
+   * A client name
+   */
   clientName: string
+
+  /**
+   * Link to the source code repository
+   */
   repo: string
+
+  /**
+   * Base url of the app
+   */
   baseUrl: string
+
+  /**
+   * Application version
+   */
   version: string
+}
+
+export interface ConfigHandlers {
+  addOnServerChangeCb: (fn: CallbackFn) => void
 }
 
 type CallbackFn = (server: string) => void
 
+// TODO: move to .env
 const DEFAULT_SERVER = 'https://mastodon.social'
 const SERVER_KEY = 'server'
 
-export class LmstConfig implements AppConfig {
-  private static instance: LmstConfig
-  private readonly callbacks: CallbackFn[] = []
-  private _server: string = ''
-  public readonly clientName: string = ''
-  public readonly repo: string = ''
-  public readonly baseUrl: string = ''
-  public readonly version: string = ''
+function createConfig(): AppConfig & ConfigHandlers {
+  let _server = ''
+  const callbacks: CallbackFn[] = []
 
-  constructor() {
-    if (LmstConfig.instance)
-      return LmstConfig.instance
-
-    this._server = ''
-    this.clientName = 'lmst'
-    this.repo = import.meta.env.VITE_REPOSITORY_URL
-    this.baseUrl = import.meta.env.VITE_BASE_URL
-    this.version = import.meta.env.VITE_APP_VERSION
-    this.callbacks = []
-
-    LmstConfig.instance = this
+  function store() {
+    localStore.setItem(SERVER_KEY, _server)
   }
 
-  public addOnServerChangeCb(fn: CallbackFn) {
-    this.callbacks.push(fn)
+  function load() {
+    _server = localStore.getItem(SERVER_KEY) ?? DEFAULT_SERVER
   }
 
-  public clearServerInfo() {
-    this.server = ''
+  function processCallbacks() {
+    callbacks.forEach(fn => fn(_server))
   }
 
-  set server(v: string) {
-    this._server = v
-    this.store()
-    this.processCallbacks()
-  }
+  return {
+    clientName: 'lmst',
+    repo: import.meta.env.VITE_REPOSITORY_URL,
+    baseUrl: import.meta.env.VITE_BASE_URL,
+    version: import.meta.env.VITE_APP_VERSION,
+    addOnServerChangeCb(fn: CallbackFn) {
+      callbacks.push(fn)
+    },
+    set server(v: string) {
+      _server = v || DEFAULT_SERVER
+      store()
+      processCallbacks()
+    },
+    get server() {
+      if (!_server)
+        load()
 
-  private processCallbacks() {
-    this.callbacks.forEach(fn => fn(this._server))
-  }
-
-  get server() {
-    if (!this._server)
-      this.load()
-
-    return this._server ?? DEFAULT_SERVER
-  }
-
-  private store() {
-    store.setItem(SERVER_KEY, this._server)
-  }
-
-  private load() {
-    this.server = store.getItem(SERVER_KEY) ?? DEFAULT_SERVER
+      return _server
+    }
   }
 }
 
+const config = createConfig()
+
 export function useAppConfig() {
-  return new LmstConfig()
+  return config
 }

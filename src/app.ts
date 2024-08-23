@@ -36,7 +36,7 @@ export class App {
       return success({ appInfo: this.appInfo })
 
     const res =  await _registerApp({
-      server: this.config.server,
+      server: this.config.server(),
       redirectUris: `${this.config.baseUrl}/oauth`,
       clientName: this.config.clientName,
       website: `${this.config.baseUrl}`,

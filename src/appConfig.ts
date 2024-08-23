@@ -1,10 +1,12 @@
-import { store as localStore } from "./store"
+import { store as localStore } from './store'
+import { createSignal, on } from './utils/signal'
+import type { Signal } from './utils/signal'
 
 export interface AppConfig {
   /**
    * Current server
    */
-  server: string
+  server: Signal<string>
 
   /**
    * A client name
@@ -27,30 +29,19 @@ export interface AppConfig {
   version: string
 }
 
-export interface ConfigHandlers {
-  addOnServerChangeCb: (fn: CallbackFn) => void
-}
-
-type CallbackFn = (server: string) => void
-
 // TODO: move to .env
 const DEFAULT_SERVER = 'https://mastodon.social'
 const SERVER_KEY = 'server'
 
-function createConfig(): AppConfig & ConfigHandlers {
-  let _server = ''
-  const callbacks: CallbackFn[] = []
+function createConfig(): AppConfig {
+  let _server = createSignal('')
 
-  function store() {
-    localStore.setItem(SERVER_KEY, _server)
-  }
+  on(_server, (newValue) => {
+    localStore.setItem(SERVER_KEY, newValue)
+  })
 
   function load() {
-    _server = localStore.getItem(SERVER_KEY) ?? DEFAULT_SERVER
-  }
-
-  function processCallbacks() {
-    callbacks.forEach(fn => fn(_server))
+    _server(localStore.getItem(SERVER_KEY) ?? DEFAULT_SERVER)
   }
 
   return {
@@ -58,20 +49,12 @@ function createConfig(): AppConfig & ConfigHandlers {
     repo: import.meta.env.VITE_REPOSITORY_URL,
     baseUrl: import.meta.env.VITE_BASE_URL,
     version: import.meta.env.VITE_APP_VERSION,
-    addOnServerChangeCb(fn: CallbackFn) {
-      callbacks.push(fn)
-    },
-    set server(v: string) {
-      _server = v || DEFAULT_SERVER
-      store()
-      processCallbacks()
-    },
     get server() {
-      if (!_server)
+      if (!_server())
         load()
 
       return _server
-    }
+    },
   }
 }
 

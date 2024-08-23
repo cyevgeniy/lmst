@@ -67,7 +67,7 @@ export class User implements CredentialAccount{
       }
       const sp = searchParams(params)
 
-      window.location.replace(`${this.appConfig.server}/oauth/authorize?${sp}`)
+      window.location.replace(`${this.appConfig.server()}/oauth/authorize?${sp}`)
     }
   }
 
@@ -108,7 +108,7 @@ export class User implements CredentialAccount{
     const sp = searchParams(params)
 
     try {
-      const r = await fetch(`${this.appConfig.server}/oauth/token?${sp}`, {
+      const r = await fetch(`${this.appConfig.server()}/oauth/token?${sp}`, {
         method: 'POST',
       })
 
@@ -151,7 +151,7 @@ export class User implements CredentialAccount{
 
     const token = (JSON.parse(tmp) as Token).access_token
 
-    const resp = await fetch(`${this.appConfig.server}/api/v1/accounts/verify_credentials`, {
+    const resp = await fetch(`${this.appConfig.server()}/api/v1/accounts/verify_credentials`, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -193,7 +193,7 @@ export class User implements CredentialAccount{
     store.removeItem(USER_KEY)
     store.removeItem(TOKEN_KEY)
     this.clearUserData()
-    this.appConfig.server = ''
+    this.appConfig.server('')
 
     this.processCallbacks()
   }

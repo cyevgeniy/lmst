@@ -60,12 +60,13 @@ export class TimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses(): Promise<Status[]> {
+    let { server } = this.config
     await this.user.verifyCredentials()
     this.user.loadTokenFromStore()
-    let fn = async () => await getPublicTimeline(this.config.server, {max_id: this.maxId})
+    let fn = async () => await getPublicTimeline(server(), {max_id: this.maxId})
 
     if (this.user.isLoaded())
-      fn = async () => await getHomeTimeline(this.config.server, this.user.accessToken(),  {max_id: this.maxId})
+      fn = async () => await getHomeTimeline(server(), this.user.accessToken(),  {max_id: this.maxId})
 
     const st = await fn()
 
@@ -187,7 +188,7 @@ export class TagsTimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses() {
-    const resp = await getTagTimeline(this.tag, {server: this.appConfig.server, params: {max_id: this.maxId}})
+    const resp = await getTagTimeline(this.tag, {server: this.appConfig.server(), params: {max_id: this.maxId}})
 
     if (resp.ok) {
       const statuses = resp.value
@@ -222,16 +223,16 @@ export interface IStatusManager {
 
 export class StatusManager implements IStatusManager {
   private user: User
-  private config: AppConfig
+  private server: AppConfig['server']
 
   constructor(opts: {user: User, config: AppConfig}) {
     this.user = opts.user
-    this.config = opts.config
+    this.server = opts.config.server
   }
 
   public getLinkToStatus(status: Status): string {
     const webfinger = genWebFinger(status.account.url)
-    const server = this.config.server.slice(8)
+    const server = this.server().slice(8)
     return `/status/${server}/${webfinger}/${status.id}`
   }
 
@@ -249,7 +250,7 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Status>
 
     try {
-      const resp = await fetch(`${this.config.server}/api/v1/statuses`, {
+      const resp = await fetch(`${this.server()}/api/v1/statuses`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${this.user.accessToken()}`,
@@ -280,7 +281,7 @@ export class StatusManager implements IStatusManager {
       return
 
     try {
-        const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}/reblog`, {
+        const resp = await fetch(`${this.server()}/api/v1/statuses/${id}/reblog`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${this.user.accessToken()}`,
@@ -301,7 +302,7 @@ export class StatusManager implements IStatusManager {
       return
 
     try {
-        const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}/unreblog`, {
+        const resp = await fetch(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${this.user.accessToken()}`,
@@ -322,7 +323,7 @@ export class StatusManager implements IStatusManager {
     this.user.loadTokenFromStore()
 
     try {
-       const resp = await fetch(`${this.config.server}/api/v1/statuses/${id}`, {
+       const resp = await fetch(`${this.server()}/api/v1/statuses/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${this.user.accessToken()}`,
@@ -343,7 +344,7 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Status>
     
     try {
-      const resp = await fetch(`${opts?.server ?? this.config.server}/api/v1/statuses/${id}`, {
+      const resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`, {
         method: 'GET'
       })
 
@@ -370,7 +371,7 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Context>
     
     try {
-      const resp = await fetch(`${opts?.server ?? this.config.server}/api/v1/statuses/${id}/context`, {
+      const resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`, {
         method: 'GET'
       })
 
@@ -462,7 +463,7 @@ export class GlobalPageMediator implements Mediator {
         if (!server)
           return
 
-        this.config.server = server
+        this.config.server(server)
         await this.user.authorize()
       }
     }

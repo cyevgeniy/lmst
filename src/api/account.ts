@@ -2,10 +2,10 @@ import {useAppConfig} from '../appConfig'
 import { success, fail } from '../utils/api'
 import type { Account, PaginationParams } from '../types/shared.d'
 
-const appConfig = useAppConfig()
+const { server } = useAppConfig()
 
 export async function lookupAccount(webfinger: string): Promise<Account> {
-  const url = `${appConfig.server}/api/v1/accounts/lookup/?acct=${webfinger}`
+  const url = `${server()}/api/v1/accounts/lookup/?acct=${webfinger}`
 
   const resp = await fetch(url, { method: 'GET' })
 
@@ -17,7 +17,7 @@ export async function lookupAccount(webfinger: string): Promise<Account> {
 
 
 export async function getAccount(id: string) : Promise<Account> {
-  const url = `${appConfig.server}/api/v1/accounts/${id}`
+  const url = `${server()}/api/v1/accounts/${id}`
 
   const resp = await fetch(url, { method: 'GET' })
 
@@ -28,7 +28,7 @@ export async function getAccount(id: string) : Promise<Account> {
 }
 
 export async function getStatuses(accountId: string, params: PaginationParams = {}, token: string = '') {
-  const _server = `${appConfig.server}/api/v1/accounts/${accountId}/statuses`
+  const _server = `${server()}/api/v1/accounts/${accountId}/statuses`
 
   const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
   const queryParams = queryArr.join('&')

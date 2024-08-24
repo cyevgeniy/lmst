@@ -36,21 +36,14 @@ export interface ITimelineManager {
 
 export class TimelineManager implements ITimelineManager {
   private maxId: string
-  private user: typeof user
-  private config: AppConfig
   public onClearCallback?: () => void
   public statuses: Status[]
   public noMoreData: boolean
 
 
-  constructor(opts: {
-    user: typeof user,
-    config: AppConfig
-  }) {
+  constructor() {
     this.maxId = ''
     this.statuses = []
-    this.user = opts.user
-    this.config = opts.config
     this.onClearCallback = undefined
     this.noMoreData = false
   }
@@ -60,13 +53,13 @@ export class TimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    let { server } = this.config
-    await this.user.verifyCredentials()
-    this.user.loadTokenFromStore()
+    let { server } = useAppConfig()
+    await user.verifyCredentials()
+    user.loadTokenFromStore()
     let fn = async () => await getPublicTimeline(server(), {max_id: this.maxId})
 
-    if (this.user.isLoaded())
-      fn = async () => await getHomeTimeline(server(), this.user.accessToken(),  {max_id: this.maxId})
+    if (user.isLoaded())
+      fn = async () => await getHomeTimeline(server(), user.accessToken(),  {max_id: this.maxId})
 
     const st = await fn()
 
@@ -106,22 +99,18 @@ export class ProfileTimelineManager implements ITimelineManager {
   private profileId: string
   public profileWebfinger: string
   public noMoreData: boolean
-  private user: typeof user
 
-  constructor(opts: {
-    user: typeof user
-  }) {
+  constructor() {
     this.maxId = ''
     this.profileId = ''
     this.profileWebfinger = ''
     this.statuses = []
-    this.user = opts.user
     this.noMoreData = false
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    this.user.loadTokenFromStore()
-    const res = await getStatuses(this.profileId, { max_id: this.maxId }, this.user.accessToken())
+    user.loadTokenFromStore()
+    const res = await getStatuses(this.profileId, { max_id: this.maxId }, user.accessToken())
 
     if (res.ok) {
       if (res.value.length) {
@@ -171,7 +160,6 @@ export class TagsTimelineManager implements ITimelineManager {
   public noMoreData: boolean
 
   constructor(opts: {
-    config: AppConfig
     keepStatuses: boolean
   }) {
     this.maxId = ''
@@ -179,8 +167,8 @@ export class TagsTimelineManager implements ITimelineManager {
     this.tag = ''
     this._lastChunk = []
     this.statuses = []
-    this.appConfig = opts.config
     this.noMoreData = false
+    this.appConfig = useAppConfig()
   }
 
   get lastChunk() {
@@ -222,12 +210,10 @@ export interface IStatusManager {
 }
 
 export class StatusManager implements IStatusManager {
-  private user: typeof user
   private server: AppConfig['server']
 
-  constructor(opts: {user: typeof user, config: AppConfig}) {
-    this.user = opts.user
-    this.server = opts.config.server
+  constructor() {
+    this.server = useAppConfig().server
   }
 
   public getLinkToStatus(status: Status): string {
@@ -241,7 +227,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public async postStatus(params: {statusText: string, in_reply_to_id?: string}): Promise<ApiResult<Status>> {
-    this.user.loadTokenFromStore()
+    user.loadTokenFromStore()
 
     const payload = new FormData()
     payload.append('status', params.statusText)
@@ -253,7 +239,7 @@ export class StatusManager implements IStatusManager {
       const resp = await fetch(`${this.server()}/api/v1/statuses`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${this.user.accessToken()}`,
+          Authorization: `Bearer ${user.accessToken()}`,
         },
         body: payload,
       })
@@ -277,14 +263,14 @@ export class StatusManager implements IStatusManager {
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {
-    if (!this.user.isLoaded)
+    if (!user.isLoaded())
       return
 
     try {
         const resp = await fetch(`${this.server()}/api/v1/statuses/${id}/reblog`, {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${this.user.accessToken()}`,
+            Authorization: `Bearer ${user.accessToken()}`,
           },
       })
 
@@ -298,14 +284,14 @@ export class StatusManager implements IStatusManager {
   }
 
   public async unboostStatus(id: Status['id']): Promise<void> {
-    if (!this.user.isLoaded)
+    if (!user.isLoaded())
       return
 
     try {
         const resp = await fetch(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${this.user.accessToken()}`,
+            Authorization: `Bearer ${user.accessToken()}`,
           },
       })
 
@@ -319,14 +305,14 @@ export class StatusManager implements IStatusManager {
   }
 
   public async deleteStatus(id: Status['id']) {
-    await this.user.verifyCredentials()
-    this.user.loadTokenFromStore()
+    await user.verifyCredentials()
+    user.loadTokenFromStore()
 
     try {
        const resp = await fetch(`${this.server()}/api/v1/statuses/${id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: `Bearer ${this.user.accessToken()}`,
+          Authorization: `Bearer ${user.accessToken()}`,
         },
        })
 
@@ -397,13 +383,13 @@ export class StatusManager implements IStatusManager {
 
   public getPermissions(): ActionPermissions {
     return {
-      canDelete: this.user.isLoaded(),
-      canBoost: this.user.isLoaded(),
+      canDelete: user.isLoaded(),
+      canBoost: user.isLoaded(),
     }
   }
 
   public ownStatus(s: Status) {
-    return this.user.user().acct === s.account.acct
+    return user.user().acct === s.account.acct
   }
 }
 
@@ -412,20 +398,17 @@ export class StatusManager implements IStatusManager {
  * such as login, logout and navigate to the main page
  */
 export class GlobalPageMediator implements Mediator {
-  private user: typeof user
   private timelineManager: TimelineManager
   private router: Router
   private config: AppConfig
   private pageHistoryManager: PageHistoryManager
 
   constructor(opts: {
-    user: typeof user
     timelineManager: TimelineManager
     router: Router
     config: AppConfig
     pageHistoryManager: PageHistoryManager
   }) {
-    this.user = opts.user
     this.timelineManager = opts.timelineManager
     this.router = opts.router
     this.config = opts.config
@@ -443,7 +426,7 @@ export class GlobalPageMediator implements Mediator {
     }
 
     if (msg === 'navigate:logout') {
-      this.user.logOut()
+      user.logOut()
       // After logout, we clear all pages cache, so the user will navigate
       // pages like in the first time
       // Without this, the main page will be empty, because
@@ -455,8 +438,8 @@ export class GlobalPageMediator implements Mediator {
     }
 
     if (msg === 'navigate:login') {
-      await this.user.verifyCredentials()
-      if (this.user.isLoaded())
+      await user.verifyCredentials()
+      if (user.isLoaded())
         this.goHome()
       else {
         const server = prompt('Enter server:')
@@ -464,7 +447,7 @@ export class GlobalPageMediator implements Mediator {
           return
 
         this.config.server(server)
-        await this.user.authorize()
+        await user.authorize()
       }
     }
   }
@@ -472,7 +455,6 @@ export class GlobalPageMediator implements Mediator {
 
 export class AppManager {
   private config: AppConfig
-  public user: typeof user
   public statusManager: StatusManager
   public timelineManager: TimelineManager
   public globalMediator: GlobalPageMediator
@@ -480,15 +462,13 @@ export class AppManager {
   public pageHistoryManager: PageHistoryManager
 
   constructor() {
-    this.user = user
     this.config = useAppConfig()
-    this.statusManager = new StatusManager({ user: this.user, config: this.config })
-    this.timelineManager = new TimelineManager({user: this.user, config: this.config })
-    this.tagsManager = new TagsTimelineManager({config: this.config, keepStatuses: false})
+    this.statusManager = new StatusManager()
+    this.timelineManager = new TimelineManager()
+    this.tagsManager = new TagsTimelineManager({keepStatuses: false})
     this.pageHistoryManager = usePageHistory()
 
     this.globalMediator = new GlobalPageMediator({
-      user: this.user,
       config: this.config,
       timelineManager: this.timelineManager,
       router: lRouter,

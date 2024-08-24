@@ -1,8 +1,7 @@
-import { AppManager } from '../appManager'
+import { user } from '../utils/user'
 
-export async function createOAuthPage(root: HTMLElement, appManager: AppManager) {
+export async function createOAuthPage(root: HTMLElement) {
   root.innerHTML = ''
-  const user = appManager.user
   
   // get authorization code from url search string
   // @ts-ignore

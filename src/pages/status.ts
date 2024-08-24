@@ -41,9 +41,9 @@ export function createStatusPage(
 
   async function addReplyBlock() {
 
-    await appManager.user.verifyCredentials()
+    await user.verifyCredentials()
   
-    if (!appManager.user.isLoaded())
+    if (!user.isLoaded())
       return
 
     const replyTextArea = h('textarea', {

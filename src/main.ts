@@ -35,7 +35,7 @@ lRouter.on('/', (params) =>{
 
 function _createProfilePage(params: RouteParams) {
   const cb = () => createProfilePage(mainPage.middle, {
-    pm: new ProfileTimelineManager({user: appManager.user}),
+    pm: new ProfileTimelineManager(),
     pageMediator: appManager.globalMediator,
     sm: appManager.statusManager,
     params,
@@ -45,7 +45,7 @@ function _createProfilePage(params: RouteParams) {
 }
 
 lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
-lRouter.on('/oauth', () => createOAuthPage(mainPage.root, appManager))
+lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
 lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
 lRouter.on('/tags/:tag', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () => createTagsPage(mainPage.middle, appManager, params))

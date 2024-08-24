@@ -16,7 +16,7 @@ export interface CredentialAccount {
   avatar: string
 }
 
-function useUser() {
+function createUserStore() {
 
   let config = useAppConfig()
   let app = new App()
@@ -186,4 +186,4 @@ function useUser() {
 const TOKEN_KEY = 'token'
 const USER_KEY = 'user'
 
-export const user = useUser()
+export const user = createUserStore()

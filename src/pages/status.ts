@@ -1,4 +1,6 @@
 import { childs, div, h, hide, show } from '../utils/dom'
+import { on } from '../utils/signal'
+import { user } from '../utils/user'
 import { Status } from '../types/shared'
 import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
@@ -76,8 +78,8 @@ export function createStatusPage(
 
 
 
-  appManager.user.addOnUserChangeCb(u => {
-    if (!u.isLoaded())
+  on(user.user, _ => {
+    if (!user.isLoaded())
       hide(replyToStatus)
     else
       show(replyToStatus)

@@ -1,12 +1,12 @@
 import {h, div, show, hide } from '../utils/dom'
-import { CredentialAccount, User } from '../utils/user'
+import {  user } from '../utils/user'
 import { lRouter } from '../router'
 import type { Mediator } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { globe, pen } from './Icons'
+import { on } from '../utils/signal'
 
 export function LNav(pm: Mediator) {
-  const user = new User()
   user.verifyCredentials()
 
   const profileLink = LNavLink({text: '', link: '/'}) //h('a', {attrs: { href: '/' } })
@@ -28,7 +28,7 @@ export function LNav(pm: Mediator) {
     signupContainer,
   ])
 
-  user.addOnUserChangeCb((u: CredentialAccount) => {
+  on(user.user, u => {
     if (u.id) {
       hide(authorize)
       profileLink.setText(u.display_name)
@@ -41,13 +41,11 @@ export function LNav(pm: Mediator) {
       show(authorize)
       profileLink.visible = false
     }
-  })
 
-  user.addOnUserChangeCb(u => {
-    composeLink.el.style.display = u.isLoaded() ? 'inline-flex' : 'none'
+    composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
 
     updLogoutVisibility()
-  });
+  })
 
   user.verifyCredentials()
 

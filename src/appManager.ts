@@ -1,7 +1,7 @@
 import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
 import type { Context, Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
-import { User } from './utils/user'
+import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
 import type { Mediator } from './types/shared'
@@ -36,7 +36,7 @@ export interface ITimelineManager {
 
 export class TimelineManager implements ITimelineManager {
   private maxId: string
-  private user: User
+  private user: typeof user
   private config: AppConfig
   public onClearCallback?: () => void
   public statuses: Status[]
@@ -44,7 +44,7 @@ export class TimelineManager implements ITimelineManager {
 
 
   constructor(opts: {
-    user: User,
+    user: typeof user,
     config: AppConfig
   }) {
     this.maxId = ''
@@ -106,10 +106,10 @@ export class ProfileTimelineManager implements ITimelineManager {
   private profileId: string
   public profileWebfinger: string
   public noMoreData: boolean
-  private user: User
+  private user: typeof user
 
   constructor(opts: {
-    user: User
+    user: typeof user
   }) {
     this.maxId = ''
     this.profileId = ''
@@ -222,10 +222,10 @@ export interface IStatusManager {
 }
 
 export class StatusManager implements IStatusManager {
-  private user: User
+  private user: typeof user
   private server: AppConfig['server']
 
-  constructor(opts: {user: User, config: AppConfig}) {
+  constructor(opts: {user: typeof user, config: AppConfig}) {
     this.user = opts.user
     this.server = opts.config.server
   }
@@ -403,7 +403,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public ownStatus(s: Status) {
-    return this.user.acct === s.account.acct
+    return this.user.user().acct === s.account.acct
   }
 }
 
@@ -412,14 +412,14 @@ export class StatusManager implements IStatusManager {
  * such as login, logout and navigate to the main page
  */
 export class GlobalPageMediator implements Mediator {
-  private user: User
+  private user: typeof user
   private timelineManager: TimelineManager
   private router: Router
   private config: AppConfig
   private pageHistoryManager: PageHistoryManager
 
   constructor(opts: {
-    user: User
+    user: typeof user
     timelineManager: TimelineManager
     router: Router
     config: AppConfig
@@ -472,7 +472,7 @@ export class GlobalPageMediator implements Mediator {
 
 export class AppManager {
   private config: AppConfig
-  public user: User
+  public user: typeof user
   public statusManager: StatusManager
   public timelineManager: TimelineManager
   public globalMediator: GlobalPageMediator
@@ -480,7 +480,7 @@ export class AppManager {
   public pageHistoryManager: PageHistoryManager
 
   constructor() {
-    this.user = new User()
+    this.user = user
     this.config = useAppConfig()
     this.statusManager = new StatusManager({ user: this.user, config: this.config })
     this.timelineManager = new TimelineManager({user: this.user, config: this.config })

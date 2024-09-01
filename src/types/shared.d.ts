@@ -123,3 +123,8 @@ export interface StatusEventHandlers {
   onDelete?: StatusDeleteCallback
   onContentClick?: StatusContentClickCallback
 }
+
+export interface Relationship {
+  id: string
+  following: boolean
+}

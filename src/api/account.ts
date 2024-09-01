@@ -1,6 +1,9 @@
 import {useAppConfig} from '../appConfig'
 import { success, fail } from '../utils/api'
+import { user } from '../utils/user'
+import type { ApiResult } from '../utils/api'
 import type { Account, PaginationParams } from '../types/shared.d'
+import type { Relationship } from '../types/shared.d'
 
 const { server } = useAppConfig()
 
@@ -46,4 +49,30 @@ export async function getStatuses(accountId: string, params: PaginationParams = 
     return success(await resp.json())
 
   return fail('Can not load account statuses')
+}
+
+export async function getRelation(id: Account['id']): Promise<ApiResult<Relationship >> {
+  let res: ApiResult<Relationship>
+  const url = `${server()}/api/v1/accounts/relationships?id[]=${id}`
+
+  user.loadTokenFromStore()
+
+  try {
+    const resp = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${user.accessToken()}`,
+      }
+    })
+
+    if (resp.status === 200) {
+      res = success(((await resp.json()) as Relationship[])[0])
+    } else {
+      throw ''
+    }
+  }
+  catch (e: unknown) {
+    res = fail('can\'t get relationship')
+  }
+
+  return res
 }

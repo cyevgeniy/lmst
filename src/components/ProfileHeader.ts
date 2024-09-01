@@ -20,7 +20,7 @@ export function LProfileHeader(account?: Account) {
   } = useProfileFollow()
 
   const avatar = LAvatar({img: '', size: 'lg'})
-  const follow = LButton({text: 'Follow', onClick: () => followunfollow(id)})
+  const follow = LButton({text: '', onClick: () => followunfollow(id)})
   actionsEl.appendChild(follow.el)
   const { show, hide } = useCommonEl(follow.el)
   hide()

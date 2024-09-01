@@ -7,7 +7,7 @@ import { createSignal } from '../utils/signal'
 export function useProfileFollow() {
   const relation = createSignal<Relationship | undefined>(undefined)
   const loading = createSignal(false)
-    let { server } = useAppConfig()
+  let { server } = useAppConfig()
 
   async function followunfollow(id: Account['id']) {
     let endpoint = relation()?.following ? 'unfollow' : 'follow'
@@ -27,13 +27,9 @@ export function useProfileFollow() {
   }
 
   async function updateRelation(id: Account['id']) {
-    loading(true)
-
     const rel = await getRelation(id)
 
     relation(rel.ok ? rel.value : undefined)
-
-    loading(false)
   }
 
   return {

@@ -4,11 +4,15 @@ import { user } from './user'
 import {Relationship, type Account} from '../types/shared'
 import { createSignal } from '../utils/signal'
 
-export function useProfileFollow() {
+export function useProfileRelation() {
   const relation = createSignal<Relationship | undefined>(undefined)
   const loading = createSignal(false)
   let { server } = useAppConfig()
 
+  /**
+   * Depending on current relationship, this function
+   * follows or unfollows the profile with specified id
+  */
   async function followunfollow(id: Account['id']) {
     let endpoint = relation()?.following ? 'unfollow' : 'follow'
     loading(true)

@@ -4,7 +4,7 @@ import { LAvatar } from './Avatar'
 import { parseContent } from '../utils/shared'
 import { LButton } from './LButton'
 import { on } from '../utils/signal'
-import { useProfileFollow } from '../utils/useProfileFollow'
+import { useProfileRelation } from '../utils/useProfileRelation'
 import { user } from '../utils/user'
 
 export function LProfileHeader(account?: Account) {
@@ -17,7 +17,11 @@ export function LProfileHeader(account?: Account) {
     loading,
     relation,
     followunfollow,
-  } = useProfileFollow()
+  } = useProfileRelation()
+
+
+  // let { followunfollow } = useProfileRelation(id)
+  // followunfollow
 
   const avatar = LAvatar({img: '', size: 'lg'})
   const follow = LButton({text: '', onClick: () => followunfollow(id)})

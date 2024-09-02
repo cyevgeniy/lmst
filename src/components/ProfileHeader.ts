@@ -65,7 +65,7 @@ export function LProfileHeader(account?: Account) {
     avatar.img = account?.avatar ?? ''
 
     // Don't show 'follow'/'unfollow' on your own profile
-    if (account && user.user().id !== account.id) {
+    if (account && user.user().id !== account.id && user.isLoaded()) {
       updateRelation(id = account.id)
     }
   }

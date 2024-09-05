@@ -1,6 +1,6 @@
 import {useAppConfig} from '../appConfig'
 import { success, fail } from '../utils/api'
-import { user } from '../utils/user'
+import { $fetch } from '../utils/fetch'
 import type { ApiResult } from '../utils/api'
 import type { Account, PaginationParams } from '../types/shared.d'
 import type { Relationship } from '../types/shared.d'
@@ -30,19 +30,15 @@ export async function getAccount(id: string) : Promise<Account> {
   throw new Error('Cannot load account info')
 }
 
-export async function getStatuses(accountId: string, params: PaginationParams = {}, token: string = '') {
+export async function getStatuses(accountId: string, params: PaginationParams = {}) {
   const _server = `${server()}/api/v1/accounts/${accountId}/statuses`
 
   const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
   const queryParams = queryArr.join('&')
 
-  const headers = new Headers({
-    Authorization: `Bearer ${token}`,
-  })
-
-  const resp = await fetch(_server + (queryParams.length > 0 ? `?${queryParams}` : '') , {
+  const resp = await $fetch(_server + (queryParams.length > 0 ? `?${queryParams}` : '') , {
     method: 'GET',
-    headers,
+    withCredentials: true,
   })
 
   if (resp.status === 200)
@@ -55,13 +51,9 @@ export async function getRelation(id: Account['id']): Promise<ApiResult<Relation
   let res: ApiResult<Relationship>
   const url = `${server()}/api/v1/accounts/relationships?id[]=${id}`
 
-  user.loadTokenFromStore()
-
   try {
-    const resp = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${user.accessToken()}`,
-      }
+    const resp = await $fetch(url, {
+      withCredentials: true
     })
 
     if (resp.status === 200) {

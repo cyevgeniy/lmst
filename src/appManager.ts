@@ -10,6 +10,7 @@ import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
 import { genWebFinger } from './utils/shared.ts'
+import { $fetch } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 
 export interface ITimelineManager {
@@ -55,11 +56,10 @@ export class TimelineManager implements ITimelineManager {
   public async loadStatuses(): Promise<Status[]> {
     let { server } = useAppConfig()
     await user.verifyCredentials()
-    user.loadTokenFromStore()
     let fn = async () => await getPublicTimeline(server(), {max_id: this.maxId})
 
     if (user.isLoaded())
-      fn = async () => await getHomeTimeline(server(), user.accessToken(),  {max_id: this.maxId})
+      fn = async () => await getHomeTimeline(server(), {max_id: this.maxId})
 
     const st = await fn()
 
@@ -109,8 +109,7 @@ export class ProfileTimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    user.loadTokenFromStore()
-    const res = await getStatuses(this.profileId, { max_id: this.maxId }, user.accessToken())
+    const res = await getStatuses(this.profileId, { max_id: this.maxId })
 
     if (res.ok) {
       if (res.value.length) {
@@ -236,11 +235,9 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Status>
 
     try {
-      const resp = await fetch(`${this.server()}/api/v1/statuses`, {
+      const resp = await $fetch(`${this.server()}/api/v1/statuses`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${user.accessToken()}`,
-        },
+        withCredentials: true,
         body: payload,
       })
 
@@ -267,11 +264,9 @@ export class StatusManager implements IStatusManager {
       return
 
     try {
-        const resp = await fetch(`${this.server()}/api/v1/statuses/${id}/reblog`, {
+        const resp = await $fetch(`${this.server()}/api/v1/statuses/${id}/reblog`, {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${user.accessToken()}`,
-          },
+          withCredentials: true,
       })
 
       if (resp.status !== 200)
@@ -288,11 +283,9 @@ export class StatusManager implements IStatusManager {
       return
 
     try {
-        const resp = await fetch(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
+        const resp = await $fetch(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${user.accessToken()}`,
-          },
+          withCredentials: true,
       })
 
       if (resp.status !== 200)
@@ -309,11 +302,9 @@ export class StatusManager implements IStatusManager {
     user.loadTokenFromStore()
 
     try {
-       const resp = await fetch(`${this.server()}/api/v1/statuses/${id}`, {
+       const resp = await $fetch(`${this.server()}/api/v1/statuses/${id}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${user.accessToken()}`,
-        },
+        withCredentials: true,
        })
 
       if (resp.status !== 200)
@@ -330,7 +321,7 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Status>
     
     try {
-      const resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`, {
+      const resp = await $fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`, {
         method: 'GET'
       })
 

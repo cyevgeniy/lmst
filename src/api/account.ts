@@ -10,7 +10,7 @@ const { server } = useAppConfig()
 export async function lookupAccount(webfinger: string): Promise<Account> {
   const url = `${server()}/api/v1/accounts/lookup/?acct=${webfinger}`
 
-  const resp = await fetch(url, { method: 'GET' })
+  const resp = await fetch(url)
 
   if (resp.status === 200)
     return resp.json()
@@ -22,7 +22,7 @@ export async function lookupAccount(webfinger: string): Promise<Account> {
 export async function getAccount(id: string) : Promise<Account> {
   const url = `${server()}/api/v1/accounts/${id}`
 
-  const resp = await fetch(url, { method: 'GET' })
+  const resp = await fetch(url)
 
   if (resp.status === 200)
     return resp.json()
@@ -37,7 +37,6 @@ export async function getStatuses(accountId: string, params: PaginationParams = 
   const queryParams = queryArr.join('&')
 
   const resp = await $fetch(_server + (queryParams.length > 0 ? `?${queryParams}` : '') , {
-    method: 'GET',
     withCredentials: true,
   })
 

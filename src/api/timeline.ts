@@ -49,7 +49,7 @@ export async function getTagTimeline(tag: string, opts: GetStatusesByTagOptions 
   const prm = getQueryParams(opts.params)
   const url = `${opts.server}/api/v1/timelines/tag/${tag}${prm}`
 
-  const resp = await fetch(url, { method: 'GET' })
+  const resp = await fetch(url)
 
   if (resp.status === 200)
     return success<Status[]>(await resp.json())

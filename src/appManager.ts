@@ -321,9 +321,7 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Status>
     
     try {
-      const resp = await $fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`, {
-        method: 'GET'
-      })
+      const resp = await $fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`)
 
       if (resp.status !== 200)
         throw new Error('Status was not fetched')
@@ -344,13 +342,11 @@ export class StatusManager implements IStatusManager {
   }
 
   public async getStatusContext(id: Status['id'], opts?: {server: string}): Promise<ApiResult<Context>> {
-    
+
     let result: ApiResult<Context>
-    
+
     try {
-      const resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`, {
-        method: 'GET'
-      })
+      const resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`)
 
       if (resp.status !== 200)
         throw new Error('Context was not fetched')

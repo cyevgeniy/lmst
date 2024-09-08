@@ -18,6 +18,7 @@ export function useProfileRelation() {
     loading(true)
     const resp = await $fetch(`${server()}/api/v1/accounts/${id}/${endpoint}`, {
       method: 'POST',
+      withCredentials: true,
     })
     loading(false)
 

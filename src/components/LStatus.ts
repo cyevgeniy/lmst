@@ -105,7 +105,7 @@ export function LStatus(opts: StatusProps) {
     if (attachment.type === 'image')
       return h('a', {
         attrs: {
-          href: attachment.preview_url,
+          href: attachment.url,
           target: '_blank'
         },
         className: 'status-linkAttachment'
@@ -113,7 +113,7 @@ export function LStatus(opts: StatusProps) {
         [
           h('img', {
             className: 'status-imageAttachment',
-            attrs: { src: attachment.preview_url }
+            attrs: { src: attachment.preview_url ?? attachment.url}
           })
         ])
 

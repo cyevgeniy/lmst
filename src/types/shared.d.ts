@@ -38,7 +38,7 @@ export interface MediaAttachment {
   id: string
   type: 'unknown' | 'image' | 'gifv' | 'audio'
   url: string
-  preview_url: string
+  preview_url?: string
   remote_url?: string
   description: string
   blurhash: string

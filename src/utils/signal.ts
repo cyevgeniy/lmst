@@ -47,4 +47,8 @@ export function on<T=any>(signal: Signal<T>, cb: (p: T) => any) {
   } else {
     effects.set(signal, [cb])
   }
+
+
+  // We don't remove listeners anywhere yet, just for the future
+  return () => effects.delete(signal)
 }

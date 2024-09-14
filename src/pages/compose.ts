@@ -3,10 +3,13 @@ import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
 import { fullScreen } from '../components/Icons'
+import { text, postAvailable } from '../store/composeStore'
+import { on } from '../utils/signal'
 
 export function createComposePage(root: HTMLElement, appManager: AppManager) {
   root.innerHTML = ''
-  const text = h('textarea', {
+
+  const textArea = h('textarea', {
     attrs: {
       maxLength: '300',
       rows: '10',
@@ -14,6 +17,9 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     },
     onInput,
   })
+
+  on(text, (newValue) => { console.log('callback for text change'); textArea.value = newValue})
+  on(postAvailable, (newValue) => btn.disabled = !newValue)
 
   const btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick})
   const zenModeBtn = h(
@@ -29,38 +35,30 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
   let composeZen: ReturnType<typeof LComposeZen>
 
-  function setBtnStatus(area: HTMLTextAreaElement) {
-    btn.disabled = area.value.length === 0
-  }
-
   function onComposeZenClose() {
-    const msg = composeZen!.text
-    text.value = msg
-    setBtnStatus(text)
+    text(composeZen!.text)
     composeZen!.el.remove()
+    textArea.focus()
   }
 
   function showZen() {
-    composeZen = LComposeZen({onClose: () => onComposeZenClose(), text: text.value})
+    composeZen = LComposeZen({onClose: () => onComposeZenClose(), text: text()})
     childs(el, [composeZen])
     composeZen.setFocus()
   }
 
-  // By default the text in the
-  setBtnStatus(text)
-
   async function onPostClick() {
-    const res = await appManager.statusManager.postStatus({statusText: text.value})
+    const res = await appManager.statusManager.postStatus({statusText: text()})
 
     if (res.ok)
-      text.value = ''
+      text('')
     else
       alert(res.error)
   }
 
   function onInput(e: Event) {
     const area = e.target as HTMLTextAreaElement
-    setBtnStatus(area)
+    text(area.value)
   }
 
   const el = h(
@@ -68,10 +66,10 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
      { className: 'compose__wrapper' },
      [
         textToolbar,
-        text,
+        textArea,
         h('div', { className: 'compose__post'}, [btn.el]),
   ])
 
   root.appendChild(el)
-  text.focus()
+  textArea.focus()
 }

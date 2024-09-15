@@ -41,12 +41,31 @@ function _createProfilePage(params: RouteParams) {
     params,
   })
   cacheAndNavigate(params._path, mainPage.middle, cb)
-  
 }
+
+const noop = () => {}
+
+function createPageProxy(pageConstructor: () => any) {
+  let toCleanup: () => void = noop
+
+  function createPage() {
+    toCleanup?.()
+
+    toCleanup = pageConstructor()?.onUnmount ?? noop
+  }
+
+  const res = {
+    createPage,
+  }
+
+  return res
+}
+
+const composePageProxy = createPageProxy(() => createComposePage(mainPage.middle, appManager))
 
 lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
 lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
-lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
+lRouter.on('/compose', composePageProxy.createPage)
 lRouter.on('/tags/:tag', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () => createTagsPage(mainPage.middle, appManager, params))
   createTagsPage(mainPage.middle, appManager, params)

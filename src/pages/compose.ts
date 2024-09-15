@@ -18,10 +18,16 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     onInput,
   })
 
-  on(text, (newValue) => { console.log('callback for text change'); textArea.value = newValue})
-  on(postAvailable, (newValue) => btn.disabled = !newValue)
+  const cleanText = on(text, (newValue) => { console.log('callback for text change'); textArea.value = newValue})
+  const cleanDisabled = on(postAvailable, (newValue) => btn.disabled = !newValue)
+
+  function onUnmount() {
+    cleanText()
+    cleanDisabled()
+  }
 
   const btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick})
+  btn.disabled = !postAvailable()
   const zenModeBtn = h(
     'button',
     {
@@ -72,4 +78,8 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
   root.appendChild(el)
   textArea.focus()
+
+  return {
+    onUnmount,
+  }
 }

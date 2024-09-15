@@ -10,5 +10,5 @@ export const text = createSignal('')
  */
 export const postAvailable = createSignal(false)
 
-on(text, (newVal) => postAvailable(newVal.length > 3))
+on(text, (newVal) => postAvailable(newVal.length > 0))
 

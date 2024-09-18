@@ -48,7 +48,9 @@ export function on<T=any>(signal: Signal<T>, cb: (p: T) => any) {
     effects.set(signal, [cb])
   }
 
+  const idx = signalEffects?.findIndex(e => e === cb) ?? -1
+
 
   // We don't remove listeners anywhere yet, just for the future
-  return () => effects.delete(signal)
+  return () => idx !== -1 && signalEffects?.splice(idx, 1)
 }

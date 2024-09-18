@@ -18,8 +18,11 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     onInput,
   })
 
-  const cleanText = on(text, (newValue) => { console.log('callback for text change'); textArea.value = newValue})
-  const cleanDisabled = on(postAvailable, (newValue) => btn.disabled = !newValue)
+  // Display current text in the text area
+  textArea.value = text()
+
+  const cleanText = on(text, newValue => textArea.value = newValue)
+  const cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue)
 
   function onUnmount() {
     cleanText()

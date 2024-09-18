@@ -6,6 +6,7 @@ import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
 import { LStatusesList } from '../components/LStatusesList'
 import { LButton } from '../components/LButton'
+import { useCompose } from '../store/composeStore'
 
 export function createStatusPage(
   root: HTMLElement,
@@ -39,6 +40,25 @@ export function createStatusPage(
 
   root.appendChild(el)
 
+  const { text, postAvailable, cleanup } = useCompose()
+
+  let postReply: ReturnType<typeof LButton>
+  let replyTextArea: HTMLTextAreaElement
+
+  const cleanText = on(text, newValue => replyTextArea.value = newValue)
+  const cleanDisabled = on(postAvailable, newValue => postReply.disabled = !newValue)
+
+  function onUnmount() {
+    cleanup()
+    cleanDisabled()
+    cleanText()
+  }
+
+  function onInput(e: Event) {
+    const area = e.target as HTMLTextAreaElement
+    text(area.value)
+  }
+
   async function addReplyBlock() {
 
     await user.verifyCredentials()
@@ -46,17 +66,18 @@ export function createStatusPage(
     if (!user.isLoaded())
       return
 
-    const replyTextArea = h('textarea', {
+    replyTextArea = h('textarea', {
       attrs: {
         maxLength: '300',
         rows: '3',
         placeholder: 'Your reply'
-      }
+      },
+      onInput,
     })
 
-    const postReply = LButton({
+    postReply = LButton({
       text: 'Post', onClick: async () => {
-        if (replyTextArea.value.length === 0) return
+        if (!text()) return
 
         const res = await appManager.statusManager.postStatus({
           statusText: replyTextArea.value,
@@ -65,13 +86,15 @@ export function createStatusPage(
 
         if (res.ok) {
           statusesList.addStatuses([res.value])
-          replyTextArea.value = ''
+          text('')
         }
         else {
           alert(res.error)
         }
       }
     })
+
+    postReply.disabled = !postAvailable()
 
     childs(replyToStatus, [replyTextArea, div('reply-buttonContainer', [postReply.el])])
   }
@@ -113,5 +136,6 @@ export function createStatusPage(
 
   return {
     el,
+    onUnmount,
   }
 }

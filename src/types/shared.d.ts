@@ -128,3 +128,14 @@ export interface Relationship {
   id: string
   following: boolean
 }
+
+interface Tag {
+  name: string
+  url: string
+}
+
+interface Search {
+  accounts: Account[]
+  statuses: Status[]
+  hashtags: Tag[]
+}

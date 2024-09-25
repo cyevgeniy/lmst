@@ -10,6 +10,7 @@ import { createStatusPage } from './pages/status'
 import { createMainPage } from './utils/page'
 import { ElLike } from './utils/dom'
 import { usePageHistory } from './utils/pageHistory'
+import { createSearchPage } from './pages/search'
 
 const appManager = new AppManager()
 const mainPage = createMainPage(appManager.globalMediator)
@@ -66,6 +67,7 @@ const composePageProxy = createPageProxy(() => createComposePage(mainPage.middle
 lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
 lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
 lRouter.on('/compose', composePageProxy.createPage)
+lRouter.on('/search', () => createSearchPage(mainPage.middle, appManager))
 lRouter.on('/tags/:tag', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () => createTagsPage(mainPage.middle, appManager, params))
   createTagsPage(mainPage.middle, appManager, params)

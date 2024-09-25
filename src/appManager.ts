@@ -1,5 +1,5 @@
 import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
-import type { Context, Status } from './types/shared.d.ts'
+import type { Context, Search, Status } from './types/shared.d.ts'
 import type { AppConfig } from './appConfig'
 import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
@@ -440,6 +440,36 @@ export class GlobalPageMediator implements Mediator {
   }
 }
 
+function createSearchManager() {
+  let res: Search
+
+  const { server } = useAppConfig()
+
+  async function search(q: string) {
+    try {
+      const resp = await $fetch(`${server()}/api/v2/search?q=${q}`, {
+        method: 'GET',
+        withCredentials: true,
+      })
+
+      res = await resp.json()
+    } catch {
+      res = {
+        accounts: [],
+        statuses: [],
+        hashtags: [],
+      }
+    }
+  }
+
+  return {
+    search,
+    get searchResult() {
+      return res
+    }
+  }
+}
+
 export class AppManager {
   private config: AppConfig
   public statusManager: StatusManager
@@ -447,6 +477,7 @@ export class AppManager {
   public globalMediator: GlobalPageMediator
   public tagsManager: TagsTimelineManager
   public pageHistoryManager: PageHistoryManager
+  public searchManager: ReturnType<typeof createSearchManager>
 
   constructor() {
     this.config = useAppConfig()
@@ -454,6 +485,7 @@ export class AppManager {
     this.timelineManager = new TimelineManager()
     this.tagsManager = new TagsTimelineManager({keepStatuses: false})
     this.pageHistoryManager = usePageHistory()
+    this.searchManager = createSearchManager()
 
     this.globalMediator = new GlobalPageMediator({
       config: this.config,

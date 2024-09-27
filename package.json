@@ -22,7 +22,7 @@
     "jsdom": "^22.1.0",
     "lightningcss": "^1.25.1",
     "size-limit": "^11.1.4",
-    "tap": "^18.5.7",
+    "tap": "^21.0.1",
     "typescript": "^5.3.3",
     "vite": "^4.4.5"
   }

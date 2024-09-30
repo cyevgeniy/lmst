@@ -13,6 +13,7 @@ export function LNav(pm: Mediator) {
   const authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login')
   const logoutLink = LNavLink({text: 'Logout', link: '#', onClick: onLogoutClick}) //h('a', {attrs: { href: '#' }}  , 'Logout')
   const composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick})
+  const searchLink = LNavLink({text: 'Search', link: '/search', icon: pen, onClick: onSearchClick})
   const mainLink = LNavLink({text: 'Lmst', link: '/', icon: globe, onClick: onMainLinkClick})
   const  signupContainer = h('div', {
     className: 'navBar-rightItems'
@@ -25,6 +26,7 @@ export function LNav(pm: Mediator) {
   const el = div('navBar', [
     mainLink.el,
     composeLink.el,
+    searchLink.el,
     signupContainer,
   ])
 
@@ -66,6 +68,11 @@ export function LNav(pm: Mediator) {
   function onComposeClick(e: MouseEvent) {
     e.preventDefault()
     lRouter.navigateTo('/compose')
+  }
+
+  function onSearchClick(e: MouseEvent) {
+    e.preventDefault()
+    lRouter.navigateTo('/search')
   }
 
   function updLogoutVisibility() {

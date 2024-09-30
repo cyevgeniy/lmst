@@ -1,10 +1,11 @@
 import { LInfo } from "../components/LInfo"
 import { createLayout } from "../components/Layout"
 import type { Mediator } from '../types/shared'
-import { childs } from "./dom"
+import { childs, ElLike } from "./dom"
 
-export interface Page {
-  mount: (params?: Record<string, string>) => void
+export interface Page extends ElLike {
+  onUnmount?: () => void
+  onMount?: () => void
 }
 
 export function createMainPage(pm: Mediator) {

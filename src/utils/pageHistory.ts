@@ -1,10 +1,12 @@
+import { Page } from "./page"
+
 export interface PageHistoryManager {
-  get: (p: string) => HTMLElement | undefined
-  set: (p: string, el: HTMLElement) => Map<string, HTMLElement>
+  get: (p: string) => Page | undefined
+  set: (p: string, page: Page) => Map<string, Page>
   clear: () => void
 }
 
-const hist = new Map<string, HTMLElement>()
+const hist = new Map<string, Page>()
 
 
 /**
@@ -14,7 +16,7 @@ const hist = new Map<string, HTMLElement>()
 export function usePageHistory(): PageHistoryManager {
     return {
         get: (p: string) => hist.get(p),
-        set: (p: string, el: HTMLElement) => hist.set(p, el),
+        set: (p: string, page: Page) => hist.set(p, page),
         clear: () => hist.clear()
     }
 }

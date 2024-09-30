@@ -12,10 +12,10 @@
  * @returns string that is ready to be passed as a search to a url
  */
 export function searchParams(params: {[k: string]: string}): string {
-  return encodeURIComponent(Object
+  return Object
     .entries(params)
     .filter(([_, value]) => value)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&'))
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+    .join('&')
 }
 

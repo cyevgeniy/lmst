@@ -8,26 +8,12 @@ import { createComposePage } from './pages/compose'
 import { ProfileTimelineManager, AppManager } from './appManager'
 import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
-import { childs, ElLike } from './utils/dom'
-import { usePageHistory } from './utils/pageHistory'
+import type { ElLike } from './utils/dom'
+import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
 
 const appManager = new AppManager()
 const mainPage = createMainPage(appManager.globalMediator)
-
-// const hist = new Map<string, Page>()
-const hist = usePageHistory()
-
-
-function getCached(path: string, cb: () => Page): Page {
-  let page = hist.get(path)
-
-  if (!page) {
-    hist.set(path, page = cb())
-  }
-
-  return page
-}
 
 function cacheAndNavigate(path: string, mountpoint: HTMLElement, cb: () => Page): void {
   
@@ -64,11 +50,6 @@ function createPageProxy(pageConstructor: () => any) {
     let page = pageConstructor()
     toCleanup = page?.onUnmount ?? noop
 
-    // Make sure that onMount function will be called after render
-    setTimeout(() => page.onMount?.(), 0)
-
-    console.log('onMount: ', page.onMount)
-
     return { el: page.el } as ElLike
   }
 
@@ -80,26 +61,12 @@ function createPageProxy(pageConstructor: () => any) {
 }
 
 const composePageProxy = createPageProxy(() => createComposePage(mainPage.middle, appManager))
-// const searchPageProxy = createPageProxy(() => {
-//   let page = getCached()
-//   createSearchPage(mainPage.middle, appManager)
-// })
 
 lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
 lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
 lRouter.on('/compose', composePageProxy.createPage)
 lRouter.on('/search', (params) => {
-  let path = params._path
-  let page = hist.get(path)
-
-  if (!page) {
-    hist.set(path, page = createSearchPage(mainPage.middle, appManager))
-  } else {
-    mainPage.middle.innerHTML = ''
-    childs(mainPage.middle, [page.el])  
-  }
-
-  page.onMount!()
+  cacheAndNavigate(params._path, mainPage.middle, () => createSearchPage(mainPage.middle, appManager))
 })
 lRouter.on('/tags/:tag', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () => createTagsPage(mainPage.middle, appManager, params))

@@ -8,6 +8,26 @@ export interface PageHistoryManager {
 
 const hist = new Map<string, Page>()
 
+/**
+ * Returns previously opened page for specified route, or,
+ * if route is visited for the first time, calls page constructor,
+ * adds it to the cache and then returns it
+ * 
+ * @param path Route path
+ * @param cb Page constructor
+ * @returns Cached or previously created page
+ */
+export function getCached(path: string, cb: () => Page): Page {
+  let page = hist.get(path)
+
+  if (!page) {
+    hist.set(path, page = cb())
+  }
+
+  return page
+}
+
+
 
 /**
  * Most probably we'll add additional logic into the page caching

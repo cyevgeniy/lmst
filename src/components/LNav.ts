@@ -3,7 +3,7 @@ import {  user } from '../utils/user'
 import { lRouter } from '../router'
 import type { Mediator } from '../types/shared'
 import { LNavLink } from './LNavLink'
-import { globe, pen, search } from './Icons'
+import { globe, pen, search, logout } from './Icons'
 import { on } from '../utils/signal'
 
 export function LNav(pm: Mediator) {
@@ -11,7 +11,7 @@ export function LNav(pm: Mediator) {
 
   const profileLink = LNavLink({text: '', link: '/'}) //h('a', {attrs: { href: '/' } })
   const authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login')
-  const logoutLink = LNavLink({text: 'Logout', link: '#', onClick: onLogoutClick}) //h('a', {attrs: { href: '#' }}  , 'Logout')
+  const logoutLink = LNavLink({text: 'Logout', link: '#', icon: logout,  onClick: onLogoutClick}) //h('a', {attrs: { href: '#' }}  , 'Logout')
   const composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick})
   const searchLink = LNavLink({text: 'Search', link: '/search', icon: search, onClick: onSearchClick})
   const mainLink = LNavLink({text: 'Lmst', link: '/', icon: globe, onClick: onMainLinkClick})

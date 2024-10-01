@@ -10,7 +10,7 @@ export function LNavLink(props: NavLinkProps) {
   const { text, link, icon, ...handlers} = props
   const el = h('a', {
     className: 'navBar-link',
-    innerHTML: `${icon ?? ''}${text}`,
+    innerHTML: `${icon ?? ''}<span>${text}</span>`,
     attrs: { href: link},
     ...handlers,
   })

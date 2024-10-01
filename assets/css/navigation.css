@@ -30,11 +30,34 @@
 
 /* Set the size of an icon in the link, if any */
 .navBar-link > svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* A container that holds links that should be aligned to the right side of a sidebar */
 .navBar-rightItems {
   margin-left: auto; 
+  display: flex;
+  align-content: center;
+}
+
+/**
+ * On mobile, show only icons and hide the text
+ */
+.navBar-link > span {
+  display: none;
+}
+
+@media screen and (min-width: 1240px) {
+  /* Show links text */
+  .navBar-link > span {
+    display: inline;
+  }
+
+  /** We show text, so make icon smaller */
+  .navBar-link > svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  
 }

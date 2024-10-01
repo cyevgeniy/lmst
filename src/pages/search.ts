@@ -33,8 +33,8 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	}
 
 	const statusesListRoot = h('div')
-	const form = h('form', {onSubmit,}, [input, statusesListRoot])
-	const el = h('div', null, [form])
+	const form = h('form', {onSubmit,}, [input])
+	const el = h('div', null, [form, statusesListRoot])
 
 	const slist = LStatusesList({
 		root: statusesListRoot,

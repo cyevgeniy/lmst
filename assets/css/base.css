@@ -17,6 +17,16 @@ textarea {
   outline: none !important;
 }
 
-textarea:focus {
+input {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  border: 1px solid rgb(235, 238, 240);
+  outline: none !important;
+}
+
+textarea:focus, input:focus {
   border-color: darkgray;
 }

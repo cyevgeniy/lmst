@@ -9,7 +9,7 @@ function isTag(s: string): boolean {
 
 export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	root.innerHTML = ''
-	const input = h('input')
+	const input = h('input', {className: 'search-input'})
 	input.type = 'search'
 	input.placeholder = 'Search text or #hashtag'
 	input.autofocus = true

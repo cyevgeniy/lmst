@@ -1,3 +1,7 @@
+export interface SearchParamsOptions {
+  [k: string]: string
+}
+
 /**
  * Converts an object to a search parameters string
  * 
@@ -11,7 +15,7 @@
  * @param params Search parameters
  * @returns string that is ready to be passed as a search to a url
  */
-export function searchParams(params: {[k: string]: string}): string {
+export function searchParams(params: SearchParamsOptions): string {
   return Object
     .entries(params)
     .filter(([_, value]) => value)

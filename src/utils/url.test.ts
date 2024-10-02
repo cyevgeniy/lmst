@@ -28,3 +28,11 @@ t.test('searchParams works with multi-word params', t => {
     t.equal(r, `q=${encodeURIComponent('search query')}`)
     t.end()
 })
+
+
+t.test('searchParams works with empty objects', t => {
+    let r = searchParams({})
+
+    t.equal(r, '')
+    t.end()
+})

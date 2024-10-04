@@ -1,4 +1,5 @@
 import { AppManager } from '../appManager'
+import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LStatusesList } from '../components/LStatusesList'
 import { lRouter } from '../router'
 import { childs, h } from '../utils/dom'
@@ -14,12 +15,16 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	input.placeholder = 'Search text or #hashtag'
 	input.autofocus = true
 
+	let loadMore = LLoadMoreBtn({
+		text: 'Load more',
+		onClick: search,
+	})
+
+	loadMore.visible = false
+
 	let sm = appManager.searchManager
-
-	async function onSubmit(e: SubmitEvent) {
-		e.preventDefault()
-		slist.clearStatuses()
-
+	
+	async function search() {
 		if (isTag(input.value)) {
 			lRouter.navigateTo(`tags/${input.value.slice(1)}`)
 			input.value = ''
@@ -27,14 +32,27 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 		}
 
 		if (input.value !== '') {
-			await sm.search(input.value)
+			loadMore.loading = true
+			await sm.search({q: input.value })
 			slist.addStatuses(sm.searchResult.statuses)
+			if (sm.noMoreData) loadMore.visible = false
+			loadMore.loading = false
 		}
+	}
+
+	async function onSubmit(e: SubmitEvent) {
+		e.preventDefault()
+		sm.resetMaxId()
+		slist.clearStatuses()
+
+		await search()
+		// Show 'load more' button after first search, but only when search didn't return an empty set
+		!sm.noMoreData && (loadMore.visible = true)
 	}
 
 	const statusesListRoot = h('div')
 	const form = h('form', {onSubmit, className: 'search-form'}, [input])
-	const el = h('div', null, [form, statusesListRoot])
+	const el = h('div', null, [form, statusesListRoot, loadMore.el])
 
 	const slist = LStatusesList({
 		root: statusesListRoot,

@@ -12,6 +12,7 @@ import { ApiResult, fail, success } from './utils/api.ts'
 import { genWebFinger } from './utils/shared.ts'
 import { $fetch } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
+import { searchParams } from './utils/url.ts'
 
 export interface ITimelineManager {
   /**
@@ -440,19 +441,39 @@ export class GlobalPageMediator implements Mediator {
   }
 }
 
+type SearchParams = {
+  q: string
+  limit?: string
+}
+
 function createSearchManager() {
   let res: Search
+  let max_id = '' 
+  let _noMoreData = false
 
   const { server } = useAppConfig()
 
-  async function search(q: string) {
+  function resetMaxId() {
+    max_id = ''
+    _noMoreData = false
+  }
+
+  async function search(opts: SearchParams) {
+    const q = searchParams({
+      ...opts,
+      max_id,
+    })
+
     try {
-      const resp = await $fetch(`${server()}/api/v2/search?q=${q}`, {
+      const resp = await $fetch(`${server()}/api/v2/search?${q}`, {
         method: 'GET',
         withCredentials: true,
       })
 
       res = await resp.json()
+
+      _noMoreData = res.statuses.length === 0
+      max_id = res.statuses.length > 0 ? res.statuses[res.statuses.length - 1].id : ''
     } catch {
       res = {
         accounts: [],
@@ -466,7 +487,11 @@ function createSearchManager() {
     search,
     get searchResult() {
       return res
-    }
+    },
+    get noMoreData() {
+      return _noMoreData
+    },
+    resetMaxId,
   }
 }
 

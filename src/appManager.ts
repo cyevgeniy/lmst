@@ -13,6 +13,7 @@ import { genWebFinger } from './utils/shared.ts'
 import { $fetch } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 import { searchParams } from './utils/url.ts'
+import { last } from './utils/arrays.ts'
 
 export interface ITimelineManager {
   /**
@@ -70,7 +71,7 @@ export class TimelineManager implements ITimelineManager {
       if (statuses.length) {
 
         this.statuses.push(...statuses)
-        this.maxId = statuses[statuses.length - 1].id
+        this.maxId = last(statuses)!.id
         return statuses
       } else {
         // no more records
@@ -114,7 +115,7 @@ export class ProfileTimelineManager implements ITimelineManager {
 
     if (res.ok) {
       if (res.value.length) {
-        this.maxId = res.value[res.value.length - 1].id
+        this.maxId = last(res.value)!.id
         return res.value
       }
       else
@@ -184,7 +185,7 @@ export class TagsTimelineManager implements ITimelineManager {
       this.keepStatuses && this.statuses.push(...statuses)
 
       if (statuses.length)
-        this.maxId = statuses[statuses.length - 1]?.id ?? ''
+        this.maxId = last(statuses)!.id
       else
         this.noMoreData = true
     } else {
@@ -473,7 +474,7 @@ function createSearchManager() {
       res = await resp.json()
 
       _noMoreData = res.statuses.length === 0
-      max_id = res.statuses.length > 0 ? res.statuses[res.statuses.length - 1].id : ''
+      max_id = res.statuses.length > 0 ? last(res.statuses)!.id : ''
     } catch {
       res = {
         accounts: [],

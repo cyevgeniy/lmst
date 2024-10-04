@@ -25,12 +25,6 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	let sm = appManager.searchManager
 	
 	async function search() {
-		if (isTag(input.value)) {
-			lRouter.navigateTo(`tags/${input.value.slice(1)}`)
-			input.value = ''
-			return
-		}
-
 		if (input.value !== '') {
 			loadMore.loading = true
 			await sm.search({q: input.value })
@@ -45,9 +39,20 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 		sm.resetMaxId()
 		slist.clearStatuses()
 
+		if (isTag(input.value)) {
+			lRouter.navigateTo(`tags/${input.value.slice(1)}`)
+			input.value = ''
+			loadMore.visible = false
+			return
+		}
+
 		await search()
 		// Show 'load more' button after first search, but only when search didn't return an empty set
-		!sm.noMoreData && (loadMore.visible = true)
+		// and the search query was not empty
+		if (input.value)
+			!sm.noMoreData && (loadMore.visible = true)
+		else
+			loadMore.visible = false
 	}
 
 	const statusesListRoot = h('div')

@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && cp _redirects dist/_redirects",
+    "build": "node scripts/validate-env.js && tsc && vite build && cp _redirects dist/_redirects",
     "preview": "vite preview",
     "size": "npm run build && size-limit"
   },
@@ -19,11 +19,13 @@
     "@size-limit/file": "^11.1.4",
     "@types/jsdom": "^21.1.5",
     "browserslist": "^4.23.2",
+    "dotenv": "^16.4.5",
     "jsdom": "^22.1.0",
     "lightningcss": "^1.25.1",
     "size-limit": "^11.1.4",
     "tap": "^21.0.1",
     "typescript": "^5.3.3",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "zod": "^3.23.8"
   }
 }

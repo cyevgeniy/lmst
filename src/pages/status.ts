@@ -30,7 +30,7 @@ export function createStatusPage(
   const statusRoot = div('')
 
   const replyToStatus = h(
-    'div', 
+    'div',
     {
       className: 'reply'
     }
@@ -62,7 +62,7 @@ export function createStatusPage(
   async function addReplyBlock() {
 
     await user.verifyCredentials()
-  
+
     if (!user.isLoaded())
       return
 

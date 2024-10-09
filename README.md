@@ -15,6 +15,7 @@ of features:
 - Follow/unfollow profile
 - Write text-only statuses/replies
 - Boost/unboost statuses
+- Search
 - Delete own statuses
 
 ## Screenshots

@@ -3,6 +3,7 @@ import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LStatusesList } from '../components/LStatusesList'
 import { lRouter } from '../router'
 import { childs, h } from '../utils/dom'
+import { on } from '../utils/signal'
 
 function isTag(s: string): boolean {
 	return s.length > 0 && s[0] === '#'
@@ -23,14 +24,19 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	loadMore.visible = false
 
 	let sm = appManager.searchManager
+
+	let { loading } = sm
+
+	// We don't use cleanup function because we cache search page and load it once
+	on(loading, (newVal) => {
+		loadMore.loading = newVal
+	})
 	
 	async function search() {
 		if (input.value !== '') {
-			loadMore.loading = true
 			await sm.search({q: input.value })
 			slist.addStatuses(sm.searchResult.statuses)
 			if (sm.noMoreData) loadMore.visible = false
-			loadMore.loading = false
 		}
 	}
 

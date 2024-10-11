@@ -14,6 +14,7 @@ import { $fetch } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 import { searchParams } from './utils/url.ts'
 import { last } from './utils/arrays.ts'
+import { createSignal } from './utils/signal.ts'
 
 export interface ITimelineManager {
   /**
@@ -451,6 +452,7 @@ function createSearchManager() {
   let res: Search
   let max_id = '' 
   let _noMoreData = false
+  let loading = createSignal(false)
 
   const { server } = useAppConfig()
 
@@ -466,6 +468,7 @@ function createSearchManager() {
     })
 
     try {
+      loading(true)
       const resp = await $fetch(`${server()}/api/v2/search?${q}`, {
         method: 'GET',
         withCredentials: true,
@@ -482,6 +485,9 @@ function createSearchManager() {
         hashtags: [],
       }
     }
+    finally {
+      loading(false)
+    }
   }
 
   return {
@@ -493,6 +499,7 @@ function createSearchManager() {
       return _noMoreData
     },
     resetMaxId,
+    loading,
   }
 }
 

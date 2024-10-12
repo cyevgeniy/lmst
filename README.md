@@ -1,5 +1,7 @@
 # Lmst - web client for Mastodon
 
+<p align="center"><img src="screenshots/logo.png" width="200"></p>
+
 Lmst is a web client for Mastodon that focuses on small size
 and simple interface.
 

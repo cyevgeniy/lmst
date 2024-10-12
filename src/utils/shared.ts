@@ -23,8 +23,17 @@ export function getWebfingerParts(l: string): { user: string, server: string} {
    * the webfinger is a string 'username@mstdn.social
    */
 export function genWebFinger(l: string): string {
-    const {user, server } = getWebfingerParts(l)
-    return user && server ? `${user}@${server}` : ''
+    try {
+        const {user, server } = getWebfingerParts(l)
+        return user && server ? `${user}@${server}` : ''
+    }
+    catch(e: any) {
+        // xxx: need to research further, probably it's not the best
+        // solution, because we use this function to generate a new url for
+        // the status, but at least it saves us from unhandled errors and
+        // broken interface
+        return l
+    }
 }
 
 /**

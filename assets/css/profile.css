@@ -1,0 +1,25 @@
+/** A single profile block which is used on the search page **/
+.profileItem {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 4px 8px;
+    width: 100%;
+}
+
+.profileItem:hover {
+    background-color: lightgray;
+}
+
+/** A user's display name **/
+.profileItem-name {
+    display: block;
+    margin-bottom: 4px;
+}
+
+/** Text with the link to the profile  **/
+.profileItem-link {
+    font-size: 14px;
+  color: gray;
+  text-decoration: none;
+}

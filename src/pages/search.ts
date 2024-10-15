@@ -1,8 +1,10 @@
 import { AppManager } from '../appManager'
+import { LAvatarLink } from '../components/LAvatarLink'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
+import { LProfileListInfo } from '../components/LProfileListItem'
 import { LStatusesList } from '../components/LStatusesList'
 import { lRouter } from '../router'
-import { childs, h } from '../utils/dom'
+import { childs, div, h, hide, show, span } from '../utils/dom'
 import { on } from '../utils/signal'
 
 function isTag(s: string): boolean {
@@ -23,6 +25,12 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	loadMore.visible = false
 
+	let summary = `<summary> Profiles </summary>`
+	let profilesRoot = div('search-accountsList')
+	let profiles = h('details', {className: 'search-profileDetails', innerHTML: summary})
+	childs(profiles, [profilesRoot])
+	hide(profiles)
+
 	let sm = appManager.searchManager
 
 	let { loading } = sm
@@ -36,6 +44,13 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 		if (input.value !== '') {
 			await sm.search({q: input.value })
 			slist.addStatuses(sm.searchResult.statuses)
+
+			for(const acct of sm.searchResult.accounts) {
+				profilesRoot.appendChild(LProfileListInfo(acct).el)
+			}
+
+			!!sm.searchResult.accounts.length ? show(profiles) : hide(profiles)
+
 			if (sm.noMoreData) loadMore.visible = false
 		}
 	}
@@ -63,7 +78,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	const statusesListRoot = h('div')
 	const form = h('form', {onSubmit, className: 'search-form'}, [input])
-	const el = h('div', null, [form, statusesListRoot, loadMore.el])
+	const el = h('div', null, [form, profiles, statusesListRoot, loadMore.el])
 
 	const slist = LStatusesList({
 		root: statusesListRoot,

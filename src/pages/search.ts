@@ -1,8 +1,10 @@
 import { AppManager } from '../appManager'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
+import { LProfileListInfo } from '../components/LProfileListItem'
 import { LStatusesList } from '../components/LStatusesList'
 import { lRouter } from '../router'
-import { childs, h } from '../utils/dom'
+import { Account } from '../types/shared'
+import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
 
 function isTag(s: string): boolean {
@@ -18,10 +20,16 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	let loadMore = LLoadMoreBtn({
 		text: 'Load more',
-		onClick: search,
+		onClick: () => search(),
 	})
 
 	loadMore.visible = false
+
+	let summary = '<summary>Profiles</summary>'
+	let profilesRoot = div('search-accountsList')
+	let profiles = h('details', {className: 'search-profileDetails', innerHTML: summary})
+	childs(profiles, [profilesRoot])
+	hide(profiles)
 
 	let sm = appManager.searchManager
 
@@ -31,11 +39,26 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	on(loading, (newVal) => {
 		loadMore.loading = newVal
 	})
+
+	function renderProfiles(accounts: Account[]) {
+		for(const acct of accounts) {
+			profilesRoot.appendChild(LProfileListInfo(acct, {
+				onClick: () => lRouter.navigateTo(`/profile/${acct.acct}/`)
+			}).el)
+		}
+	}
 	
-	async function search() {
+	async function search(updateProfiles: boolean = false) {
 		if (input.value !== '') {
 			await sm.search({q: input.value })
-			slist.addStatuses(sm.searchResult.statuses)
+			let { accounts, statuses } = sm.searchResult
+			slist.addStatuses(statuses)
+
+			if (updateProfiles) {
+				renderProfiles(accounts)
+				!!accounts.length ? show(profiles) : hide(profiles)
+			}
+
 			if (sm.noMoreData) loadMore.visible = false
 		}
 	}
@@ -43,6 +66,8 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	async function onSubmit(e: SubmitEvent) {
 		e.preventDefault()
 		sm.resetMaxId()
+		hide(profiles)
+		profilesRoot.innerHTML = ''
 		slist.clearStatuses()
 
 		if (isTag(input.value)) {
@@ -52,7 +77,10 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 			return
 		}
 
-		await search()
+		// We show profiles on new search only
+		// Clicking on the 'load more' button will update only statuses list
+		await search(true)
+
 		// Show 'load more' button after first search, but only when search didn't return an empty set
 		// and the search query was not empty
 		if (input.value)
@@ -63,7 +91,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	const statusesListRoot = h('div')
 	const form = h('form', {onSubmit, className: 'search-form'}, [input])
-	const el = h('div', null, [form, statusesListRoot, loadMore.el])
+	const el = h('div', null, [form, profiles, statusesListRoot, loadMore.el])
 
 	const slist = LStatusesList({
 		root: statusesListRoot,

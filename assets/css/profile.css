@@ -7,7 +7,7 @@
 }
 
 .profileItem:hover {
-    background-color: lightgray;
+    background-color: rgb(235, 238, 240);
 }
 
 /** A user's display name **/

@@ -1,5 +1,6 @@
 import { fail, success } from '../utils/api'
 import type { ApiResult } from '../utils/api'
+import { logErr } from '../utils/errors'
 
 interface RegisterAppParams {
   server: string
@@ -37,8 +38,7 @@ export async function registerApp(params: RegisterAppParams): Promise<ApiResult<
       // TODO: get error messages from a server
       throw new Error('Error during application registration')
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Error during app registration'
-    console.error(msg)
+    let msg = logErr(e)
     return {
       ok: false,
       error: msg,
@@ -82,8 +82,6 @@ export async function getAppToken(params: GetAppTokenParams): Promise<ApiResult<
 
     throw new Error('[Get app token]: Response status is not 200')
   } catch(e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Error trying to claim app token'
-    console.error(msg)
-    return fail(msg)
+    return fail(logErr(e))
   }
 }

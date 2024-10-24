@@ -15,6 +15,7 @@ import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 import { searchParams } from './utils/url.ts'
 import { last } from './utils/arrays.ts'
 import { createSignal } from './utils/signal.ts'
+import { logErr } from './utils/errors.ts'
 
 export interface ITimelineManager {
   /**
@@ -250,13 +251,7 @@ export class StatusManager implements IStatusManager {
       result = success(await resp.json())
 
     } catch(e: unknown) {
-      let msg = 'Post status error'
-      if (e instanceof Error) {
-        console.error(e.message)
-        msg = e.message
-      }
-      
-      result = fail(msg)
+      result = fail(logErr(e))
     }
 
     return result
@@ -273,8 +268,7 @@ export class StatusManager implements IStatusManager {
       })
     }
     catch(e: unknown) {
-      if (e instanceof Error)
-        console.error(e.message)
+      logErr(e)
     }
   }
 
@@ -289,8 +283,7 @@ export class StatusManager implements IStatusManager {
       })
     }
     catch(e: unknown) {
-      if (e instanceof Error)
-        console.error(e.message)
+      logErr(e)
     }
   }
 
@@ -305,8 +298,7 @@ export class StatusManager implements IStatusManager {
        })
     }
     catch (e: unknown) {
-      if (e instanceof Error)
-        console.error(e.message)
+      logErr(e)
     }
   }
 
@@ -323,13 +315,7 @@ export class StatusManager implements IStatusManager {
       result = success(await resp.json())
     }
     catch(e: unknown) {
-      if (e instanceof Error) {
-        console.error(e.message)
-
-        result = fail(e.message)
-      }
-
-      result = fail('')
+      result = fail(logErr(e))
     }
 
     return result
@@ -348,13 +334,7 @@ export class StatusManager implements IStatusManager {
       result = success(await resp.json())
     }
     catch(e: unknown) {
-      if (e instanceof Error) {
-        console.error(e.message)
-
-        result = fail(e.message)
-      }
-
-      result = fail('')
+      result = fail(logErr(e))
     }
 
     return result

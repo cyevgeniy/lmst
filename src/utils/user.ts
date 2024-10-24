@@ -5,6 +5,7 @@ import { searchParams } from "./url"
 import { store } from "../store"
 import { App } from "../app"
 import { createSignal } from "./signal"
+import { logErr } from "./errors"
 
 export interface CredentialAccount {
   id: string
@@ -97,8 +98,7 @@ function createUserStore() {
 
       return success(token)
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Can not get user token'
-      return fail(msg)
+      return fail(logErr(e))
     }
   }
 

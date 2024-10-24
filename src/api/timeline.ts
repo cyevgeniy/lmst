@@ -34,7 +34,7 @@ export async function getHomeTimeline(
     withCredentials: true
   })
 
-  if (resp.status === 200)
+  if (resp.ok)
     return success<Status[]>(await resp.json())
 
   return fail('Can not load home timeline')

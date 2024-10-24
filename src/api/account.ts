@@ -1,6 +1,6 @@
 import {useAppConfig} from '../appConfig'
 import { success, fail } from '../utils/api'
-import { $fetch } from '../utils/fetch'
+import { $fetch, fetchJson } from '../utils/fetch'
 import type { ApiResult } from '../utils/api'
 import type { Account, PaginationParams, Status } from '../types/shared.d'
 import type { Relationship } from '../types/shared.d'
@@ -12,7 +12,7 @@ export async function lookupAccount(webfinger: string): Promise<Account> {
 
   const resp = await fetch(url)
 
-  if (resp.status === 200)
+  if (resp.ok)
     return resp.json()
 
   throw new Error('Cannot load account info')
@@ -40,7 +40,7 @@ export async function getStatuses(accountId: string, params: PaginationParams = 
     withCredentials: true,
   })
 
-  if (resp.status === 200)
+  if (resp.ok)
     return success(await resp.json() as Status[])
 
   return fail('Can not load account statuses')
@@ -51,15 +51,11 @@ export async function getRelation(id: Account['id']): Promise<ApiResult<Relation
   const url = `${server()}/api/v1/accounts/relationships?id[]=${id}`
 
   try {
-    const resp = await $fetch(url, {
+    let r = await fetchJson<Relationship[]>(url, {
       withCredentials: true
     })
 
-    if (resp.status === 200) {
-      res = success(((await resp.json()) as Relationship[])[0])
-    } else {
-      throw ''
-    }
+    res = success(r[0])
   }
   catch (e: unknown) {
     res = fail('can\'t get relationship')

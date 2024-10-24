@@ -10,7 +10,7 @@ import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
 import { genWebFinger } from './utils/shared.ts'
-import { $fetch } from './utils/fetch.ts'
+import { $fetch, fetchJson } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 import { searchParams } from './utils/url.ts'
 import { last } from './utils/arrays.ts'
@@ -244,7 +244,7 @@ export class StatusManager implements IStatusManager {
         body: payload,
       })
 
-      if (resp.status !== 200)
+      if (!resp.ok)
         result = fail('Status was not posted')
 
       result = success(await resp.json())
@@ -267,13 +267,10 @@ export class StatusManager implements IStatusManager {
       return
 
     try {
-        const resp = await $fetch(`${this.server()}/api/v1/statuses/${id}/reblog`, {
+        await fetchJson(`${this.server()}/api/v1/statuses/${id}/reblog`, {
           method: 'POST',
           withCredentials: true,
       })
-
-      if (resp.status !== 200)
-        throw new Error('Status was not boosted')
     }
     catch(e: unknown) {
       if (e instanceof Error)
@@ -286,13 +283,10 @@ export class StatusManager implements IStatusManager {
       return
 
     try {
-        const resp = await $fetch(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
+        await fetchJson(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
           method: 'POST',
           withCredentials: true,
       })
-
-      if (resp.status !== 200)
-        throw new Error('Status was not unboosted')
     }
     catch(e: unknown) {
       if (e instanceof Error)
@@ -305,13 +299,10 @@ export class StatusManager implements IStatusManager {
     user.loadTokenFromStore()
 
     try {
-       const resp = await $fetch(`${this.server()}/api/v1/statuses/${id}`, {
+      await fetchJson(`${this.server()}/api/v1/statuses/${id}`, {
         method: 'DELETE',
         withCredentials: true,
        })
-
-      if (resp.status !== 200)
-        throw new Error('Error on post deletion')
     }
     catch (e: unknown) {
       if (e instanceof Error)
@@ -326,7 +317,7 @@ export class StatusManager implements IStatusManager {
     try {
       const resp = await $fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`)
 
-      if (resp.status !== 200)
+      if (!resp.ok)
         throw new Error('Status was not fetched')
 
       result = success(await resp.json())
@@ -469,12 +460,10 @@ function createSearchManager() {
 
     try {
       loading(true)
-      const resp = await $fetch(`${server()}/api/v2/search?${q}`, {
+      res = await fetchJson(`${server()}/api/v2/search?${q}`, {
         method: 'GET',
         withCredentials: true,
       })
-
-      res = await resp.json()
 
       _noMoreData = res.statuses.length === 0
       max_id = res.statuses.length > 0 ? last(res.statuses)!.id : ''

@@ -17,3 +17,17 @@ export function $fetch(
 
   return fetch(url, { ...init, headers } )
 }
+
+export async function fetchJson<T=any>(
+  url: string,
+  opts: RequestInit & { withCredentials?: boolean} = {}
+): Promise<T> {
+  let res = await $fetch(url, opts )
+
+  if (res.ok)
+    return await res.json()
+
+  throw new Error(await res.text())
+}
+
+

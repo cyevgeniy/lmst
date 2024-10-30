@@ -7,8 +7,10 @@ and simple interface.
 
 ## How it's different
 
-Lmst has very small bundle size - **up to 10 kB**, and this limit won't be increased in the future.
-This is the mandatory requirement.
+- Small bundle size - **up to 10 kB**, and this limit won't be increased in the future.
+  This is the mandatory requirement
+- Classic, familiar ui layout. Lmst has simple ui, which reduces visual load on a user.
+  It looks more like a website then a "web app".
 
 Also it has zero dependencies, so it won't suffer from a library that
 became deprecated. As a consequence, lmst offers a very small subset
@@ -17,7 +19,7 @@ of features:
 - Follow/unfollow profile
 - Write text-only statuses/replies
 - Boost/unboost statuses
-- Search
+- Search (profiles, statuses, hashtags)
 - Delete own statuses
 
 ## Screenshots

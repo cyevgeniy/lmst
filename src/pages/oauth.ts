@@ -1,3 +1,4 @@
+import { logErr } from '../utils/errors'
 import { user } from '../utils/user'
 
 export async function createOAuthPage(root: HTMLElement) {
@@ -11,7 +12,7 @@ export async function createOAuthPage(root: HTMLElement) {
   const res = await user.getUserToken(code ?? '')
 
   if (!res.ok)
-    console.error(res.error)
+    logErr(res.error)
   else
     user.verifyCredentials()
 

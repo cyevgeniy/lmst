@@ -4,6 +4,7 @@ import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { h, div, hide, show, childs } from '../utils/dom'
 import { ProfileTimelineManager, StatusManager } from '../appManager'
+import { logErr } from '../utils/errors'
 
 interface ProfilePageConstructorParams {
   pm: ProfileTimelineManager
@@ -82,7 +83,7 @@ export function createProfilePage(
       }
       catch(e: unknown) {
         createNotFound(webfinger)
-        console.error(e)
+        logErr(e)
       }
   
       await loadStatuses()

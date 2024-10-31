@@ -40,8 +40,8 @@ export interface MediaAttachment {
   url: string
   preview_url?: string
   remote_url?: string
-  description: string
-  blurhash: string
+  description: string | null
+  blurhash: string | null
 }
 
 

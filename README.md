@@ -10,7 +10,7 @@ and simple interface.
 - Small bundle size - **up to 10 kB**, and this limit won't be increased in the future.
   This is the mandatory requirement
 - Classic, familiar ui layout. Lmst has simple ui, which reduces visual load on a user.
-  It looks more like a website then a "web app".
+  It looks more like a website than a "web app".
 
 Also it has zero dependencies, so it won't suffer from a library that
 became deprecated. As a consequence, lmst offers a very small subset

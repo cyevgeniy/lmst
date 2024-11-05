@@ -417,25 +417,26 @@ export class GlobalPageMediator implements Mediator {
 type SearchParams = {
   q: string
   limit?: string
+  type?: string
 }
 
 function createSearchManager() {
   let res: Search
-  let max_id = '' 
+  let offset = 0
   let _noMoreData = false
   let loading = createSignal(false)
 
   const { server } = useAppConfig()
 
-  function resetMaxId() {
-    max_id = ''
+  function resetOffset() {
+    offset = 0
     _noMoreData = false
   }
 
   async function search(opts: SearchParams) {
     const q = searchParams({
       ...opts,
-      max_id,
+      offset: offset.toString(),
     })
 
     try {
@@ -445,8 +446,9 @@ function createSearchManager() {
         withCredentials: true,
       })
 
-      _noMoreData = res.statuses.length === 0
-      max_id = res.statuses.length > 0 ? last(res.statuses)!.id : ''
+      let len = res.statuses.length
+      _noMoreData = len === 0
+      offset += len
     } catch {
       res = {
         accounts: [],
@@ -467,7 +469,7 @@ function createSearchManager() {
     get noMoreData() {
       return _noMoreData
     },
-    resetMaxId,
+    resetOffset,
     loading,
   }
 }

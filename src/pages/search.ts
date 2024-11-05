@@ -20,7 +20,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	let loadMore = LLoadMoreBtn({
 		text: 'Load more',
-		onClick: () => search(),
+		onClick: () => search({type: 'statuses'}),
 	})
 
 	loadMore.visible = false
@@ -48,9 +48,13 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 		}
 	}
 	
-	async function search(updateProfiles: boolean = false) {
+	async function search(opts: {
+		updateProfiles?: boolean,
+		type?: string
+	} = {}) {
+		let { updateProfiles = false, type } = opts
 		if (input.value !== '') {
-			await sm.search({q: input.value })
+			await sm.search({q: input.value, type })
 			let { accounts, statuses } = sm.searchResult
 			slist.addStatuses(statuses)
 
@@ -65,7 +69,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	async function onSubmit(e: SubmitEvent) {
 		e.preventDefault()
-		sm.resetMaxId()
+		sm.resetOffset()
 		hide(profiles)
 		profilesRoot.innerHTML = ''
 		slist.clearStatuses()
@@ -79,7 +83,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 		// We show profiles on new search only
 		// Clicking on the 'load more' button will update only statuses list
-		await search(true)
+		await search({updateProfiles: true})
 
 		// Show 'load more' button after first search, but only when search didn't return an empty set
 		// and the search query was not empty

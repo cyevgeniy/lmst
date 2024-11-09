@@ -1,9 +1,10 @@
 import {useAppConfig} from '../appConfig'
-import { success, fail } from '../utils/api'
-import { $fetch, fetchJson } from '../utils/fetch'
+import { success, fail, getQueryParams } from '../utils/api'
+import { fetchJson } from '../utils/fetch'
 import type { ApiResult } from '../utils/api'
 import type { Account, PaginationParams, Status } from '../types/shared.d'
 import type { Relationship } from '../types/shared.d'
+import { logErr } from '../utils/errors'
 
 const { server } = useAppConfig()
 
@@ -31,19 +32,22 @@ export async function getAccount(id: string) : Promise<Account> {
 }
 
 export async function getStatuses(accountId: string, params: PaginationParams = {}) {
-  const _server = `${server()}/api/v1/accounts/${accountId}/statuses`
 
-  const queryArr = Object.entries(params).filter(([_, value]) => value).map(([key, value]) => `${key}=${value}`)
-  const queryParams = queryArr.join('&')
+  let prm = getQueryParams(params)
+  //let url = `${opts.server}/api/v1/timelines/tag/${tag}${prm}`
+  let url = `${server()}/api/v1/accounts/${accountId}/statuses${prm}`
 
-  const resp = await $fetch(_server + (queryParams.length > 0 ? `?${queryParams}` : '') , {
-    withCredentials: true,
-  })
+  //
+  try {
+    const resp = await fetchJson<Status[]>(url, {
+      withCredentials: true,
+    })
 
-  if (resp.ok)
-    return success(await resp.json() as Status[])
-
-  return fail('Can not load account statuses')
+    return success(resp)
+  }
+  catch(e: unknown) {
+    return fail(logErr(e))
+  }
 }
 
 export async function getRelation(id: Account['id']): Promise<ApiResult<Relationship >> {

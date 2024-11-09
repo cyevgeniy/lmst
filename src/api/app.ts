@@ -1,6 +1,7 @@
 import { fail, success } from '../utils/api'
 import type { ApiResult } from '../utils/api'
 import { logErr } from '../utils/errors'
+import { fetchJson } from '../utils/fetch'
 
 interface RegisterAppParams {
   server: string
@@ -21,28 +22,21 @@ export interface Application {
 }
 
 export async function registerApp(params: RegisterAppParams): Promise<ApiResult<Application>> {
-  const payload = new FormData()
+  let payload = new FormData()
   payload.append('client_name', params.clientName)
   payload.append('redirect_uris', params.redirectUris)
   payload.append('scopes', params.scopes)
 
   try {
-    const response = await fetch(`${params.server}/api/v1/apps`, {
+    let response = await fetchJson<Application>(`${params.server}/api/v1/apps`, {
       method: 'POST',
       body: payload,
     })
 
-      if (response.status === 200)
-        return success(await response.json() as Application)
-
-      // TODO: get error messages from a server
-      throw new Error('Error during application registration')
+    return success(response)
   } catch (e: unknown) {
     let msg = logErr(e)
-    return {
-      ok: false,
-      error: msg,
-    }
+    return fail(msg)
   }
 }
 
@@ -72,15 +66,12 @@ export async function getAppToken(params: GetAppTokenParams): Promise<ApiResult<
   }
 
   try {
-    const resp = await fetch(`${params.server}/oauth/token`, {
+    let token = await fetchJson<Token>(`${params.server}/oauth/token`, {
       method: 'POST',
-      body: payload
+      withCredentials: true,
     })
 
-    if (resp.status === 200)
-      return success(await resp.json() as Token)
-
-    throw new Error('[Get app token]: Response status is not 200')
+    return success(token)
   } catch(e: unknown) {
     return fail(logErr(e))
   }

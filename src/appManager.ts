@@ -10,7 +10,7 @@ import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
 import { genWebFinger } from './utils/shared.ts'
-import { $fetch, fetchJson } from './utils/fetch.ts'
+import { fetchJson } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 import { searchParams } from './utils/url.ts'
 import { last } from './utils/arrays.ts'
@@ -236,25 +236,18 @@ export class StatusManager implements IStatusManager {
     payload.append('status', params.statusText)
     params.in_reply_to_id && payload.append('in_reply_to_id', params.in_reply_to_id)
 
-    let result: ApiResult<Status>
-
     try {
-      const resp = await $fetch(`${this.server()}/api/v1/statuses`, {
+      const resp = await fetchJson<Status>(`${this.server()}/api/v1/statuses`, {
         method: 'POST',
         withCredentials: true,
         body: payload,
       })
 
-      if (!resp.ok)
-        result = fail('Status was not posted')
-
-      result = success(await resp.json())
+      return success(resp)
 
     } catch(e: unknown) {
-      result = fail(logErr(e))
+      return fail(logErr(e))
     }
-
-    return result
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {
@@ -304,21 +297,14 @@ export class StatusManager implements IStatusManager {
 
   public async getStatus(id: Status['id'], opts?: {server?: string}): Promise<ApiResult<Status>> {
     
-    let result: ApiResult<Status>
-    
     try {
-      const resp = await $fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`)
+      const resp = await fetchJson<Status>(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`)
 
-      if (!resp.ok)
-        throw new Error('Status was not fetched')
-
-      result = success(await resp.json())
+      return success(resp)
     }
     catch(e: unknown) {
-      result = fail(logErr(e))
+      return fail(logErr(e))
     }
-
-    return result
   }
 
   public async getStatusContext(id: Status['id'], opts?: {server: string}): Promise<ApiResult<Context>> {

@@ -38,6 +38,13 @@ of features:
   </tr>
 </table>
 
+### Search page
+<table>
+  <tr>
+    <th><img src="screenshots/search.png" width="500"></th>
+  </tr>
+</table>
+
 ### Home page
 <table>
   <tr>

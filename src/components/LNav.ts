@@ -9,21 +9,23 @@ import { on } from '../utils/signal'
 export function LNav(pm: Mediator) {
   user.verifyCredentials()
 
-  const profileLink = LNavLink({text: '', link: '/'}) //h('a', {attrs: { href: '/' } })
-  const authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login')
-  const logoutLink = LNavLink({text: 'Logout', link: '#', icon: logout,  onClick: onLogoutClick}) //h('a', {attrs: { href: '#' }}  , 'Logout')
-  const composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick})
-  const searchLink = LNavLink({text: 'Search', link: '/search', icon: search, onClick: onSearchClick})
-  const mainLink = LNavLink({text: 'Lmst', link: '/', icon: logo, onClick: onMainLinkClick})
-  const  signupContainer = h('div', {
+  let profileLink = LNavLink({text: '', link: '/'}),
+  authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login'),
+  logoutLink = LNavLink({text: 'Logout', link: '#', icon: logout,  onClick: onLogoutClick}),
+  composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick}),
+  searchLink = LNavLink({text: 'Search', link: '/search', icon: search, onClick: onSearchClick}),
+
+  mainLink = LNavLink({text: 'Lmst', link: '/', icon: logo, onClick: onMainLinkClick}),
+  
+  signupContainer = h('div', {
     className: 'navBar-rightItems'
   },[
     profileLink.el,
     authorize,
     logoutLink.el,
-  ])
+  ]),
 
-  const el = div('navBar', [
+  el = div('navBar', [
     mainLink.el,
     composeLink.el,
     searchLink.el,

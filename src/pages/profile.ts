@@ -18,25 +18,28 @@ export function createProfilePage(
   opts: ProfilePageConstructorParams
 ) {
     root.innerHTML = ''
-    let profileId = ''
+    let profileId = '',
 
-    const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
-    hide(noMoreDataText)
+    noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records'),
 
-    const loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
+    loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() }),
+    loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
 
-    const timelineContainer = div('timeline-container')
-    let statusesList = LStatusesList({
+    timelineContainer = div('timeline-container'),
+    statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
       sm: opts.sm
     })
 
+    hide(noMoreDataText)
+
+
     timelineContainer.appendChild(loadMoreBtnContainer)
 
-    const el = h('div', {attrs: {id: 'timeline-root'}})//, [profileHeader, timelineContainer, loadMoreBtn])
-    const profileHeaderComponent = LProfileHeader()
+    let el = h('div', {attrs: {id: 'timeline-root'}}),
+    profileHeaderComponent = LProfileHeader()
+
     childs(el, [profileHeaderComponent, timelineContainer])
     root.appendChild(el)
 

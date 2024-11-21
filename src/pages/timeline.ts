@@ -9,29 +9,30 @@ export function createTimelinePage(
 ) {
   root.innerHTML = ''
 
-  const noMoreDataText = h('div', { className: 'timelime-no-more-rows' }, 'No more records')
-  hide(noMoreDataText)
+  let noMoreDataText = h('div', { className: 'timelime-no-more-rows' }, 'No more records'),
 
-  const loadMoreBtn = LLoadMoreBtn({ text: 'Load more', onClick: () => loadMore() })
-  const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
+  loadMoreBtn = LLoadMoreBtn({ text: 'Load more', onClick: () => loadMore() }),
+  loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
 
-  const statusesListEl = h('div')
-  const statusesList = LStatusesList({
+  statusesListEl = h('div'),
+  statusesList = LStatusesList({
     root: statusesListEl,
     statuses: [],
     sm: appManager.statusManager
   })
 
+  hide(noMoreDataText)
+
   appManager.timelineManager.onClearStatuses(() => {
     statusesList.clearStatuses()
   })
 
-  const timelineContainer = h('div', { className: 'timeline-container' }, [statusesListEl, loadMoreBtnContainer])
-  const el = h('div', { attrs: { id: 'timeline-root' } }, [timelineContainer])
+  let timelineContainer = h('div', { className: 'timeline-container' }, [statusesListEl, loadMoreBtnContainer]),
+  el = h('div', { attrs: { id: 'timeline-root' } }, [timelineContainer])
 
   async function loadMore() {
     loadMoreBtn.loading = true
-    const st = await appManager.timelineManager.loadStatuses()
+    let st = await appManager.timelineManager.loadStatuses()
     if (appManager.timelineManager.noMoreData) {
       noMoreDataText.style.display = 'block'
       loadMoreBtn.visible = false

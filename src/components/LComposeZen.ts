@@ -7,17 +7,18 @@ export interface ComposeZenProps {
 }
 
 export function LComposeZen(props: ComposeZenProps) {
-  const { onClose = () => {}} = props
-  const btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: exitFullScreen, onClick: onClose})
-  const el = div('compose-zen')
-  const wrapper = div('compose-zen-wrapper')
-  const textarea = h('textarea', {
+  let { onClose = () => {}} = props
+  let btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: exitFullScreen, onClick: onClose}),
+  el = div('compose-zen'),
+  wrapper = div('compose-zen-wrapper'),
+  textarea = h('textarea', {
     className: 'compose-zen__textarea',
     attrs: {
       placeholder: 'What is on your mind?'
     },
     onKeyup,
   })
+
   props.text && (textarea.value = props.text)
 
   function setFocus() {

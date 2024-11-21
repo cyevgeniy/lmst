@@ -18,25 +18,25 @@ export function createStatusPage(
 
   root.innerHTML = ''
 
-  let status: Status | undefined = undefined
+  let status: Status | undefined = undefined,
 
-  const descendantsRoot = div('status-descendants')
-  const statusesList = LStatusesList({
+  descendantsRoot = div('status-descendants'),
+  statusesList = LStatusesList({
     sm: appManager.statusManager,
     root: descendantsRoot,
     statuses: [],
-  })
+  }),
 
-  const statusRoot = div('')
+  statusRoot = div(''),
 
-  const replyToStatus = h(
+  replyToStatus = h(
     'div',
     {
       className: 'reply'
     }
-  )
+  ),
 
-  const el = div('', [statusRoot, replyToStatus, descendantsRoot])
+  el = div('', [statusRoot, replyToStatus, descendantsRoot])
 
   root.appendChild(el)
 
@@ -45,16 +45,16 @@ export function createStatusPage(
   let postReply: ReturnType<typeof LButton>
   let replyTextArea: HTMLTextAreaElement
 
-  const cleanText = on(text, newValue => replyTextArea.value = newValue)
-  const cleanDisabled = on(postAvailable, newValue => postReply.disabled = !newValue)
+  let cleanText = on(text, newValue => replyTextArea.value = newValue),
+  cleanDisabled = on(postAvailable, newValue => postReply.disabled = !newValue),
 
-  function onUnmount() {
+  onUnmount = () => {
     cleanup()
     cleanDisabled()
     cleanText()
-  }
+  },
 
-  function onInput(e: Event) {
+  onInput = (e: Event) => {
     const area = e.target as HTMLTextAreaElement
     text(area.value)
   }

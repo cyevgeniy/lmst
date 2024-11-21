@@ -7,9 +7,9 @@ export interface LoadMoreBtnProps {
 export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
   const { text, onClick, ...handlers } = props
 
-  let loading = false
+  let loading = false,
 
-  const btn = LButton({
+  btn = LButton({
     text: 'Load more',
     className: ['timeline__load-more'],
     ...handlers,

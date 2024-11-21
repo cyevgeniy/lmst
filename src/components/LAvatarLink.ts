@@ -4,9 +4,8 @@ import { h } from '../utils/dom'
 import { LAvatar } from './Avatar'
 
 export function LAvatarLink(acct: Account) {
-  const avatar = LAvatar({img: acct.avatar})
-
-  const avatarLink = h('a', {
+  let avatar = LAvatar({img: acct.avatar}),
+  avatarLink = h('a', {
     attrs: {
       href: `/profile/${acct.acct}/`
     },

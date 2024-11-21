@@ -3,12 +3,11 @@ import { a, div, h, span } from "../utils/dom";
 import { on } from "../utils/signal";
 
 export function LInfo() {
-  const appConfig = useAppConfig()
-  const { server } = appConfig
+  const { server, repo, version } = useAppConfig()
 
-  const serverInfo = a('', server(), server())
+  let serverInfo = a('', server(), server()),
 
-  const el = div('infoblock', [
+  el = div('infoblock', [
     h('h2', null, 'Client Info'),
     div('', [
       span('', 'Server: '),
@@ -17,12 +16,12 @@ export function LInfo() {
 
     div('', [
       span('', 'Version: '),
-      span('', appConfig.version),
+      span('', version),
     ]),
 
     div('', [
       span('', 'Repository: '),
-      a('', appConfig.repo, appConfig.repo),
+      a('', repo, repo),
     ])
   ])
 

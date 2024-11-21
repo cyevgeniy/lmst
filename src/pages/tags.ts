@@ -10,24 +10,25 @@ export function createTagsPage(
 ) {
   root.innerHTML = ''
 
-    const tagHeader = h('h2')
+    let tagHeader = h('h2'),
 
-    const noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records')
-    hide(noMoreDataText)
+    noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records'),
 
-    const loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses(appManager.tagsManager.tag) })
-    const loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText])
+    loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses(appManager.tagsManager.tag) }),
+    loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
 
-    const timelineContainer = div('timeline-container', [])
-    const statusesList = LStatusesList({
+    timelineContainer = div('timeline-container', []),
+    statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
       sm: appManager.statusManager
     })
 
+    hide(noMoreDataText)
+
     timelineContainer.appendChild(loadMoreBtnContainer)
 
-    const el = h('div', {attrs: {id: 'timeline-root'}}, [tagHeader, timelineContainer, loadMoreBtnContainer])
+    let el = h('div', {attrs: {id: 'timeline-root'}}, [tagHeader, timelineContainer, loadMoreBtnContainer])
     root.appendChild(el)
     
     async function loadStatuses(tag: string) {
@@ -47,7 +48,7 @@ export function createTagsPage(
       statusesList.addStatuses(appManager.tagsManager.lastChunk)
     }
 
-    const tag = params?.tag ?? ''
+    let tag = params?.tag ?? ''
 
     appManager.tagsManager.tag = tag
     tagHeader.innerText = `#${tag}`

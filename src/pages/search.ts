@@ -13,7 +13,7 @@ function isTag(s: string): boolean {
 
 export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	root.innerHTML = ''
-	const input = h('input', {className: 'search-input'})
+	let input = h('input', {className: 'search-input'})
 	input.type = 'search'
 	input.placeholder = 'Search text or #hashtag'
 	input.autofocus = true
@@ -25,9 +25,10 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
 	loadMore.visible = false
 
-	let summary = '<summary>Profiles</summary>'
-	let profilesRoot = div('search-accountsList')
-	let profiles = h('details', {className: 'search-profileDetails', innerHTML: summary})
+	let summary = '<summary>Profiles</summary>',
+	profilesRoot = div('search-accountsList'),
+	profiles = h('details', {className: 'search-profileDetails', innerHTML: summary})
+	
 	childs(profiles, [profilesRoot])
 	hide(profiles)
 
@@ -93,11 +94,11 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 			loadMore.visible = false
 	}
 
-	const statusesListRoot = h('div')
-	const form = h('form', {onSubmit, className: 'search-form'}, [input])
-	const el = h('div', null, [form, profiles, statusesListRoot, loadMore.el])
+	let statusesListRoot = h('div'),
+	form = h('form', {onSubmit, className: 'search-form'}, [input]),
+	el = h('div', null, [form, profiles, statusesListRoot, loadMore.el]),
 
-	const slist = LStatusesList({
+	slist = LStatusesList({
 		root: statusesListRoot,
 		statuses: [],
 		sm: appManager.statusManager,

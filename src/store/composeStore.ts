@@ -4,14 +4,14 @@ export function useCompose() {
     /**
      * Compose message text
      */
-    const text = createSignal('')
+    let text = createSignal(''),
 
     /**
      * Whether it's allowed to post a message
      */
-    const postAvailable = createSignal(false)
+    postAvailable = createSignal(false),
 
-    const cleanup = on(text, newVal => postAvailable(newVal.length > 0))
+    cleanup = on(text, newVal => postAvailable(newVal.length > 0))
 
     return {
         text,

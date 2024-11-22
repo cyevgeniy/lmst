@@ -38,8 +38,6 @@ export function getPathParameters(routePath: string, path: string): MatchResult 
   let res: Record<string, string> = {}
 
   for (let i = 0; i < _routePathS.length; ++i) {
-    console.log(_routePathS[i], _pathS[i])
-
     if (_routePathS[i][0] !== ':') {
       if (_routePathS[i] !== _pathS[i])
         return { matched: false }

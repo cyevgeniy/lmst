@@ -110,8 +110,10 @@ export interface PaginationParams {
   min_id?: string
 }
 
-export interface Mediator {
-  notify(msg: string): void
+export interface GlobalNavigation {
+  goHome: () => void
+  login: () => Promise<void>
+  logout: () => void
 }
 
 export type StatusBoostCallback = (s: Status, boosted: boolean) => void

@@ -27,7 +27,7 @@ export class App {
   }
 
   public async registerApp(): Promise<ApiResult<RegisteredApp>> {
-    const tmp = store.getItem(APP_INFO_KEY)
+    let tmp = store.getItem(APP_INFO_KEY)
 
     if (tmp)
       this.appInfo = JSON.parse(tmp) as Application
@@ -35,7 +35,7 @@ export class App {
     if (this.appInfo)
       return success({ appInfo: this.appInfo })
 
-    const res =  await _registerApp({
+    let res =  await _registerApp({
       server: this.config.server(),
       redirectUris: `${this.config.baseUrl}/oauth`,
       clientName: this.config.clientName,

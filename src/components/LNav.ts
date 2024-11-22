@@ -1,12 +1,12 @@
 import {h, div, show, hide } from '../utils/dom'
 import {  user } from '../utils/user'
 import { lRouter } from '../router'
-import type { Mediator } from '../types/shared'
+import type { GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { logo, pen, search, logout } from './Icons'
 import { on } from '../utils/signal'
 
-export function LNav(pm: Mediator) {
+export function LNav(gn: GlobalNavigation) {
   user.verifyCredentials()
 
   let profileLink = LNavLink({text: '', link: '/'}),
@@ -55,16 +55,16 @@ export function LNav(pm: Mediator) {
 
   function onMainLinkClick(e: MouseEvent) {
     e.preventDefault()
-    pm.notify('navigate:main')  
+    gn.goHome()  
   }
 
   function onAuthorizeClick() {
-    pm.notify('navigate:login')
+    gn.login()
   }
 
   function onLogoutClick(e: MouseEvent) {
     e.preventDefault()
-    pm.notify('navigate:logout')
+    gn.logout()
   }
 
   function onComposeClick(e: MouseEvent) {

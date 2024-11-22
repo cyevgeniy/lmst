@@ -30,7 +30,6 @@ lRouter.on('/', (params) =>{
 function _createProfilePage(params: RouteParams) {
   const cb = () => createProfilePage(mainPage.middle, {
     pm: new ProfileTimelineManager(),
-    pageMediator: appManager.globalMediator,
     sm: appManager.statusManager,
     params,
   })

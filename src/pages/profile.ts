@@ -1,4 +1,3 @@
-import type { Mediator } from '../types/shared'
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
@@ -8,7 +7,6 @@ import { logErr } from '../utils/errors'
 
 interface ProfilePageConstructorParams {
   pm: ProfileTimelineManager
-  pageMediator: Mediator
   sm: StatusManager,
   params?: Record<string, string>
 }

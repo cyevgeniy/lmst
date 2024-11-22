@@ -34,17 +34,20 @@ export function getPathParameters(routePath: string, path: string): MatchResult 
 
   if (_pathS.length !== _routePathS.length)
     return { matched: false}
+  
   let res: Record<string, string> = {}
 
-  _routePathS.forEach((item, i) => {
-    if (item[0] !== ':') {
-      if (item !== _pathS[i])
+  for (let i = 0; i < _routePathS.length; ++i) {
+    console.log(_routePathS[i], _pathS[i])
+
+    if (_routePathS[i][0] !== ':') {
+      if (_routePathS[i] !== _pathS[i])
         return { matched: false }
     }
     else {
-      res[item.substring(1)] = _pathS[i]
-    }  
-  })
+      res[_routePathS[i].substring(1)] = _pathS[i]
+    }
+  }
 
   return {
     matched: true,

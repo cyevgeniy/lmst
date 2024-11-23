@@ -10,7 +10,7 @@ type StatusesListProps = {
 }
 
 export function LStatusesList(props: StatusesListProps) {
-  const el = div('statusesList')
+  let el = div('statusesList')
 
   addStatuses(props.statuses)
 
@@ -40,9 +40,9 @@ export function LStatusesList(props: StatusesListProps) {
 
   function addStatuses(statuses: Status[]) {
     for (const status of statuses) {
-      const own = props.sm.ownStatus(status.reblog ?? status)
-      const perm = props.sm.getPermissions()
-      const permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
+      let own = props.sm.ownStatus(status.reblog ?? status),
+      perm = props.sm.getPermissions(),
+      permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
 
       const statusComp = LStatus({
         status,

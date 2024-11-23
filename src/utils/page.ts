@@ -1,6 +1,6 @@
 import { LInfo } from "../components/LInfo"
 import { createLayout } from "../components/Layout"
-import type { Mediator } from '../types/shared'
+import type { GlobalNavigation } from '../types/shared'
 import { childs, ElLike } from "./dom"
 
 export interface Page extends ElLike {
@@ -8,13 +8,13 @@ export interface Page extends ElLike {
   onMount?: () => void
 }
 
-export function createMainPage(pm: Mediator) {
+export function createMainPage(gn: GlobalNavigation) {
   const root = document.getElementById('app')
 
   if (!root)
     throw new Error('Unable to locate application root element')
 
-  let layout= createLayout(root, pm)
+  let layout= createLayout(root, gn)
   childs(layout.right, [LInfo()])
 
   function clearPage() {

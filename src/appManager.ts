@@ -4,7 +4,7 @@ import type { AppConfig } from './appConfig'
 import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
-import type { Mediator } from './types/shared'
+import type { GlobalNavigation } from './types/shared'
 import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
@@ -65,10 +65,10 @@ export class TimelineManager implements ITimelineManager {
     if (user.isLoaded())
       fn = async () => await getHomeTimeline(server(), {max_id: this.maxId})
 
-    const st = await fn()
+    let st = await fn()
 
     if (st.ok) {
-      const statuses = st.value
+      let statuses = st.value
 
       if (statuses.length) {
 
@@ -220,8 +220,8 @@ export class StatusManager implements IStatusManager {
   }
 
   public getLinkToStatus(status: Status): string {
-    const webfinger = genWebFinger(status.account.url)
-    const server = this.server().slice(8)
+    let webfinger = genWebFinger(status.account.url),
+    server = this.server().slice(8)
     return `/status/${server}/${webfinger}/${status.id}`
   }
 
@@ -232,12 +232,12 @@ export class StatusManager implements IStatusManager {
   public async postStatus(params: {statusText: string, in_reply_to_id?: string}): Promise<ApiResult<Status>> {
     user.loadTokenFromStore()
 
-    const payload = new FormData()
+    let payload = new FormData()
     payload.append('status', params.statusText)
     params.in_reply_to_id && payload.append('in_reply_to_id', params.in_reply_to_id)
 
     try {
-      const resp = await fetchJson<Status>(`${this.server()}/api/v1/statuses`, {
+      let resp = await fetchJson<Status>(`${this.server()}/api/v1/statuses`, {
         method: 'POST',
         withCredentials: true,
         body: payload,
@@ -312,7 +312,7 @@ export class StatusManager implements IStatusManager {
     let result: ApiResult<Context>
 
     try {
-      const resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`)
+      let resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`)
 
       if (resp.status !== 200)
         throw new Error('Context was not fetched')
@@ -340,63 +340,46 @@ export class StatusManager implements IStatusManager {
   }
 }
 
-/**
- * This mediator object handles global application events,
- * such as login, logout and navigate to the main page
- */
-export class GlobalPageMediator implements Mediator {
-  private timelineManager: TimelineManager
-  private router: Router
-  private config: AppConfig
-  private pageHistoryManager: PageHistoryManager
+export function useGlobalNavigation(
+  tm: TimelineManager,
+  router: Router,
+  config: AppConfig,
+  hm: PageHistoryManager
+): GlobalNavigation {
 
-  constructor(opts: {
-    timelineManager: TimelineManager
-    router: Router
-    config: AppConfig
-    pageHistoryManager: PageHistoryManager
-  }) {
-    this.timelineManager = opts.timelineManager
-    this.router = opts.router
-    this.config = opts.config
-    this.pageHistoryManager = opts.pageHistoryManager
+  function goHome() {
+    router.navigateTo('/')
   }
 
-  private goHome() {
-    this.router.navigateTo('/')
+  function logout() {
+    user.logOut()
+    // After logout, we clear all pages cache, so the user will navigate
+    // pages like in the first time
+    // Without this, the main page will be empty, because
+    // it exists in the cache, but the statuses list is empty (due to `timelineManager.clearStatuses` call)
+    hm.clear()
+    tm.clearStatuses()
+    goHome() 
   }
 
-  async notify(msg: string) {
-    if (msg === 'navigate:main') {
-      this.goHome()
-      return
-    }
-
-    if (msg === 'navigate:logout') {
-      user.logOut()
-      // After logout, we clear all pages cache, so the user will navigate
-      // pages like in the first time
-      // Without this, the main page will be empty, because
-      // it exists in the cache, but the statuses list is empty (due to `timelineManager.clearStatuses` call)
-      this.pageHistoryManager.clear()
-      this.timelineManager.clearStatuses()
-      this.goHome()
-      return
-    }
-
-    if (msg === 'navigate:login') {
-      await user.verifyCredentials()
+  async function login() {
+    await user.verifyCredentials()
       if (user.isLoaded())
-        this.goHome()
+        goHome()
       else {
         const server = prompt('Enter server:')
         if (!server)
           return
 
-        this.config.server(server)
+        config.server(server)
         await user.authorize()
       }
-    }
+  }
+
+  return {
+    goHome,
+    logout,
+    login,
   }
 }
 
@@ -407,12 +390,12 @@ type SearchParams = {
 }
 
 function createSearchManager() {
-  let res: Search
-  let offset = 0
-  let _noMoreData = false
-  let loading = createSignal(false)
+  let res: Search,
+  offset = 0,
+  _noMoreData = false,
+  loading = createSignal(false)
 
-  const { server } = useAppConfig()
+  let { server } = useAppConfig()
 
   function resetOffset() {
     offset = 0
@@ -420,7 +403,7 @@ function createSearchManager() {
   }
 
   async function search(opts: SearchParams) {
-    const q = searchParams({
+    let q = searchParams({
       ...opts,
       offset: offset.toString(),
     })
@@ -428,7 +411,6 @@ function createSearchManager() {
     try {
       loading(true)
       res = await fetchJson(`${server()}/api/v2/search?${q}`, {
-        method: 'GET',
         withCredentials: true,
       })
 
@@ -464,7 +446,7 @@ export class AppManager {
   private config: AppConfig
   public statusManager: StatusManager
   public timelineManager: TimelineManager
-  public globalMediator: GlobalPageMediator
+  public globalMediator: GlobalNavigation
   public tagsManager: TagsTimelineManager
   public pageHistoryManager: PageHistoryManager
   public searchManager: ReturnType<typeof createSearchManager>
@@ -477,11 +459,11 @@ export class AppManager {
     this.pageHistoryManager = usePageHistory()
     this.searchManager = createSearchManager()
 
-    this.globalMediator = new GlobalPageMediator({
-      config: this.config,
-      timelineManager: this.timelineManager,
-      router: lRouter,
-      pageHistoryManager: this.pageHistoryManager,
-    })
+    this.globalMediator = useGlobalNavigation(
+      this.timelineManager,
+      lRouter,
+      this.config,
+      this.pageHistoryManager
+    )
   }
 }

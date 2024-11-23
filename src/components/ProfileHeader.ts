@@ -8,11 +8,12 @@ import { useProfileRelation } from '../utils/useProfileRelation'
 import { user } from '../utils/user'
 
 export function LProfileHeader(account?: Account) {
-  const displayNameEl = div('profileHeader-name')
-  const noteEl = div('profileHeader-note')
-  const actionsEl = div('profileHeader-actions')
-  let id: Account['id']
-  const {
+  let displayNameEl = div('profileHeader-name'),
+  noteEl = div('profileHeader-note'),
+  actionsEl = div('profileHeader-actions'),
+  id: Account['id']
+  
+  let {
     updateRelation,
     loading,
     relation,
@@ -23,8 +24,9 @@ export function LProfileHeader(account?: Account) {
   // let { followunfollow } = useProfileRelation(id)
   // followunfollow
 
-  const avatar = LAvatar({img: '', size: 'lg'})
-  const follow = LButton({text: '', onClick: () => followunfollow(id)})
+  let avatar = LAvatar({img: '', size: 'lg'}),
+  follow = LButton({text: '', onClick: () => followunfollow(id)})
+  
   actionsEl.appendChild(follow.el)
   const { show, hide } = useCommonEl(follow.el)
   hide()

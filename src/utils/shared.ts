@@ -65,26 +65,26 @@ export function parseContent(s: string) {
     if (s.search(/u-url|hashtag/g) === -1)
         return s
 
-    const parser = new DOMParser()
+    let parser = new DOMParser(),
 
-    const d = parser.parseFromString(s, 'text/html')
+    d = parser.parseFromString(s, 'text/html'),
 
-    const links = d.querySelectorAll('a.u-url') as NodeListOf<HTMLAnchorElement>
+    links = d.querySelectorAll('a.u-url') as NodeListOf<HTMLAnchorElement>
 
     for (const l of links) {
-        const wf = genWebFinger(l.href)
-        const profileLink = !wf ? '' : `/profile/${wf}/`
-        const href = profileLink ?? l.href
+        let wf = genWebFinger(l.href),
+        profileLink = !wf ? '' : `/profile/${wf}/`,
+        href = profileLink ?? l.href
+
         l.href = href
         l.target = '_self'
     }
 
-    const tags = d.querySelectorAll('a.hashtag') as NodeListOf<HTMLAnchorElement>
+    let tags = d.querySelectorAll('a.hashtag') as NodeListOf<HTMLAnchorElement>
 
     for (const h of tags) {
         h.target = '_self'
-        const href = genTagHref(h.textContent ?? '')
-        h.href = href
+        h.href = genTagHref(h.textContent ?? '')
     }
 
     return d.body.innerHTML

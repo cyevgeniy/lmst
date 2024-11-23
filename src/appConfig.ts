@@ -58,7 +58,7 @@ function createConfig(): AppConfig {
   }
 }
 
-const config = createConfig()
+let config = createConfig()
 
 export function useAppConfig() {
   return config

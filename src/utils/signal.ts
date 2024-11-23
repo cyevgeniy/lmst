@@ -4,7 +4,7 @@ export interface Signal<T=any> {
   (fn: (p: T) => T): void
 }
 
-const effects = new Map<Signal, any[]>()
+let effects = new Map<Signal, any[]>()
 
 export function createSignal<T=any>(value: T): Signal<T>  {
   let _value = value
@@ -13,7 +13,7 @@ export function createSignal<T=any>(value: T): Signal<T>  {
   function signal(v: T): void
   function signal(v: (p: T)=> T): void
   function signal(v?: ((p: T)=> T) | T): T | void {
-    const isSetter = arguments.length > 0
+    let isSetter = arguments.length > 0
 
     if (isSetter) {
       if (typeof v === 'function') {
@@ -25,11 +25,9 @@ export function createSignal<T=any>(value: T): Signal<T>  {
       }
 
       // Find registered callbacks
-      const signalEffects = effects.get(signal)
+      let signalEffects = effects.get(signal)
       if (signalEffects) {
-        for (const cb of signalEffects) {
-          cb(_value)
-        }
+        signalEffects.forEach(cb => cb(_value))
       }
     } else {
       return _value
@@ -40,7 +38,7 @@ export function createSignal<T=any>(value: T): Signal<T>  {
 }
 
 export function on<T=any>(signal: Signal<T>, cb: (p: T) => any) {
-  const signalEffects = effects.get(signal)
+  let signalEffects = effects.get(signal)
 
   if (signalEffects) {
     signalEffects.push(cb)
@@ -48,7 +46,7 @@ export function on<T=any>(signal: Signal<T>, cb: (p: T) => any) {
     effects.set(signal, [cb])
   }
 
-  const idx = signalEffects?.findIndex(e => e === cb) ?? -1
+  let idx = signalEffects?.findIndex(e => e === cb) ?? -1
 
 
   // We don't remove listeners anywhere yet, just for the future

@@ -3,8 +3,9 @@ import { div, h, HTMLEventHandler, span } from '../utils/dom'
 import { LAvatar } from './Avatar'
 
 export function LProfileListInfo(acct: Account, opts: HTMLEventHandler = {} ) {
-    let avatar = LAvatar({img: acct.avatar})
-    const linkToAccount = span(
+    let avatar = LAvatar({img: acct.avatar}),
+    
+    linkToAccount = span(
         'profileItem-link',
         acct.acct || ''
       )

@@ -25,19 +25,15 @@ export function LStatus(opts: StatusProps) {
     ...statuButtonsHandlers
   } = opts
 
-  const _status = status.reblog ?? status
-  const isReblogged = Boolean(status.reblog)
-  const renderedStatus = status
-  const createDate = fmtDate(renderedStatus.created_at) ?? ''
-
-  const avatar = LAvatar({img: _status.account.avatar})
-  const statusButtons = LStatusButtons({status, permissions, ...statuButtonsHandlers})
-
-  const attachments = !_status.sensitive ? getAttachmentsEl() : undefined
-
-  const dispName = renderedStatus.account.display_name
-
-  const sensitiveButton = LButton({className: 'status-showSensitiveContent', text: 'Show sensitive content', onClick: () => onShowSensitiveClick()})
+  let _status = status.reblog ?? status,
+  isReblogged = Boolean(status.reblog),
+  renderedStatus = status,
+  createDate = fmtDate(renderedStatus.created_at) ?? '',
+  avatar = LAvatar({img: _status.account.avatar}),
+  statusButtons = LStatusButtons({status, permissions, ...statuButtonsHandlers}),
+  attachments = !_status.sensitive ? getAttachmentsEl() : undefined,
+  dispName = renderedStatus.account.display_name,
+  sensitiveButton = LButton({className: 'status-showSensitiveContent', text: 'Show sensitive content', onClick: () => onShowSensitiveClick()})
 
   function onShowSensitiveClick()  {
     sensitiveEl?.remove()
@@ -46,11 +42,11 @@ export function LStatus(opts: StatusProps) {
     attachments && el.appendChild(attachments)
   }
 
-  const sensitiveEl = _status.sensitive
+  let sensitiveEl = _status.sensitive
     ? h('div', {className: 'status-sensitiveContent'}, [sensitiveButton.el])
     : undefined
 
-  const avatarLink = h('a', {
+  let avatarLink = h('a', {
     attrs: {
       href: `/profile/${_status.account.acct}/`
     },
@@ -60,7 +56,7 @@ export function LStatus(opts: StatusProps) {
     }
   }, [avatar.el])
 
-  const statusContent = _status.sensitive
+  let statusContent = _status.sensitive
     ? undefined
     : h('div', {
       className: ['status-content', clickableContent ? 'status-content--clickable': ''],
@@ -69,26 +65,27 @@ export function LStatus(opts: StatusProps) {
         if (e.target instanceof HTMLParagraphElement) {
           // Don't redirect to the single status view if some text is selected -
           // we only redirect on click
-          const selection = window.getSelection()
+          let selection = window.getSelection()
           if (selection?.type !== 'Range')
             onContentClick?.(_status)
         }
       }
     })
 
-  const linkToAccount = a(
+  let linkToAccount = a(
     'status-profileLink',
     _status.account?.url,
     _status.account?.acct || ''
   )
 
   function getAttachmentsEl(): HTMLElement | undefined {
-    const mediaCnt = _status.media_attachments.length
-    const contClass = mediaCnt > 1
+    let mediaCnt = _status.media_attachments.length,
+    
+    contClass = mediaCnt > 1
       ? 'status-attachment2Col'
-      : 'status-attachment'
+      : 'status-attachment',
 
-    const result = mediaCnt > 0
+    result = mediaCnt > 0
       ? div(contClass)
       : undefined
 

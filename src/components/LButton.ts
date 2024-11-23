@@ -8,8 +8,8 @@ export type ButtonProps = {
 } & Pick<NodeProps, 'className'> & HTMLEventHandler
 
 export function LButton(props: ButtonProps) {
-  const { text, ...restProps} = props
-  const el = h('button', restProps, text)
+  let { text, ...restProps} = props
+  let el = h('button', restProps, text)
   el.classList.add('button')
 
   return {

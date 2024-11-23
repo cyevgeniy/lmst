@@ -6,7 +6,7 @@
  * @returns sanitized string
  */
 export function sanitizePath(path: string): string {
-  const arr = path.split('/').filter(i => i !== '').join('/')
+  let arr = path.split('/').filter(i => i !== '').join('/')
 
   return ['/', ...arr].join('')
 }
@@ -20,8 +20,8 @@ export interface MatchResult {
 }
 
 export function getPathParameters(routePath: string, path: string): MatchResult  {
-  const _routePath = sanitizePath(routePath)
-  const _path = sanitizePath(path)
+  let _routePath = sanitizePath(routePath),
+  _path = sanitizePath(path),
 
   // TODO: Don't use filter, edge case is when
   //       our route path is '/:id' and current location is '/'.
@@ -29,15 +29,15 @@ export function getPathParameters(routePath: string, path: string): MatchResult 
   //       In this case first array is ['', ':id'], and the second is '['', '']'.
   //       It leads to returning {matched: true, params: { id: ''}} situation.
   //       By using filter, we avoid such situation.
-  const _pathS = _path.split('/').filter(i => i !== '')
-  const _routePathS = _routePath.split('/').filter(i => i !== '')
+  _pathS = _path.split('/').filter(i => i !== ''),
+  _routePathS = _routePath.split('/').filter(i => i !== '')
 
   if (_pathS.length !== _routePathS.length)
     return { matched: false}
-  const res: Record<string, string> = {}
+  
+  let res: Record<string, string> = {}
 
   for (let i = 0; i < _routePathS.length; ++i) {
-
     if (_routePathS[i][0] !== ':') {
       if (_routePathS[i] !== _pathS[i])
         return { matched: false }

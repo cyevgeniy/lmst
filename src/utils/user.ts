@@ -19,10 +19,10 @@ export interface CredentialAccount {
 
 function createUserStore() {
 
-  let config = useAppConfig()
-  let app = new App()
+  let config = useAppConfig(),
+  app = new App(),
 
-  let user = createSignal<CredentialAccount>({
+  user = createSignal<CredentialAccount>({
     id: '',
     username: '',
     acct: '',
@@ -30,9 +30,9 @@ function createUserStore() {
     display_name: '',
     note: '',
     avatar: '',
-  })
+  }),
 
-  let token: Token | undefined
+  token: Token | undefined
 
   async function authorize() {
     const res = await app.registerApp()
@@ -133,7 +133,7 @@ function createUserStore() {
       return
     }
 
-    const tmp = store.getItem(TOKEN_KEY)
+    let tmp = store.getItem(TOKEN_KEY)
 
     if (!tmp) {
       clearUserData()
@@ -141,9 +141,9 @@ function createUserStore() {
       //this.processCallbacks()
     }
 
-    const token = (JSON.parse(tmp) as Token).access_token
+    let token = (JSON.parse(tmp) as Token).access_token,
 
-    const resp = await fetch(`${config.server()}/api/v1/accounts/verify_credentials`, {
+    resp = await fetch(`${config.server()}/api/v1/accounts/verify_credentials`, {
       headers: {
         Authorization: `Bearer ${token}`,
       }
@@ -151,7 +151,7 @@ function createUserStore() {
 
     if (resp.status === 200) {
 
-      const _user = await resp.json() as CredentialAccount
+      let _user = await resp.json() as CredentialAccount
 
       user(_user)
 

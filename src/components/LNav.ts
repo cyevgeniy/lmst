@@ -1,29 +1,31 @@
 import {h, div, show, hide } from '../utils/dom'
 import {  user } from '../utils/user'
 import { lRouter } from '../router'
-import type { Mediator } from '../types/shared'
+import type { GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { logo, pen, search, logout } from './Icons'
 import { on } from '../utils/signal'
 
-export function LNav(pm: Mediator) {
+export function LNav(gn: GlobalNavigation) {
   user.verifyCredentials()
 
-  const profileLink = LNavLink({text: '', link: '/'}) //h('a', {attrs: { href: '/' } })
-  const authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login')
-  const logoutLink = LNavLink({text: 'Logout', link: '#', icon: logout,  onClick: onLogoutClick}) //h('a', {attrs: { href: '#' }}  , 'Logout')
-  const composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick})
-  const searchLink = LNavLink({text: 'Search', link: '/search', icon: search, onClick: onSearchClick})
-  const mainLink = LNavLink({text: 'Lmst', link: '/', icon: logo, onClick: onMainLinkClick})
-  const  signupContainer = h('div', {
+  let profileLink = LNavLink({text: '', link: '/'}),
+  authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login'),
+  logoutLink = LNavLink({text: 'Logout', link: '#', icon: logout,  onClick: onLogoutClick}),
+  composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick}),
+  searchLink = LNavLink({text: 'Search', link: '/search', icon: search, onClick: onSearchClick}),
+
+  mainLink = LNavLink({text: 'Lmst', link: '/', icon: logo, onClick: onMainLinkClick}),
+  
+  signupContainer = h('div', {
     className: 'navBar-rightItems'
   },[
     profileLink.el,
     authorize,
     logoutLink.el,
-  ])
+  ]),
 
-  const el = div('navBar', [
+  el = div('navBar', [
     mainLink.el,
     composeLink.el,
     searchLink.el,
@@ -53,16 +55,16 @@ export function LNav(pm: Mediator) {
 
   function onMainLinkClick(e: MouseEvent) {
     e.preventDefault()
-    pm.notify('navigate:main')  
+    gn.goHome()  
   }
 
   function onAuthorizeClick() {
-    pm.notify('navigate:login')
+    gn.login()
   }
 
   function onLogoutClick(e: MouseEvent) {
     e.preventDefault()
-    pm.notify('navigate:logout')
+    gn.logout()
   }
 
   function onComposeClick(e: MouseEvent) {

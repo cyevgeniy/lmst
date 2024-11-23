@@ -15,13 +15,12 @@ type StatusButtonsProps = {
 const BOOSTED_CLASS = 'status-button-isBoosted'
 
 export function LStatusButtons(props: StatusButtonsProps) {
-  const status = props.status.reblog ?? props.status
+  let status = props.status.reblog ?? props.status
 
-  let boostBtn: HTMLButtonElement | undefined
-  let deleteBtn: HTMLButtonElement | undefined
+  let boostBtn: HTMLButtonElement | undefined, deleteBtn: HTMLButtonElement | undefined
 
   function createBoostBtn() {
-    const className: string[] = ['icon-button', 'status-button']
+    let className: string[] = ['icon-button', 'status-button']
     if (status.reblogged)
       className.push('status-button-isBoosted')
 

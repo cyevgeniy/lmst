@@ -21,28 +21,28 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   // Display current text in the text area
   textArea.value = text()
 
-  const cleanText = on(text, newValue => textArea.value = newValue)
-  const cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue)
-
-  function onUnmount() {
-    cleanText()
-    cleanDisabled()
-  }
-
-  const btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick})
-  btn.disabled = !postAvailable()
-  const zenModeBtn = h(
+  let cleanText = on(text, newValue => textArea.value = newValue),
+  cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue),
+  btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick}),
+  zenModeBtn = h(
     'button',
     {
       className: ['icon-button', 'ml-auto', 'compose-toolbar__zen'],
       innerHTML: fullScreen,
       onClick: showZen,
     }
-  )
+  ),
 
-  const textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn])
+  textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn]),
 
-  let composeZen: ReturnType<typeof LComposeZen>
+  composeZen: ReturnType<typeof LComposeZen>
+
+  btn.disabled = !postAvailable()
+
+  function onUnmount() {
+    cleanText()
+    cleanDisabled()
+  }
 
   function onComposeZenClose() {
     text(composeZen!.text)

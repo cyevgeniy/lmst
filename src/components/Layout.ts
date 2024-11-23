@@ -1,14 +1,14 @@
 import { childs, div } from "../utils/dom";
 import { LNav } from "./LNav";
-import type { Mediator } from '../types/shared'
+import type { GlobalNavigation } from '../types/shared'
 
-export function createLayout(root: HTMLElement, pm: Mediator) {
-  const middle = div('layout__middle')
-  const right = div('layout__right')
-  const footer = div('layout__footer')
+export function createLayout(root: HTMLElement, gn: GlobalNavigation) {
+  let middle = div('layout__middle'),
+  right = div('layout__right'),
+  footer = div('layout__footer')
 
   childs(root, [
-    LNav(pm),
+    LNav(gn),
     div('layout__container', [
       middle,
       right,

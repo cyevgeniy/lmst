@@ -1,9 +1,8 @@
-import {h, div, show, hide } from '../utils/dom'
+import {h, div, show, hide, getIcon } from '../utils/dom'
 import {  user } from '../utils/user'
 import { lRouter } from '../router'
 import type { GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
-import { logo, pen, search, logout } from './Icons'
 import { on } from '../utils/signal'
 
 export function LNav(gn: GlobalNavigation) {
@@ -11,11 +10,11 @@ export function LNav(gn: GlobalNavigation) {
 
   let profileLink = LNavLink({text: '', link: '/'}),
   authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login'),
-  logoutLink = LNavLink({text: 'Logout', link: '#', icon: logout,  onClick: onLogoutClick}),
-  composeLink = LNavLink({text: 'Compose', link: '/compose', icon: pen, onClick: onComposeClick}),
-  searchLink = LNavLink({text: 'Search', link: '/search', icon: search, onClick: onSearchClick}),
+  logoutLink = LNavLink({text: 'Logout', link: '#', icon: getIcon('icon-logout'),  onClick: onLogoutClick}),
+  composeLink = LNavLink({text: 'Compose', link: '/compose', icon: getIcon('icon-pen'), onClick: onComposeClick}),
+  searchLink = LNavLink({text: 'Search', link: '/search', icon: getIcon('icon-search'), onClick: onSearchClick}),
 
-  mainLink = LNavLink({text: 'Lmst', link: '/', icon: logo, onClick: onMainLinkClick}),
+  mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo'), onClick: onMainLinkClick}),
   
   signupContainer = h('div', {
     className: 'navBar-rightItems'

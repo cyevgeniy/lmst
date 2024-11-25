@@ -7,7 +7,7 @@ and simple interface.
 
 ## How it's different
 
-- Small bundle size - **up to 10 kB**, and this limit won't be increased in the future.
+- Small JS bundle size - **up to 10 kB**, and this limit won't be increased in the future.
   This is the mandatory requirement
 - Classic, familiar ui layout. Lmst has simple ui, which reduces visual load on a user.
   It looks more like a website than a "web app".

@@ -1,6 +1,5 @@
-import { h } from '../utils/dom'
+import { getIcon, h } from '../utils/dom'
 import type { Status, StatusEventHandlers } from '../types/shared.d.ts'
-import { boost, deleteIcon } from './Icons.ts'
 
 export interface ActionPermissions {
   canBoost?: Boolean
@@ -24,13 +23,13 @@ export function LStatusButtons(props: StatusButtonsProps) {
     if (status.reblogged)
       className.push('status-button-isBoosted')
 
-    return h('button', {className, innerHTML: boost, onClick: onBoostClick})
+    return h('button', {className, innerHTML: getIcon('icon-boost'), onClick: onBoostClick})
   }
 
   function createDeleteBtn() {
     return h('button', {
       className: ['icon-button', 'status-button', 'ml-auto'],
-      innerHTML: deleteIcon,
+      innerHTML: getIcon('icon-delete'),
       onClick: onDeleteClick
     })
   }

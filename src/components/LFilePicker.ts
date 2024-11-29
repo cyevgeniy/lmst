@@ -1,7 +1,7 @@
-import { childs, getIcon, h } from '../utils/dom'
+import { getIcon, h } from '../utils/dom'
 import type { Signal } from '../utils/signal'
 
-export function LFilePicker(files: Signal[File[]]) {
+export function LFilePicker(files: Signal<File[]>) {
 	let t = h('div'),
   icon = getIcon('icon-paperclip')
 

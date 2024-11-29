@@ -27,6 +27,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     // Free memory for previously displayed images
     for (const el of preview.children) {
       if (el.tagName.toLowerCase() === 'img')
+        // @ts-expect-error we added these images, they always have sources
         URL.revokeObjectURL(el.getAttribute('src'))
     }
 
@@ -60,6 +61,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   function onUnmount() {
     cleanText()
     cleanDisabled()
+    cleanImages()
   }
 
   function onComposeZenClose() {

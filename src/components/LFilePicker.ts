@@ -1,21 +1,34 @@
-import { getIcon, h } from '../utils/dom'
+import { getIcon, h, show, hide } from '../utils/dom'
 import type { Signal } from '../utils/signal'
 
 export function LFilePicker(files: Signal<File[]>) {
-	let t = h('div'),
-  icon = getIcon('icon-paperclip')
+  let t = h('div')
 
-  t.innerHTML = `<input type="file" class="filepicker-input" multiple>`
-	let input = t.firstElementChild as HTMLInputElement
+  t.innerHTML = `<input type="file" class="filepicker-input" accept="image/*" multiple>`
+  let input = t.firstElementChild as HTMLInputElement,
+
+  clear = h('span', {innerHTML: 'Clear files', onClick: () => {
+    input.value = ''
+    // we don't use `files([])`, because then we need to cleanup somehow, it's just more crappy code to write
+    input.dispatchEvent(new Event('change'))
+  }}),
+  btn = h('button', {innerHTML: getIcon('icon-paperclip'), onClick: () => input.click()})
+
+  hide(clear)
 
   input.addEventListener('change', () => {
     // @ts-expext-error it has
-    files(Array.from(input.files ?? []))
+    let a = Array.from(input.files ?? [])
+    files(a)
+    if (a.length)
+      show(clear)
+    else
+      hide(clear)
   })
 
-  let el = h('div', { className: 'filepicker', innerHTML: icon, onClick: () => {input.click()} }, [input])
+  let el = h('div', { className: 'filepicker'}, [btn, input, clear])
 
-	return {
+  return {
     el
-	}
+  }
 }

@@ -26,10 +26,24 @@
 .compose__post {
   margin-top: 16px;
   display: flex;
+  gap: 8px;
 }
 
 .compose__button {
   width: 100%;
+  align-self: center;
+}
+
+.compose-preview {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.compose-preview > img {
+  max-width: 100px;
+  height: auto;
+  border-radius: 4px;
 }
 
 @media screen and (min-width: 1240px) {

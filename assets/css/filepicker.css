@@ -1,0 +1,9 @@
+.filepicker > svg {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+.filepicker > input {
+	display: none;
+}

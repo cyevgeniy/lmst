@@ -7,18 +7,30 @@ export function useCompose() {
     let text = createSignal(''),
 
     /**
+     * Files
+     */
+    files = createSignal<File[]>([]),
+
+    /**
      * Whether it's allowed to post a message
      */
     postAvailable = createSignal(false),
 
-    cleanup = on(text, newVal => postAvailable(newVal.length > 0))
+    textCleanup = on(text, newVal => postAvailable(newVal.length > 0)),
+    filesCleanup = on(files, newVal => newVal?.length > 0 ? postAvailable(true) : postAvailable(text().length > 0)),
+    cleanup = () => {
+        textCleanup()
+        filesCleanup()
+    }
 
     return {
         text,
+        files,
         postAvailable,
         cleanup,
+        filesCleanup,
     }
 }
 
-export const { text, postAvailable } = useCompose()
+export const { text, postAvailable, cleanup, files } = useCompose()
 

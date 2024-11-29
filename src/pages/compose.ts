@@ -2,7 +2,8 @@ import { childs, getIcon, h } from '../utils/dom'
 import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
-import { text, postAvailable } from '../store/composeStore'
+import { LFilePicker } from '../components/LFilePicker'
+import { text, postAvailable, files } from '../store/composeStore'
 import { on } from '../utils/signal'
 
 export function createComposePage(root: HTMLElement, appManager: AppManager) {
@@ -22,7 +23,24 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
   let cleanText = on(text, newValue => textArea.value = newValue),
   cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue),
+  cleanImages = on(files, newValue => {
+    // Free memory for previously displayed images
+    for (const el of preview.children) {
+      if (el.tagName.toLowerCase() === 'img')
+        URL.revokeObjectURL(el.getAttribute('src'))
+    }
+
+    preview.innerHTML = ''
+
+    for (const file of newValue) {
+      let src = URL.createObjectURL(file),
+      img = h('img', {attrs: { src}})
+
+      preview.appendChild(img)
+    }
+  }),
   btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick}),
+  filePicker = LFilePicker(files),
   zenModeBtn = h(
     'button',
     {
@@ -33,13 +51,9 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   ),
 
   textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn]),
+  preview = h('div', { className: 'compose-preview'}),
 
   composeZen: ReturnType<typeof LComposeZen>
-
-  let t = h('div')
-  t.innerHTML = `<input type="file" multiple>`
-  let mediaBtn = t.firstElementChild as HTMLElement
-  console.log(mediaBtn)
 
   btn.disabled = !postAvailable()
 
@@ -61,18 +75,15 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   async function onPostClick() {
-    let files: File[] = []
+    const res = await appManager.statusManager.postStatus({statusText: text(), files: files()})
 
-    // @ts-expect-error this is a `<input type="file">`, it has `files` attribute
-    for (const f of mediaBtn.files) {
-      files.push(f)
-    }
-    const res = await appManager.statusManager.postStatus({statusText: text(), files})
-
-    if (res.ok)
+    if (res.ok) {
       text('')
-    else
+      files([])
+    }
+    else {
       alert(res.error)
+    }
   }
 
   function onInput(e: Event) {
@@ -86,7 +97,8 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
      [
         textToolbar,
         textArea,
-        h('div', { className: 'compose__post'}, [btn.el, mediaBtn]),
+        h('div', { className: 'compose__post'}, [filePicker.el, btn.el]),
+        preview,
   ])
 
   root.appendChild(el)

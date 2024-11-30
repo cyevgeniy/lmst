@@ -17,7 +17,7 @@ became deprecated. As a consequence, lmst offers a very small subset
 of features: 
 
 - Follow/unfollow profile
-- Write text-only statuses/replies
+- Write statuses/replies with image attachments
 - Boost/unboost statuses
 - Search (profiles, statuses, hashtags)
 - Delete own statuses

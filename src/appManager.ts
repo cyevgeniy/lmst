@@ -1,5 +1,5 @@
 import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
-import type { Context, Search, Status } from './types/shared.d.ts'
+import { type MediaAttachment, type Context, type Search, type Status } from './types/shared'
 import type { AppConfig } from './appConfig'
 import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
@@ -204,7 +204,7 @@ export class TagsTimelineManager implements ITimelineManager {
 }
 
 export interface IStatusManager {
-  postStatus(params: {statusText: string}): Promise<ApiResult<Status>>
+  postStatus(params: {statusText: string, files?: File[]}): Promise<ApiResult<Status>>
   boostStatus(id: Status['id']): Promise<void>
   unboostStatus(id: Status['id']): Promise<void>
   deleteStatus(id: Status['id']): Promise<void>
@@ -229,11 +229,43 @@ export class StatusManager implements IStatusManager {
     lRouter.navigateTo(this.getLinkToStatus(status))
   }
 
-  public async postStatus(params: {statusText: string, in_reply_to_id?: string}): Promise<ApiResult<Status>> {
+  private async uploadFile(file: File): Promise<MediaAttachment | undefined> {
+    let body = new FormData()
+    body.append('file', file)
+
+    try {
+      return await fetchJson<MediaAttachment>(`${this.server()}/api/v2/media`, {
+        method: 'post',
+        withCredentials: true,
+        body
+      })
+    }
+    catch {
+      // we want to return undefined in such cases
+    }
+  }
+
+  // Uploads specified files and returns their ids
+  private async uploadFiles(files: File[]): Promise<string[]> {
+    let proms: Promise<MediaAttachment | undefined>[] = []
+
+    for (const f of files)
+      proms.push(this.uploadFile(f))
+
+    // @ts-expect-error don't add type guard to the filter for size limit reasons
+    return (await Promise.allSettled(proms)).map(r =>  r.status === 'fulfilled' ? r.value?.id : undefined).filter(Boolean)
+  }
+
+  public async postStatus(params: {statusText: string, in_reply_to_id?: string, files?: File[]}): Promise<ApiResult<Status>> {
     user.loadTokenFromStore()
+
+    let mediaIds = params.files ? await this.uploadFiles(params.files) : []
 
     let payload = new FormData()
     payload.append('status', params.statusText)
+    for (const id of mediaIds)
+      payload.append('media_ids[]', id)
+
     params.in_reply_to_id && payload.append('in_reply_to_id', params.in_reply_to_id)
 
     try {

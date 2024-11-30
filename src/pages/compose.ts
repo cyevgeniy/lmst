@@ -1,15 +1,16 @@
-import { childs, h } from '../utils/dom'
+import { childs, getIcon, h } from '../utils/dom'
 import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
-import { fullScreen } from '../components/Icons'
-import { text, postAvailable } from '../store/composeStore'
+import { LFilePicker } from '../components/LFilePicker'
+import { LPreview } from '../components/LPreview'
+import { text, postAvailable, files } from '../store/composeStore'
 import { on } from '../utils/signal'
 
 export function createComposePage(root: HTMLElement, appManager: AppManager) {
   root.innerHTML = ''
 
-  const textArea = h('textarea', {
+  let textArea = h('textarea', {
     attrs: {
       maxLength: '300',
       rows: '10',
@@ -24,16 +25,18 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   let cleanText = on(text, newValue => textArea.value = newValue),
   cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue),
   btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick}),
+  filePicker = LFilePicker(files),
   zenModeBtn = h(
     'button',
     {
       className: ['icon-button', 'ml-auto', 'compose-toolbar__zen'],
-      innerHTML: fullScreen,
+      innerHTML: getIcon('icon-fullscreen'),
       onClick: showZen,
     }
   ),
 
   textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn]),
+  preview = LPreview(files),
 
   composeZen: ReturnType<typeof LComposeZen>
 
@@ -42,6 +45,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   function onUnmount() {
     cleanText()
     cleanDisabled()
+    preview.cleanImages()
   }
 
   function onComposeZenClose() {
@@ -57,12 +61,16 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   async function onPostClick() {
-    const res = await appManager.statusManager.postStatus({statusText: text()})
+    const res = await appManager.statusManager.postStatus({statusText: text(), files: files()})
 
-    if (res.ok)
+    if (res.ok) {
       text('')
-    else
+      // It will also sync empty array with `files` signal
+      filePicker.clear()
+    }
+    else {
       alert(res.error)
+    }
   }
 
   function onInput(e: Event) {
@@ -76,7 +84,8 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
      [
         textToolbar,
         textArea,
-        h('div', { className: 'compose__post'}, [btn.el]),
+        h('div', { className: 'compose__post'}, [filePicker.el, btn.el]),
+        preview.el,
   ])
 
   root.appendChild(el)

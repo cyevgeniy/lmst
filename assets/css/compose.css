@@ -26,10 +26,32 @@
 .compose__post {
   margin-top: 16px;
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media screen and (min-width: 1240px) {
+  .compose__post {
+    flex-direction: row;
+  }
 }
 
 .compose__button {
   width: 100%;
+  align-self: center;
+}
+
+.compose-preview {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.compose-preview > img {
+  max-width: 100px;
+  height: auto;
+  border-radius: 4px;
 }
 
 @media screen and (min-width: 1240px) {
@@ -84,35 +106,5 @@
   display: flex;
   height: 100%;
   flex-direction: column;
-}
-
-/* A wrapper around 'reply' block in a single status view */
-.reply {
-  margin-top: 16px;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-@media screen and (min-width: 1240px) {
-  .reply {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .reply-buttonContainer .button {
-    width: auto;
-  }
-}
-
-/* A wrapper arount 'post reply' button in a single status view */
-.reply-buttonContainer {
-  margin-top: 12px;
-}
-
-.reply-buttonContainer button {
-  margin-right: 0;
-  margin-left: auto;
-  display: block;
-  width: 100%;
 }
 

@@ -144,3 +144,15 @@ export function childs<T extends HTMLElement, K extends HTMLElement>(
       _el.appendChild(c)
   })
 }
+
+let icons = new Map<string, string>()
+
+// Returns innerHTML by id.
+// If there's no element with provided id, returns empty string.
+export function getIcon(id: string): string {
+  let i = icons.get(id)
+  if (!i)
+    icons.set(id, i = document.getElementById(id)?.innerHTML ?? '')
+
+  return i
+}

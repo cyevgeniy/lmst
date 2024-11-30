@@ -16,7 +16,9 @@ export function useCompose() {
      */
     postAvailable = createSignal(false),
 
-    textCleanup = on(text, newVal => postAvailable(newVal.length > 0)),
+    textCleanup = on(text, newVal => {
+        postAvailable(files().length > 0 ? true : newVal.length > 0)
+    }),
     filesCleanup = on(files, newVal => newVal?.length > 0 ? postAvailable(true) : postAvailable(text().length > 0)),
     cleanup = () => {
         textCleanup()

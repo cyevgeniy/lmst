@@ -6,6 +6,8 @@ import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
 import { LStatusesList } from '../components/LStatusesList'
 import { LButton } from '../components/LButton'
+import { LFilePicker } from '../components/LFilePicker'
+import { LPreview } from '../components/LPreview'
 import { useCompose } from '../store/composeStore'
 
 export function createStatusPage(
@@ -32,7 +34,7 @@ export function createStatusPage(
   replyToStatus = h(
     'div',
     {
-      className: 'reply'
+      className: 'compose-wrapper'
     }
   ),
 
@@ -40,10 +42,12 @@ export function createStatusPage(
 
   root.appendChild(el)
 
-  const { text, postAvailable, cleanup } = useCompose()
+  const { text, postAvailable, cleanup, files } = useCompose()
 
   let postReply: ReturnType<typeof LButton>
+  let filePicker: ReturnType<typeof LFilePicker>
   let replyTextArea: HTMLTextAreaElement
+  let preview: ReturnType<typeof LPreview>
 
   let cleanText = on(text, newValue => replyTextArea.value = newValue),
   cleanDisabled = on(postAvailable, newValue => postReply.disabled = !newValue),
@@ -81,22 +85,29 @@ export function createStatusPage(
 
         const res = await appManager.statusManager.postStatus({
           statusText: replyTextArea.value,
+          files: files(),
           in_reply_to_id: statusId
         })
 
         if (res.ok) {
           statusesList.addStatuses([res.value])
           text('')
+          filePicker.clear()
         }
         else {
           alert(res.error)
         }
-      }
+      },
+      className: 'compose__button'
     })
 
     postReply.disabled = !postAvailable()
 
-    childs(replyToStatus, [replyTextArea, div('reply-buttonContainer', [postReply.el])])
+    filePicker = LFilePicker(files)
+
+    preview = LPreview(files)
+
+    childs(replyToStatus, [replyTextArea, div('compose__post', [filePicker.el, postReply.el]), preview.el])
   }
 
 

@@ -16,6 +16,15 @@
 	cursor: pointer;
 }
 
+@media screen and (min-width: 1240px) {
+	.filepicker > button > svg {
+		width: 20px;
+		height: 20px;
+		cursor: pointer;
+	}
+}
+
+
 .filepicker > input {
 	display: none;
 }

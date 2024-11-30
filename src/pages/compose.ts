@@ -3,6 +3,7 @@ import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
 import { LFilePicker } from '../components/LFilePicker'
+import { LPreview } from '../components/LPreview'
 import { text, postAvailable, files } from '../store/composeStore'
 import { on } from '../utils/signal'
 
@@ -23,23 +24,6 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
   let cleanText = on(text, newValue => textArea.value = newValue),
   cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue),
-  cleanImages = on(files, newValue => {
-    // Free memory for previously displayed images
-    for (const el of preview.children) {
-      if (el.tagName.toLowerCase() === 'img')
-        // @ts-expect-error we added these images, they always have sources
-        URL.revokeObjectURL(el.getAttribute('src'))
-    }
-
-    preview.innerHTML = ''
-
-    for (const file of newValue) {
-      let src = URL.createObjectURL(file),
-      img = h('img', {attrs: { src}})
-
-      preview.appendChild(img)
-    }
-  }),
   btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick}),
   filePicker = LFilePicker(files),
   zenModeBtn = h(
@@ -52,7 +36,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   ),
 
   textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn]),
-  preview = h('div', { className: 'compose-preview'}),
+  preview = LPreview(files),
 
   composeZen: ReturnType<typeof LComposeZen>
 
@@ -61,7 +45,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   function onUnmount() {
     cleanText()
     cleanDisabled()
-    cleanImages()
+    preview.cleanImages()
   }
 
   function onComposeZenClose() {
@@ -101,7 +85,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
         textToolbar,
         textArea,
         h('div', { className: 'compose__post'}, [filePicker.el, btn.el]),
-        preview,
+        preview.el,
   ])
 
   root.appendChild(el)

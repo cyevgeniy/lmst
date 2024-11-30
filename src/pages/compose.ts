@@ -81,7 +81,8 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
 
     if (res.ok) {
       text('')
-      files([])
+      // It will also sync empty array with `files` signal
+      filePicker.clear()
     }
     else {
       alert(res.error)

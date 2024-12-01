@@ -52,6 +52,7 @@
   max-width: 100px;
   height: auto;
   border-radius: 4px;
+  align-self: start;
 }
 
 @media screen and (min-width: 1240px) {

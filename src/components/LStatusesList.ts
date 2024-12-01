@@ -16,8 +16,6 @@ export function LStatusesList(props: StatusesListProps) {
 
   props.root.appendChild(el)
 
-  props.root.appendChild(el)
-
   function onDelete(statusComponent: ElLike, s: Status) {
     statusComponent.el.remove()
     props.sm.deleteStatus(s.id)

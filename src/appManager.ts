@@ -4,7 +4,7 @@ import type { AppConfig } from './appConfig'
 import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
-import type { GlobalNavigation } from './types/shared'
+import type { GlobalNavigation, NotificationCount } from './types/shared'
 import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
@@ -59,7 +59,6 @@ export class TimelineManager implements ITimelineManager {
 
   public async loadStatuses(): Promise<Status[]> {
     let { server } = useAppConfig()
-    await user.verifyCredentials()
     let fn = async () => await getPublicTimeline(server(), {max_id: this.maxId})
 
     if (user.isLoaded())
@@ -313,7 +312,6 @@ export class StatusManager implements IStatusManager {
   }
 
   public async deleteStatus(id: Status['id']) {
-    await user.verifyCredentials()
     user.loadTokenFromStore()
 
     try {
@@ -395,7 +393,6 @@ export function useGlobalNavigation(
   }
 
   async function login() {
-    await user.verifyCredentials()
       if (user.isLoaded())
         goHome()
       else {
@@ -474,6 +471,34 @@ function createSearchManager() {
   }
 }
 
+export function createNotificationManager() {
+  let { server } = useAppConfig(),
+  cnt: number = 0
+
+  async function getNotificationCount() {
+    try {
+      let res = await fetchJson<NotificationCount>(`${this.server()}/api/v1/notifications/unread_count`, {
+        withCredentials: true,
+      })
+
+      cnt = res.count
+    }
+    catch {
+      cnt = 0
+    }
+  }
+
+  return {
+    get count() {
+      return cnt
+    },
+    set count(v: number) {
+      cnt = v
+    },
+    getNotificationCount
+  }
+}
+
 export class AppManager {
   private config: AppConfig
   public statusManager: StatusManager
@@ -482,6 +507,7 @@ export class AppManager {
   public tagsManager: TagsTimelineManager
   public pageHistoryManager: PageHistoryManager
   public searchManager: ReturnType<typeof createSearchManager>
+  public notificationManager: ReturnType<typeof createNotificationManager>
 
   constructor() {
     this.config = useAppConfig()
@@ -490,6 +516,7 @@ export class AppManager {
     this.tagsManager = new TagsTimelineManager({keepStatuses: false})
     this.pageHistoryManager = usePageHistory()
     this.searchManager = createSearchManager()
+    this.notificationManager = createNotificationManager()
 
     this.globalMediator = useGlobalNavigation(
       this.timelineManager,

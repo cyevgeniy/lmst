@@ -64,9 +64,6 @@ export function createStatusPage(
   }
 
   async function addReplyBlock() {
-
-    await user.verifyCredentials()
-
     if (!user.isLoaded())
       return
 

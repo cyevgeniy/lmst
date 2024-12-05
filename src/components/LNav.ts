@@ -4,10 +4,9 @@ import { lRouter } from '../router'
 import type { GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
+import { notificationsStore } from '../store/notificationsStore'
 
 export function LNav(gn: GlobalNavigation) {
-  user.verifyCredentials()
-
   let profileLink = LNavLink({text: '', link: '/'}),
   authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login'),
   logoutLink = LNavLink({text: 'Logout', link: '#', icon: getIcon('icon-logout'),  onClick: onLogoutClick}),
@@ -15,7 +14,7 @@ export function LNav(gn: GlobalNavigation) {
   searchLink = LNavLink({text: 'Search', link: '/search', icon: getIcon('icon-search'), onClick: onSearchClick}),
 
   mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo'), onClick: onMainLinkClick}),
-  
+
   signupContainer = h('div', {
     className: 'navBar-rightItems'
   },[
@@ -31,12 +30,13 @@ export function LNav(gn: GlobalNavigation) {
     signupContainer,
   ])
 
-  on(user.user, u => {
+  function setupForUser(u: Signal<User>) {
     if (u.id) {
       hide(authorize)
       profileLink.setText(u.display_name)
       profileLink.link = `/profile/${u.acct}/`
       profileLink.visible = true
+      notificationsStore.getNotifications().then(() => {console.log('Notifications in store: ', notificationsStore.notifications())})
     }
     else {
       profileLink.link = '/'
@@ -47,10 +47,14 @@ export function LNav(gn: GlobalNavigation) {
 
     composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
 
-    updLogoutVisibility()
-  })
+    logoutLink.visible = user.isLoaded()
 
-  user.verifyCredentials()
+  }
+
+  setupForUser(user.user())
+
+  on(user.user, u => setupForUser(u))
+
 
   function onMainLinkClick(e: MouseEvent) {
     e.preventDefault()
@@ -74,10 +78,6 @@ export function LNav(gn: GlobalNavigation) {
   function onSearchClick(e: MouseEvent) {
     e.preventDefault()
     lRouter.navigateTo('/search')
-  }
-
-  function updLogoutVisibility() {
-    logoutLink.visible = user.isLoaded()
   }
 
   return {

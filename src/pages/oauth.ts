@@ -3,7 +3,7 @@ import { user } from '../utils/user'
 
 export async function createOAuthPage(root: HTMLElement) {
   root.innerHTML = ''
-  
+
   // get authorization code from url search string
   // @ts-ignore
   let searchParams = new URL(window.location).searchParams,
@@ -14,7 +14,7 @@ export async function createOAuthPage(root: HTMLElement) {
   if (!res.ok)
     logErr(res.error)
   else
-    user.verifyCredentials()
+    await user.verifyCredentials()
 
   window.location.replace('/')
 }

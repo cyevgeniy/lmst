@@ -1,6 +1,7 @@
 import '../assets/css/main.css'
 import { lRouter, RouteParams } from './router'
 import { createTimelinePage } from './pages/timeline'
+import { createNotificationsPage } from './pages/notifications'
 import { createProfilePage } from './pages/profile'
 import { createTagsPage } from './pages/tags'
 import { createOAuthPage } from './pages/oauth'
@@ -63,6 +64,7 @@ user.verifyCredentials().then(() => {
     cacheAndNavigate(params._path, mainPage.middle, () => createTimelinePage(mainPage.middle, appManager))
   })
   lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
+  lRouter.on('/notifications', () => createNotificationsPage(mainPage.middle))
   lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
   lRouter.on('/compose', composePageProxy.createPage)
   lRouter.on('/search', (params) => {

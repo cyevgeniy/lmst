@@ -1,10 +1,9 @@
 import {h, div, show, hide, getIcon } from '../utils/dom'
 import {  user } from '../utils/user'
 import { lRouter } from '../router'
-import type { GlobalNavigation } from '../types/shared'
+import type { Account, GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
-import { notificationsStore } from '../store/notificationsStore'
 
 export function LNav(gn: GlobalNavigation) {
   let profileLink = LNavLink({text: '', link: '/'}),
@@ -12,6 +11,7 @@ export function LNav(gn: GlobalNavigation) {
   logoutLink = LNavLink({text: 'Logout', link: '#', icon: getIcon('icon-logout'),  onClick: onLogoutClick}),
   composeLink = LNavLink({text: 'Compose', link: '/compose', icon: getIcon('icon-pen'), onClick: onComposeClick}),
   searchLink = LNavLink({text: 'Search', link: '/search', icon: getIcon('icon-search'), onClick: onSearchClick}),
+  notificationsLink = LNavLink({text: 'Notifications', link: '/notifications', icon: getIcon('icon-bell'), onClick: onBellClick}),
 
   mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo'), onClick: onMainLinkClick}),
 
@@ -27,22 +27,24 @@ export function LNav(gn: GlobalNavigation) {
     mainLink.el,
     composeLink.el,
     searchLink.el,
+    notificationsLink.el,
     signupContainer,
   ])
 
-  function setupForUser(u: Signal<User>) {
+  function setupForUser(u: Account) {
     if (u.id) {
       hide(authorize)
       profileLink.setText(u.display_name)
       profileLink.link = `/profile/${u.acct}/`
       profileLink.visible = true
-      notificationsStore.getNotifications().then(() => {console.log('Notifications in store: ', notificationsStore.notifications())})
+      notificationsLink.visible = true
     }
     else {
       profileLink.link = '/'
       profileLink.setText('')
       show(authorize)
       profileLink.visible = false
+      notificationsLink.visible = false
     }
 
     composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
@@ -78,6 +80,11 @@ export function LNav(gn: GlobalNavigation) {
   function onSearchClick(e: MouseEvent) {
     e.preventDefault()
     lRouter.navigateTo('/search')
+  }
+
+  function onBellClick(e: MouseEvent) {
+    e.preventDefault()
+    lRouter.navigateTo('/notifications')
   }
 
   return {

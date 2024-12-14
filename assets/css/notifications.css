@@ -1,0 +1,18 @@
+.notifications-root {
+  display: flex;
+  flex-direction: column;
+}
+
+.notifications-root > * {
+  padding: 16px 4px;
+}
+
+.notifications-root > * + * {
+  border-top: 1px solid #ebeef0;
+}
+
+.notificationReblog__profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

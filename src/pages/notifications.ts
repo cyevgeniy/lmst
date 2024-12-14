@@ -1,26 +1,18 @@
 import { h } from '../utils/dom'
 import { notificationsStore as ns } from '../store/notificationsStore'
 import { LStatus } from '../components/LStatus'
-import { LProfileLink } from '../components/LProfileLink'
+import { LFollowedNotification } from '../components/LFollowedNotification'
+import { LReblogNotification } from '../components/LReblogNotification'
 import type { Notification } from '../types/shared'
 
 export function createNotificationsPage(root: HTMLElement) {
   root.innerHTML = ''
   let el = h('div', { className: 'notifications-root'})
 
-  function followedNotification(n: Notification) {
-    let profileLink = Object.assign(LProfileLink(n.account), {innerText: n.account.display_name}),
-    el = h('p', null, [profileLink])
-
-    el.innerHTML += ' followed you'
-
-    return el
-  }
-
   function getNotificationNode(n: Notification): HTMLDivElement {
     switch (n.type) {
-      case 'follow': return followedNotification(n)
-      case 'reblog': return LStatus({status: n.status!}).el
+      case 'follow': return LFollowedNotification(n).el
+      case 'reblog': return LReblogNotification(n).el
       case 'mention': return LStatus({status: n.status!}).el
       default: return h('div', null, 'Unhandled notification ')
     }

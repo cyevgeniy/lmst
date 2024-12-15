@@ -1,9 +1,33 @@
+.notifications-clear {
+  width: 100%;
+}
+
+.notification-actions {
+  padding: 0px 4px;
+}
+
+.notification-noData {
+  text-align: center;
+  color: gray;
+}
+
+@media screen and (min-width: 1024px) {
+  .notifications-clear {
+    width: auto;
+    margin: 0;
+  }
+  .notification-actions {
+    padding: 0;
+  }
+}
+
 .notifications-root {
   display: flex;
   flex-direction: column;
 }
 
 .notifications-root > * {
+  margin-top: 24px;
   padding: 16px 4px;
 }
 

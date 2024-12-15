@@ -4,9 +4,10 @@ import { h } from '../utils/dom'
 import type { Notification } from '../types/shared'
 
 export function LReblogNotification(n: Notification) {
-  let profile = h('div', {className: 'notificationReblog__profile'}, [
+  let text = n.type === 'reblog' ? 'reblogged' : 'bookmarked your status',
+  profile = h('div', {className: 'notificationReblog__profile'}, [
     LAvatarLink(n.account).el,
-    h('p', null, `${n.account.display_name} reblogged:`)
+    h('p', null, `${n.account.display_name} ${text}:`)
   ]),
   el = h('div', { className: 'notification--reblog'}, [
     profile,

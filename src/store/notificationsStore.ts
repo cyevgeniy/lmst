@@ -21,7 +21,7 @@ function createNotificationManager() {
 
   async function dismissAll() {
     try {
-      let res = await fetchJson(`${server()}/api/v1/notifications/clear`, {
+       await fetchJson(`${server()}/api/v1/notifications/clear`, {
         method: 'post',
         withCredentials: true,
       })

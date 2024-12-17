@@ -5,6 +5,7 @@ import { LStatus } from '../components/LStatus'
 import { LButton } from '../components/LButton'
 import { LFollowedNotification } from '../components/LFollowedNotification'
 import { LReblogNotification } from '../components/LReblogNotification'
+import { LUnimplementedNotification } from '../components/LUnimplementedNotification'
 import type { Notification } from '../types/shared'
 
 export function createNotificationsPage(root: HTMLElement) {
@@ -33,7 +34,7 @@ export function createNotificationsPage(root: HTMLElement) {
       case 'reblog': return LReblogNotification(n).el
       case 'mention': return LStatus({status: n.status!}).el
       case 'favourite': return LReblogNotification(n).el
-      default: return h('div', null, 'Unhandled notification ')
+      default: return LUnimplementedNotification(n).el
     }
   }
 

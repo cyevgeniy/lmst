@@ -13,7 +13,7 @@ export function LUnimplementedNotification(n: Notification) {
     'severed_relationships': 'Some of your follow relationships have been severed as a result of a moderation or block event',
   }[n.type] ?? `sorry, this notification is unimplemented its type: ${n.type}`
 
-  let profileLink = Object.assign(LProfileLink(n.account), {innerText: n.account.display_name || n.account.username}),
+  let profileLink = Object.assign(LProfileLink(n.account), {innerText: n.account.display_name || n.account.acct}),
   el = h('div', null, [profileLink])
 
   el.innerHTML += ' ' + txt

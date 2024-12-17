@@ -34,7 +34,7 @@ export function LNav(gn: GlobalNavigation) {
   function setupForUser(u: Account) {
     if (u.id) {
       hide(authorize)
-      profileLink.setText(u.display_name)
+      profileLink.setText(u.display_name || u.acct)
       profileLink.link = `/profile/${u.acct}/`
       profileLink.visible = true
       notificationsLink.visible = true

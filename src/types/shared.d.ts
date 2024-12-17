@@ -27,7 +27,9 @@ export interface Account {
   /**
    * @username or server@username
    */
-  acct?: string
+  acct: string
+
+  username: string
 }
 
 

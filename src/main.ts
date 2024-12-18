@@ -58,8 +58,9 @@ user.verifyCredentials().then(() => {
     cacheAndNavigate(params._path, mainPage.middle, cb)
   }
 
-  const mainPage = createMainPage(appManager.globalMediator)
-  const composePageProxy = createPageProxy(() => createComposePage(mainPage.middle, appManager))
+  let mainPage = createMainPage(appManager.globalMediator),
+  composePageProxy = createPageProxy(() => createComposePage(mainPage.middle, appManager))
+
   lRouter.on('/', (params) =>{
     cacheAndNavigate(params._path, mainPage.middle, () => createTimelinePage(mainPage.middle, appManager))
   })

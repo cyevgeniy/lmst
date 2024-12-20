@@ -11,7 +11,7 @@
   color: gray;
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1240px) {
   .notifications-clear {
     width: auto;
     margin: 0;

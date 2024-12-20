@@ -5,7 +5,6 @@ import { h } from './dom.ts'
 
 t.beforeEach(() => {
   global.document = new JSDOM(`<html><body></body></html>`).window.document;
-  console.log('')
 })
 
 

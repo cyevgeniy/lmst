@@ -6,23 +6,14 @@ import { store } from "../store"
 import { App } from "../app"
 import { createSignal } from "./signal"
 import { logErr } from "./errors"
-
-export interface CredentialAccount {
-  id: string
-  username: string
-  acct: string
-  url: string
-  display_name: string
-  note: string
-  avatar: string
-}
+import type { Account } from '../types/shared'
 
 function createUserStore() {
 
   let config = useAppConfig(),
   app = new App(),
 
-  user = createSignal<CredentialAccount>({
+  user = createSignal<Account>({
     id: '',
     username: '',
     acct: '',
@@ -118,7 +109,7 @@ function createUserStore() {
     const tmp = store.getItem(USER_KEY)
 
     if (tmp)
-      user(JSON.parse(tmp) as CredentialAccount)
+      user(JSON.parse(tmp) as Account)
   }
 
   function isLoaded() {
@@ -151,7 +142,7 @@ function createUserStore() {
 
     if (resp.status === 200) {
 
-      let _user = await resp.json() as CredentialAccount
+      let _user = await resp.json() as Account
 
       user(_user)
 

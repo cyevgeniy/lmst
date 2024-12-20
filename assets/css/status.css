@@ -94,6 +94,10 @@
   gap: 12px;
 }
 
+.status-buttons:empty {
+	display: none;
+}
+
 /* Each status action button has a background on hover */
 .status-button:hover {
 	background-color: rgb(235, 238, 240);
@@ -142,4 +146,9 @@
 /* A container for the status replies on the single-status page */
 .status-descendants {
   margin-top: 2rem;
+}
+
+.notification--reblog .status {
+	font-size: 14px;
+	padding-left: 24px;
 }

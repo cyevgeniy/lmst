@@ -1,9 +1,9 @@
-import { h } from '../utils/dom'
+import { div, h } from '../utils/dom'
 import { on } from '../utils/signal.ts'
 import type { Signal } from '../utils/signal.ts'
 
 export function LPreview(files: Signal<File[]>) {
-  let el = h('div', { className: 'compose-preview'}),
+  let el = div('compose-preview'),
   cleanImages = on(files, newValue => {
     // Free memory for previously displayed images
     for (const t of el.children) {

@@ -1,4 +1,4 @@
-import { getIcon, h, show, hide } from '../utils/dom'
+import { div, getIcon, h, show, hide } from '../utils/dom'
 import type { Signal } from '../utils/signal'
 
 export function LFilePicker(files: Signal<File[]>) {
@@ -27,7 +27,7 @@ export function LFilePicker(files: Signal<File[]>) {
       hide(clearSpan)
   })
 
-  let el = h('div', { className: 'filepicker'}, [btn, input, clearSpan])
+  let el = div('filepicker', [btn, input, clearSpan])
 
   return {
     el,

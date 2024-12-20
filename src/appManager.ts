@@ -59,7 +59,6 @@ export class TimelineManager implements ITimelineManager {
 
   public async loadStatuses(): Promise<Status[]> {
     let { server } = useAppConfig()
-    await user.verifyCredentials()
     let fn = async () => await getPublicTimeline(server(), {max_id: this.maxId})
 
     if (user.isLoaded())
@@ -313,7 +312,6 @@ export class StatusManager implements IStatusManager {
   }
 
   public async deleteStatus(id: Status['id']) {
-    await user.verifyCredentials()
     user.loadTokenFromStore()
 
     try {
@@ -395,7 +393,6 @@ export function useGlobalNavigation(
   }
 
   async function login() {
-    await user.verifyCredentials()
       if (user.isLoaded())
         goHome()
       else {

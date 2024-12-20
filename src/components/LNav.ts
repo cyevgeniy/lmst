@@ -1,24 +1,21 @@
 import {h, div, show, hide, getIcon } from '../utils/dom'
 import {  user } from '../utils/user'
 import { lRouter } from '../router'
-import type { GlobalNavigation } from '../types/shared'
+import type { Account, GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
 
 export function LNav(gn: GlobalNavigation) {
-  user.verifyCredentials()
-
   let profileLink = LNavLink({text: '', link: '/'}),
   authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login'),
   logoutLink = LNavLink({text: 'Logout', link: '#', icon: getIcon('icon-logout'),  onClick: onLogoutClick}),
   composeLink = LNavLink({text: 'Compose', link: '/compose', icon: getIcon('icon-pen'), onClick: onComposeClick}),
   searchLink = LNavLink({text: 'Search', link: '/search', icon: getIcon('icon-search'), onClick: onSearchClick}),
+  notificationsLink = LNavLink({text: 'Notifications', link: '/notifications', icon: getIcon('icon-bell'), onClick: onBellClick}),
 
   mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo'), onClick: onMainLinkClick}),
-  
-  signupContainer = h('div', {
-    className: 'navBar-rightItems'
-  },[
+
+  signupContainer = div('navBar-rightItems', [
     profileLink.el,
     authorize,
     logoutLink.el,
@@ -28,29 +25,36 @@ export function LNav(gn: GlobalNavigation) {
     mainLink.el,
     composeLink.el,
     searchLink.el,
+    notificationsLink.el,
     signupContainer,
   ])
 
-  on(user.user, u => {
+  function setupForUser(u: Account) {
     if (u.id) {
       hide(authorize)
-      profileLink.setText(u.display_name)
+      profileLink.setText(u.display_name || u.acct)
       profileLink.link = `/profile/${u.acct}/`
       profileLink.visible = true
+      notificationsLink.visible = true
     }
     else {
       profileLink.link = '/'
       profileLink.setText('')
       show(authorize)
       profileLink.visible = false
+      notificationsLink.visible = false
     }
 
     composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
 
-    updLogoutVisibility()
-  })
+    logoutLink.visible = user.isLoaded()
 
-  user.verifyCredentials()
+  }
+
+  setupForUser(user.user())
+
+  on(user.user, u => setupForUser(u))
+
 
   function onMainLinkClick(e: MouseEvent) {
     e.preventDefault()
@@ -76,8 +80,9 @@ export function LNav(gn: GlobalNavigation) {
     lRouter.navigateTo('/search')
   }
 
-  function updLogoutVisibility() {
-    logoutLink.visible = user.isLoaded()
+  function onBellClick(e: MouseEvent) {
+    e.preventDefault()
+    lRouter.navigateTo('/notifications')
   }
 
   return {

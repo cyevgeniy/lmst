@@ -27,7 +27,9 @@ export interface Account {
   /**
    * @username or server@username
    */
-  acct?: string
+  acct: string
+
+  username: string
 }
 
 
@@ -140,4 +142,21 @@ interface Search {
   accounts: Account[]
   statuses: Status[]
   hashtags: Tag[]
+}
+
+export type NotificationType = 'mention' | 'status' | 'follow' | 'reblog' | 'follow_request' | 'favourite' | 'poll' | 'update' | 'admin.sign_up' | 'admin.report' | 'severed_relationships'
+
+export interface Notification {
+  id: string
+  type: NotificationType
+  created_at: string
+  account: Account
+  status?: Status
+  report?: any // should be a Report type, but right now we don't have UI for these notifications
+  relationship_severance_event?: any // RelationshipSeveranceEvent
+  moderation_warning?: any // AccountWarning
+}
+
+export interface NotificationCount {
+  count: number
 }

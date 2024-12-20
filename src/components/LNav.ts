@@ -15,9 +15,7 @@ export function LNav(gn: GlobalNavigation) {
 
   mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo'), onClick: onMainLinkClick}),
 
-  signupContainer = h('div', {
-    className: 'navBar-rightItems'
-  },[
+  signupContainer = div('navBar-rightItems', [
     profileLink.el,
     authorize,
     logoutLink.el,

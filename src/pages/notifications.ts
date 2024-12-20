@@ -1,4 +1,4 @@
-import { h, childs, hide, show } from '../utils/dom'
+import { div, h, childs, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
 import { notificationsStore as ns } from '../store/notificationsStore'
 import { LStatus } from '../components/LStatus'
@@ -15,9 +15,9 @@ export function createNotificationsPage(root: HTMLElement) {
     onClick: ns.dismissAll,
     className: 'notifications-clear',
   }),
-  actions = h('div', {className: 'notification-actions'}, [dismissBtn.el]),
+  actions = div('notification-actions', [dismissBtn.el]),
   noData = h('div', {className: 'notification-noData'}, 'You have no unread notifications'),
-  nRoot = h('div', { className: 'notifications-root'}),
+  nRoot = div('notifications-root'),
   el = h('div', null, [
     actions,
     nRoot

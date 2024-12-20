@@ -43,7 +43,7 @@ export function LStatus(opts: StatusProps) {
   }
 
   let sensitiveEl = _status.sensitive
-    ? h('div', {className: 'status-sensitiveContent'}, [sensitiveButton.el])
+    ? div('status-sensitiveContent', [sensitiveButton.el])
     : undefined
 
   let avatarLink = h('a', {

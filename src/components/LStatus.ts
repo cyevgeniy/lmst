@@ -16,7 +16,7 @@ type StatusProps = {
 } & StatusEventHandlers
 
 export function LStatus(opts: StatusProps) {
-  const {
+  let {
     status,
     permissions = { canDelete: false, canBoost: false },
     clickableContent = true,
@@ -127,7 +127,7 @@ export function LStatus(opts: StatusProps) {
   }
 
 
-  const el = div(['status', singleView ? 'status--isSingle' : ''], [
+  let el = div(['status', singleView ? 'status--isSingle' : ''], [
     isReblogged
       ? div( 'status-boostedText', [span('', `${dispName} boosted: `)])
       : undefined,

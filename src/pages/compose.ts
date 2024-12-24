@@ -62,7 +62,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   async function onPostClick() {
-    const res = await appManager.statusManager.postStatus({statusText: text(), files: files()})
+    let res = await appManager.statusManager.postStatus({statusText: text(), files: files()})
 
     if (res.ok) {
       text('')
@@ -75,11 +75,11 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   function onInput(e: Event) {
-    const area = e.target as HTMLTextAreaElement
+    let area = e.target as HTMLTextAreaElement
     text(area.value)
   }
 
-  const el = h(
+  let el = h(
      'div',
      { className: 'compose__wrapper' },
      [

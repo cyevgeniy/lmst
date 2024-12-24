@@ -15,8 +15,8 @@ export function createStatusPage(
   appManager: AppManager,
   params?: Record<string, string>
 ) {
-  const statusId = params?.id ?? ''
-  const server = `https://${params?.server ?? ''}`
+  let statusId = params?.id ?? '',
+  server = `https://${params?.server ?? ''}`
 
   root.innerHTML = ''
 
@@ -42,14 +42,14 @@ export function createStatusPage(
 
   root.appendChild(el)
 
-  const { text, postAvailable, cleanup, files } = useCompose()
+  let { text, postAvailable, cleanup, files } = useCompose()
 
-  let postReply: ReturnType<typeof LButton>
-  let filePicker: ReturnType<typeof LFilePicker>
-  let replyTextArea: HTMLTextAreaElement
-  let preview: ReturnType<typeof LPreview>
+  let postReply: ReturnType<typeof LButton>,
+  filePicker: ReturnType<typeof LFilePicker>,
+  replyTextArea: HTMLTextAreaElement,
+  preview: ReturnType<typeof LPreview>,
 
-  let cleanText = on(text, newValue => replyTextArea.value = newValue),
+  cleanText = on(text, newValue => replyTextArea.value = newValue),
   cleanDisabled = on(postAvailable, newValue => postReply.disabled = !newValue),
 
   onUnmount = () => {

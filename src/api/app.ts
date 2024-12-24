@@ -35,8 +35,7 @@ export async function registerApp(params: RegisterAppParams): Promise<ApiResult<
 
     return success(response)
   } catch (e: unknown) {
-    let msg = logErr(e)
-    return fail(msg)
+    return fail(logErr(e))
   }
 }
 
@@ -57,9 +56,9 @@ export interface Token {
 }
 
 export async function getAppToken(params: GetAppTokenParams): Promise<ApiResult<Token>> {
-  const payload = new FormData()
+  let payload = new FormData()
 
-  const {server, ...rest} = params
+  let {server, ...rest} = params
 
   for (const key in rest) {
     payload.append(key, rest[key])

@@ -7,15 +7,15 @@ export type NavLinkProps = {
 } & HTMLEventHandler
 
 export function LNavLink(props: NavLinkProps) {
-  const { text, link, icon, ...handlers} = props
-  const el = h('a', {
+  let { text, link, icon, ...handlers} = props
+  let el = h('a', {
     className: 'navBar-link',
     innerHTML: `${icon ?? ''}<span>${text}</span>`,
     attrs: { href: link},
     ...handlers,
   })
 
-  const { show, hide, setText } = useCommonEl(el)
+  let { show, hide, setText } = useCommonEl(el)
 
   return {
     el,

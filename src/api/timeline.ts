@@ -14,8 +14,8 @@ export async function getPublicTimeline(
   params: TimelineParams = {}
 ): Promise<ApiResult<Status[]>> {
   // key=value&key=value&key=value
-  let prm = getQueryParams(params)
-  let url = `${server}/api/v1/timelines/public${prm}`
+  let prm = getQueryParams(params),
+  url = `${server}/api/v1/timelines/public${prm}`
   
   return getTimeline(url)
 }
@@ -24,9 +24,8 @@ export async function getHomeTimeline(
   server: string,
   params: TimelineParams = {}
 ): Promise<ApiResult<Status[]>> {
-  let prm = getQueryParams(params)
-  // xxx: only_media doesn't work
-  let url = `${server}/api/v1/timelines/home${prm}`
+  let prm = getQueryParams(params),
+  url = `${server}/api/v1/timelines/home${prm}`
   
   return getTimeline(url, true)
 }
@@ -37,15 +36,15 @@ export interface GetStatusesByTagOptions {
 }
 
 export async function getTagTimeline(tag: string, opts: GetStatusesByTagOptions = {params: {}, server: '' }) {
-  const prm = getQueryParams(opts.params)
-  const url = `${opts.server}/api/v1/timelines/tag/${tag}${prm}`
+  let prm = getQueryParams(opts.params),
+  url = `${opts.server}/api/v1/timelines/tag/${tag}${prm}`
 
   return getTimeline(url)
 }
 
 async function getTimeline(url: string, withCredentials?: boolean): Promise<ApiResult<Status[]>> {
   try {
-    const resp = await fetchJson<Status[]>(url, {withCredentials})
+    let resp = await fetchJson<Status[]>(url, {withCredentials})
     return success(resp)
   }
   catch(e: unknown) {

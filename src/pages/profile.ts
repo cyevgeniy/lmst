@@ -73,12 +73,12 @@ export function createProfilePage(
     }
 
     async function loadProfileInfo(params?: Record<string, string>) {
-      const webfinger = params?.webfinger ?? ''
+      let webfinger = params?.webfinger ?? ''
   
       opts.pm.profileWebfinger = webfinger
   
       try {
-        const resp = await opts.pm.getAccount()
+        let resp = await opts.pm.getAccount()
         profileId = resp.id
         profileHeaderComponent.update(resp)
       }

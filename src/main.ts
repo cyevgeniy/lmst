@@ -40,17 +40,15 @@ function createPageProxy(pageConstructor: () => any) {
     return { el: page.el } as ElLike
   }
 
-  const res = {
+  return {
     createPage,
   }
-
-  return res
 }
 
 
 user.verifyCredentials().then(() => {
   function _createProfilePage(params: RouteParams) {
-    const cb = () => createProfilePage(mainPage.middle, {
+    let cb = () => createProfilePage(mainPage.middle, {
       pm: new ProfileTimelineManager(),
       sm: appManager.statusManager,
       params,

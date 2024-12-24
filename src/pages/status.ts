@@ -71,7 +71,8 @@ export function createStatusPage(
       attrs: {
         maxLength: '300',
         rows: '3',
-        placeholder: 'Your reply'
+        placeholder: 'Your reply',
+        spellcheck: 'false',
       },
       onInput,
     })

@@ -14,7 +14,8 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     attrs: {
       maxLength: '300',
       rows: '10',
-      placeholder: 'What\'s on your mind?'
+      placeholder: 'What\'s on your mind?',
+      spellcheck: 'false',
     },
     onInput,
   })

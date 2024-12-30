@@ -1,5 +1,6 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
+import { LNoMoreRows } from '../components/LNoMoreRows'
 import { div, h, hide } from '../utils/dom'
 import type { AppManager } from '../appManager.ts'
 
@@ -9,8 +10,7 @@ export function createTimelinePage(
 ) {
   root.innerHTML = ''
 
-  let noMoreDataText = h('div', { className: 'timelime-no-more-rows' }, 'No more records'),
-
+  let noMoreDataText = LNoMoreRows('No more records'),
   loadMoreBtn = LLoadMoreBtn({ text: 'Load more', onClick: () => loadMore() }),
   loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
 

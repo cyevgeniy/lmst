@@ -1,6 +1,7 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
+import { LNoMoreRows } from '../components/LNoMoreRows'
 import { h, div, hide, show, childs } from '../utils/dom'
 import { ProfileTimelineManager, StatusManager } from '../appManager'
 import { logErr } from '../utils/errors'
@@ -18,7 +19,7 @@ export function createProfilePage(
     root.innerHTML = ''
     let profileId = '',
 
-    noMoreDataText = h('div', {className: 'timelime-no-more-rows'}, 'No more records'),
+    noMoreDataText = LNoMoreRows('No more records'),
 
     loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() }),
     loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),

@@ -2,6 +2,7 @@ import { AppManager } from '../appManager'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LProfileListInfo } from '../components/LProfileListItem'
 import { LStatusesList } from '../components/LStatusesList'
+import { LNoMoreRows } from '../components/LNoMoreRows'
 import { lRouter } from '../router'
 import { Account } from '../types/shared'
 import { childs, div, h, hide, show } from '../utils/dom'
@@ -13,7 +14,10 @@ function isTag(s: string): boolean {
 
 export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 	root.innerHTML = ''
-	let input = h('input', {className: 'search-input'})
+	let input = h('input', {className: 'search-input'}),
+	noMoreDataText = LNoMoreRows() //h('div', {className: 'timelime-no-more-rows'}, 'No more records')
+	hide(noMoreDataText)
+	
 	input.type = 'search'
 	input.placeholder = 'Search text or #hashtag'
 	input.autofocus = true
@@ -64,7 +68,10 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 				!!accounts.length ? show(profiles) : hide(profiles)
 			}
 
-			if (sm.noMoreData) loadMore.visible = false
+			if (sm.noMoreData) {
+				loadMore.visible = false
+				show(noMoreDataText)
+			}
 		}
 	}
 
@@ -86,17 +93,20 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 		// Clicking on the 'load more' button will update only statuses list
 		await search({updateProfiles: true})
 
-		// Show 'load more' button after first search, but only when search didn't return an empty set
+		// Show 'load more' button after the first search, but only when search didn't return an empty set
 		// and the search query was not empty
-		if (input.value)
-			!sm.noMoreData && (loadMore.visible = true)
-		else
+		if (input.value) {
+			!sm.noMoreData && (loadMore.visible = true) && hide(noMoreDataText)
+		}
+		else {
 			loadMore.visible = false
+			show(noMoreDataText)
+		}
 	}
 
 	let statusesListRoot = h('div'),
 	form = h('form', {onSubmit, className: 'search-form'}, [input]),
-	el = h('div', null, [form, profiles, statusesListRoot, loadMore.el]),
+	el = h('div', null, [form, profiles, statusesListRoot, noMoreDataText, loadMore.el]),
 
 	slist = LStatusesList({
 		root: statusesListRoot,

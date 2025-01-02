@@ -1,4 +1,5 @@
 import { Token } from "../api/app"
+import { APP_INFO_KEY } from "../app"
 import { useAppConfig} from "../appConfig"
 import { ApiResult, fail, success } from "./api"
 import { searchParams } from "./url"
@@ -156,6 +157,7 @@ function createUserStore() {
     loadTokenFromStore()
     store.removeItem(USER_KEY)
     store.removeItem(TOKEN_KEY)
+    store.removeItem(APP_INFO_KEY )
     clearUserData()
     config.server('')
 

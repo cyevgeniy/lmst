@@ -9,7 +9,7 @@ interface RegisteredApp {
   appInfo: Application
 }
 
-const APP_INFO_KEY = 'appInfo'
+export const APP_INFO_KEY = 'appInfo'
 
 export class App {
   private static instance: App

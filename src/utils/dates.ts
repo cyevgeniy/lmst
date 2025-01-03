@@ -1,3 +1,1 @@
-export function fmtDate(d: string) {
-  return d.substring(0, d.indexOf('T'))
-}
+export let fmtDate = (d: string) => d.substring(0, d.indexOf('T'))

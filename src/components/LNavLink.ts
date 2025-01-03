@@ -1,4 +1,5 @@
 import { h, HTMLEventHandler, useCommonEl } from '../utils/dom'
+import { lRouter } from '../router'
 
 export type NavLinkProps = {
   text: string
@@ -7,11 +8,15 @@ export type NavLinkProps = {
 } & HTMLEventHandler
 
 export function LNavLink(props: NavLinkProps) {
-  let { text, link, icon, ...handlers} = props
+  let { text, link, icon, onClick = (e) => {
+    e.preventDefault()
+    lRouter.navigateTo(link)
+  }, ...handlers} = props
   let el = h('a', {
     className: 'navBar-link',
     innerHTML: `${icon ?? ''}<span>${text}</span>`,
     attrs: { href: link},
+    onClick: onClick,
     ...handlers,
   })
 
@@ -21,7 +26,7 @@ export function LNavLink(props: NavLinkProps) {
     el,
     setText,
     set link(l: string) {
-      el.href = l
+      el.href = link = l
     },
     set visible(v: boolean) {
       if (v) show()

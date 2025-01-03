@@ -1,6 +1,6 @@
 import {h, div, show, hide, getIcon } from '../utils/dom'
 import {  user } from '../utils/user'
-import { lRouter } from '../router'
+//import { lRouter } from '../router'
 import type { Account, GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
@@ -9,11 +9,11 @@ export function LNav(gn: GlobalNavigation) {
   let profileLink = LNavLink({text: '', link: '/'}),
   authorize = h('div', {className: 'navBar-link', onClick: onAuthorizeClick } , 'Login'),
   logoutLink = LNavLink({text: 'Logout', link: '#', icon: getIcon('icon-logout'),  onClick: onLogoutClick}),
-  composeLink = LNavLink({text: 'Compose', link: '/compose', icon: getIcon('icon-pen'), onClick: onComposeClick}),
-  searchLink = LNavLink({text: 'Search', link: '/search', icon: getIcon('icon-search'), onClick: onSearchClick}),
-  notificationsLink = LNavLink({text: 'Notifications', link: '/notifications', icon: getIcon('icon-bell'), onClick: onBellClick}),
+  composeLink = LNavLink({text: 'Compose', link: '/compose', icon: getIcon('icon-pen')}),
+  searchLink = LNavLink({text: 'Search', link: '/search', icon: getIcon('icon-search')}),
+  notificationsLink = LNavLink({text: 'Notifications', link: '/notifications', icon: getIcon('icon-bell')}),
 
-  mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo'), onClick: onMainLinkClick}),
+  mainLink = LNavLink({text: 'Lmst', link: '/', icon: getIcon('icon-logo')}),
 
   signupContainer = div('navBar-rightItems', [
     profileLink.el,
@@ -30,20 +30,14 @@ export function LNav(gn: GlobalNavigation) {
   ])
 
   function setupForUser(u: Account) {
-    if (u.id) {
+    if (u.id)
       hide(authorize)
-      profileLink.setText(u.display_name || u.acct)
-      profileLink.link = `/profile/${u.acct}/`
-      profileLink.visible = true
-      notificationsLink.visible = true
-    }
-    else {
-      profileLink.link = '/'
-      profileLink.setText('')
+    else
       show(authorize)
-      profileLink.visible = false
-      notificationsLink.visible = false
-    }
+
+    profileLink.setText(u.id ? (u.display_name || u.acct) : '')
+    profileLink.link =  u.id ? `/profile/${u.acct}/` : '/'
+    profileLink.visible = notificationsLink.visible = !!u.id
 
     composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
 
@@ -55,12 +49,6 @@ export function LNav(gn: GlobalNavigation) {
 
   on(user.user, u => setupForUser(u))
 
-
-  function onMainLinkClick(e: MouseEvent) {
-    e.preventDefault()
-    gn.goHome()  
-  }
-
   function onAuthorizeClick() {
     gn.login()
   }
@@ -68,21 +56,6 @@ export function LNav(gn: GlobalNavigation) {
   function onLogoutClick(e: MouseEvent) {
     e.preventDefault()
     gn.logout()
-  }
-
-  function onComposeClick(e: MouseEvent) {
-    e.preventDefault()
-    lRouter.navigateTo('/compose')
-  }
-
-  function onSearchClick(e: MouseEvent) {
-    e.preventDefault()
-    lRouter.navigateTo('/search')
-  }
-
-  function onBellClick(e: MouseEvent) {
-    e.preventDefault()
-    lRouter.navigateTo('/notifications')
   }
 
   return {

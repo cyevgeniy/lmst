@@ -85,7 +85,8 @@ export function createProfilePage(
       }
       catch(e: unknown) {
         createNotFound(webfinger)
-        logErr(e)
+        if (import.meta.env.DEV)
+          logErr(e)
       }
   
       await loadStatuses()

@@ -16,7 +16,7 @@ export function LNavLink(props: NavLinkProps) {
     className: 'navBar-link',
     innerHTML: `${icon ?? ''}<span>${text}</span>`,
     attrs: { href: link},
-    onClick: onClick,
+    onClick,
     ...handlers,
   })
 

@@ -39,9 +39,8 @@ export function createNotificationsPage(root: HTMLElement) {
   }
 
   function renderNotifications() {
-      for (const n of ns.notifications()) {
+      for (const n of ns.notifications())
         nRoot.appendChild(getNotificationNode(n))
-      }
   }
 
   on(ns.notifications, () => {
@@ -60,7 +59,7 @@ export function createNotificationsPage(root: HTMLElement) {
   else
     renderNotifications()
 
-  root.appendChild(el)
+  childs(root, [el])
 
   return {
     el,

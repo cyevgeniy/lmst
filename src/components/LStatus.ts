@@ -5,7 +5,7 @@ import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
 import type { ActionPermissions } from './LStatusButtons'
-import { parseContent } from '../utils/shared'
+import { parseContent, noop } from '../utils/shared'
 import { LButton } from './LButton'
 
 type StatusProps = {
@@ -21,7 +21,7 @@ export function LStatus(opts: StatusProps) {
     permissions = { canDelete: false, canBoost: false },
     clickableContent = true,
     singleView = false,
-    onContentClick = () => {},
+    onContentClick = noop,
     ...statuButtonsHandlers
   } = opts
 

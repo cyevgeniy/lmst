@@ -5,9 +5,8 @@
  * the result is `{user: 'username', server: 'mstdn.social'
  */
 export function getWebfingerParts(l: string): { user: string, server: string} {
-    const reg = /https:\/\/(?<server>.*)\/\@(?<user>\w+)/g
-
-    const arr = Array.from(l.matchAll(reg))
+    let reg = /https:\/\/(?<server>.*)\/\@(?<user>\w+)/g,
+    arr = Array.from(l.matchAll(reg))
 
     const { user = '', server = '' } = arr[0].groups ?? {}
 
@@ -24,7 +23,7 @@ export function getWebfingerParts(l: string): { user: string, server: string} {
    */
 export function genWebFinger(l: string): string {
     try {
-        const {user, server } = getWebfingerParts(l)
+        let {user, server } = getWebfingerParts(l)
         return user && server ? `${user}@${server}` : ''
     }
     catch(e: any) {
@@ -44,11 +43,9 @@ export function genWebFinger(l: string): string {
    * the link to the main page is returned.
    */
 function genTagHref(tag: string) {
-    const _t = tag[0] === '#' ? tag.substring(1) : tag
+    let _t = tag[0] === '#' ? tag.substring(1) : tag
 
-    const href = _t ? `/tags/${_t}` : '/'
-
-    return href
+    return _t ? `/tags/${_t}` : '/'
 }
 
 /**
@@ -89,3 +86,5 @@ export function parseContent(s: string) {
 
     return d.body.innerHTML
 }
+
+export let noop = () => {}

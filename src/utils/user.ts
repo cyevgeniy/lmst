@@ -31,14 +31,14 @@ function createUserStore() {
     if (res.ok) {
       // TODO: verify credentials and handle errors?
       //await verifyCredentials()
-      const clientId = res.value.appInfo.client_id
-      const params = {
+      let clientId = res.value.appInfo.client_id,
+      params = {
         response_type: 'code',
         redirect_uri: `${config.baseUrl}/oauth`,
         client_id: clientId,
         scope: 'read write push'
-      }
-      const sp = searchParams(params)
+      },
+      sp = searchParams(params)
 
       window.location.replace(`${config.server()}/oauth/authorize?${sp}`)
     }
@@ -46,7 +46,7 @@ function createUserStore() {
 
   function loadTokenFromStore() {
     if (!token) {
-      const ut = store.getItem(TOKEN_KEY)
+      let ut = store.getItem(TOKEN_KEY)
       token = ut ? JSON.parse(ut) as Token : undefined
     }
   }
@@ -63,22 +63,22 @@ function createUserStore() {
     if (token)
       return success(token)
 
-    const appRes = await app.registerApp()
+    let appRes = await app.registerApp()
 
     if (!appRes.ok) {
       return appRes
     }
 
-    const params = {
+    let params = {
       grant_type: 'authorization_code',
       code,
       client_id: appRes.value.appInfo.client_id,
       client_secret: appRes.value.appInfo.client_secret,
       redirect_uri: `${config.baseUrl}/oauth`,
       scope: 'read write follow push',
-    }
+    },
 
-    const sp = searchParams(params)
+    sp = searchParams(params)
 
     try {
       const r = await fetch(`${config.server()}/oauth/token?${sp}`, {
@@ -107,14 +107,14 @@ function createUserStore() {
   }
 
   function loadCachedUser() {
-    const tmp = store.getItem(USER_KEY)
+    let tmp = store.getItem(USER_KEY)
 
     if (tmp)
       user(JSON.parse(tmp) as Account)
   }
 
   function isLoaded() {
-    return Boolean(user().id)
+    return !!user().id
   }
 
   async function verifyCredentials() {
@@ -176,7 +176,7 @@ function createUserStore() {
   }
 }
 
-const TOKEN_KEY = 'token'
-const USER_KEY = 'user'
+let TOKEN_KEY = 'token',
+USER_KEY = 'user'
 
-export const user = createUserStore()
+export let user = createUserStore()

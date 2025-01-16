@@ -292,7 +292,8 @@ export class StatusManager implements IStatusManager {
       })
     }
     catch(e: unknown) {
-      logErr(e)
+      if (import.meta.env.DEV)
+        logErr(e)
     }
   }
 
@@ -307,7 +308,8 @@ export class StatusManager implements IStatusManager {
       })
     }
     catch(e: unknown) {
-      logErr(e)
+      if (import.meta.env.DEV)
+        logErr(e)
     }
   }
 
@@ -321,7 +323,8 @@ export class StatusManager implements IStatusManager {
        })
     }
     catch (e: unknown) {
-      logErr(e)
+      if (import.meta.env.DEV)
+        logErr(e)
     }
   }
 

@@ -19,7 +19,7 @@ export function createProfilePage(
     root.innerHTML = ''
     let profileId = '',
 
-    noMoreDataText = LNoMoreRows('No more records'),
+    noMoreDataText = LNoMoreRows(),
 
     loadMoreBtn = LLoadMoreBtn({text: 'Load more', onClick: () => loadStatuses() }),
     loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
@@ -85,7 +85,8 @@ export function createProfilePage(
       }
       catch(e: unknown) {
         createNotFound(webfinger)
-        logErr(e)
+        if (import.meta.env.DEV)
+          logErr(e)
       }
   
       await loadStatuses()

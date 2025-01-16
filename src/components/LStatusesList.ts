@@ -16,25 +16,20 @@ export function LStatusesList(props: StatusesListProps) {
 
   props.root.appendChild(el)
 
-  function onDelete(statusComponent: ElLike, s: Status) {
+  let onDelete = (statusComponent: ElLike, s: Status) => {
     statusComponent.el.remove()
     props.sm.deleteStatus(s.id)
   }
 
-  function onBoost(s: Status, boosted: boolean) {
+  let onBoost=(s: Status, boosted: boolean) => {
     if (boosted)
       props.sm.boostStatus(s.id)
     else
       props.sm.unboostStatus(s.id)  
   }
 
-  function onContentClick(s: Status) {
-    props.sm.navigateToStatus(s)  
-  }
-
-  function clearStatuses() {
-    el.innerHTML = ''
-  }
+  let onContentClick = (s: Status) => props.sm.navigateToStatus(s),
+  clearStatuses = () => el.innerHTML = ''
 
   function addStatuses(statuses: Status[]) {
     for (const status of statuses) {

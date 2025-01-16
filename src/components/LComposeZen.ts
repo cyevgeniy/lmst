@@ -1,4 +1,5 @@
 import { childs, div, getIcon, h } from '../utils/dom'
+import { noop } from '../utils/shared'
 
 export interface ComposeZenProps {
   text?: string
@@ -6,7 +7,7 @@ export interface ComposeZenProps {
 }
 
 export function LComposeZen(props: ComposeZenProps) {
-  let { onClose = () => {}} = props
+  let { onClose = noop} = props
   let btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: getIcon('icon-exitFullScreen'), onClick: onClose}),
   el = div('compose-zen'),
   wrapper = div('compose-zen-wrapper'),

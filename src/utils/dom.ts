@@ -76,25 +76,15 @@ export function h<T extends TagName>(
   return el
 }
 
-export function div(className: string | string[], childs: Array<HTMLElement | undefined> = []) {
-  return h('div', {className }, childs)
-}
+export let div = (className: string | string[], childs: Array<HTMLElement | undefined> = []) => h('div', {className }, childs)
 
-export function span(className: string | string[], text: string): HTMLElement {
-  return h('span', {className }, text)
-}
+export let span = (className: string | string[], text: string): HTMLElement => h('span', {className }, text)
 
-export function a(className: string | string[], href: string, text: string) {
-  return h('a', { className, attrs: { href, target: '_blank'}}, text)
-}
+export let a = (className: string | string[], href: string, text: string) => h('a', { className, attrs: { href, target: '_blank'}}, text)
 
-export function hide(el: HTMLElement) {
-  el.style.display = 'none'
-}
+export let hide = (el: HTMLElement) => el.style.display = 'none'
 
-export function show(el: HTMLElement) {
-  el.style.display = ''
-}
+export let show =(el: HTMLElement) => el.style.display = ''
 
 export function useCommonEl<T extends HTMLElement>(el: T) {
   function _show() {
@@ -136,7 +126,7 @@ export function childs<T extends HTMLElement, K extends HTMLElement>(
   el: T | ElLike<T>,
   childs: (K | ElLike<K>)[]
 ): void {
-  const _el = isElLike(el) ? el.el : el
+  let _el = isElLike(el) ? el.el : el
   childs.forEach(c => {
     if (isElLike(c))
       _el.appendChild(c.el)

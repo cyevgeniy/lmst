@@ -1,4 +1,5 @@
 import { sanitizePath, getPathParameters } from './router-utils'
+import { noop } from '../utils/shared'
 
 export interface RouteParams {
   _path: string
@@ -25,9 +26,8 @@ function createRouter(): Router {
   const callbacks: Map<string, RouteCallback> = new Map()
 
   function findCallback(path: string): () => void {
-    const entries = callbacks.entries()
-
-    let _callback = () => {}
+    let entries = callbacks.entries(),
+    _callback = noop
 
     for (const [routePath, cb] of entries) {
       const matched = getPathParameters(routePath, path)
@@ -68,4 +68,4 @@ function createRouter(): Router {
 }
 
 // We need only one router in our app
-export const lRouter = createRouter()
+export let lRouter = createRouter()

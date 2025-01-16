@@ -13,6 +13,7 @@ import type { ElLike } from './utils/dom'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
 import { user } from './utils/user'
+import { noop } from './utils/shared'
 
 const appManager = new AppManager()
 
@@ -23,8 +24,6 @@ function cacheAndNavigate(path: string, mountpoint: HTMLElement, cb: () => Page)
   mountpoint.innerHTML = ''
   mountpoint.appendChild(page.el)
 }
-
-const noop = () => {}
 
 function createPageProxy(pageConstructor: () => any) {
   let toCleanup: () => void = noop

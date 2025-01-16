@@ -20,9 +20,8 @@ const hist = new Map<string, Page>()
 export function getCached(path: string, cb: () => Page): Page {
   let page = hist.get(path)
 
-  if (!page) {
+  if (!page)
     hist.set(path, page = cb())
-  }
 
   return page
 }

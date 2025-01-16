@@ -9,7 +9,7 @@ export interface Page extends ElLike {
 }
 
 export function createMainPage(gn: GlobalNavigation) {
-  const root = document.getElementById('app')
+  let root = document.getElementById('app')
 
   if (!root)
     throw new Error('Unable to locate application root element')

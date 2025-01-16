@@ -10,7 +10,7 @@ export function createTimelinePage(
 ) {
   root.innerHTML = ''
 
-  let noMoreDataText = LNoMoreRows('No more records'),
+  let noMoreDataText = LNoMoreRows(),
   loadMoreBtn = LLoadMoreBtn({ text: 'Load more', onClick: () => loadMore() }),
   loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
 

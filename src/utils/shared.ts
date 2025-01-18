@@ -1,39 +1,4 @@
-/**
- * Returns the username and a server from a link to an account
- *
- * For example, if a link to the account is 'https://mstdn.social/@username',
- * the result is `{user: 'username', server: 'mstdn.social'
- */
-export function getWebfingerParts(l: string): { user: string, server: string} {
-    let reg = /https:\/\/(?<server>.*)\/\@(?<user>\w+)/g,
-    arr = Array.from(l.matchAll(reg))
-
-    const { user = '', server = '' } = arr[0].groups ?? {}
-
-    return {
-        user,
-        server,
-    }
-}
-/**
-   * Generates a webfinger from a link to an account
-   *
-   * For example, if a link to the account is 'https://mstdn.social/@username',
-   * the webfinger is a string 'username@mstdn.social
-   */
-export function genWebFinger(l: string): string {
-    try {
-        let {user, server } = getWebfingerParts(l)
-        return user && server ? `${user}@${server}` : ''
-    }
-    catch(e: any) {
-        // xxx: need to research further, probably it's not the best
-        // solution, because we use this function to generate a new url for
-        // the status, but at least it saves us from unhandled errors and
-        // broken interface
-        return l
-    }
-}
+import type { Status } from '../types/shared'
 
 /**
    * Generates the path for a hashtag
@@ -53,27 +18,25 @@ function genTagHref(tag: string) {
  * replaces all links to profiles with links to our own
  * url which performs accout lookup
  */
-export function parseContent(s: string) {
+export function parseContent(s: Status) {
 
     // First thing to do is to check for usernames
     // in a string.
     // If we didn't found any, return original string
     // without wasting time on parsing
-    if (s.search(/u-url|hashtag/g) === -1)
-        return s
+    if (s.content.search(/u-url|hashtag/g) === -1)
+        return s.content
 
     let parser = new DOMParser(),
 
-    d = parser.parseFromString(s, 'text/html'),
+    d = parser.parseFromString(s.content, 'text/html'),
 
     links = d.querySelectorAll('a.u-url') as NodeListOf<HTMLAnchorElement>
 
     for (const l of links) {
-        let wf = genWebFinger(l.href),
-        profileLink = !wf ? '' : `/profile/${wf}/`,
-        href = profileLink ?? l.href
+        let acct = s.mentions.find(m => m.url === l.href)?.acct
 
-        l.href = href
+        acct && (l.href = `/profile/${acct}/`)
         l.target = '_self'
     }
 

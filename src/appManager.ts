@@ -9,7 +9,6 @@ import { useAppConfig } from './appConfig'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
-import { genWebFinger } from './utils/shared.ts'
 import { fetchJson } from './utils/fetch.ts'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
 import { searchParams } from './utils/url.ts'
@@ -219,9 +218,8 @@ export class StatusManager implements IStatusManager {
   }
 
   public getLinkToStatus(status: Status): string {
-    let webfinger = genWebFinger(status.account.url),
-    server = this.server().slice(8)
-    return `/status/${server}/${webfinger}/${status.id}`
+    let server = this.server().slice(8)
+    return `/status/${server}/${status.account.acct}/${status.id}`
   }
 
   public navigateToStatus(status: Status): void {

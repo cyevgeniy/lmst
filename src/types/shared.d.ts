@@ -46,6 +46,13 @@ export interface MediaAttachment {
   blurhash: string | null
 }
 
+export interface StatusMention {
+  id: string
+  username: string
+  url: string
+  acct: string
+}
+
 
 export interface Status {
   /**
@@ -98,6 +105,8 @@ export interface Status {
    * ID of the status being replied to
    */
   in_reply_to_id: string | null
+
+  mentions: StatusMention[]
 }
 
 export interface Context {

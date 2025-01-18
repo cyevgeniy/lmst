@@ -1,7 +1,6 @@
 import { div, useCommonEl } from '../utils/dom'
 import type { Account } from '../types/shared'
 import { LAvatar } from './Avatar'
-import { parseContent } from '../utils/shared'
 import { LButton } from './LButton'
 import { on } from '../utils/signal'
 import { useProfileRelation } from '../utils/useProfileRelation'
@@ -62,7 +61,7 @@ export function LProfileHeader(account?: Account) {
    */
   async function update(account?: Account) {
     displayNameEl.innerText = account?.display_name ?? ''
-    const parsedContent = parseContent(account?.note ?? '')
+    const parsedContent = account?.note ?? ''
     noteEl.innerHTML = parsedContent
     avatar.img = account?.avatar ?? ''
 

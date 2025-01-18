@@ -60,7 +60,7 @@ export function LStatus(opts: StatusProps) {
     ? undefined
     : h('div', {
       className: ['status-content', clickableContent ? 'status-content--clickable': ''],
-      innerHTML: parseContent(_status.content),
+      innerHTML: parseContent(_status),
       onClick: (e) => {
         if (e.target instanceof HTMLParagraphElement) {
           // Don't redirect to the single status view if some text is selected -

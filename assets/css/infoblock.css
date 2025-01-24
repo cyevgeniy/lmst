@@ -3,6 +3,7 @@
   border: 1px solid rgb(235, 238, 240);
   padding: 8px;
   font-size: 14px;
+  opacity: 0.6;
 }
 
 .infoblock > h2 {
@@ -12,4 +13,8 @@
 }
 .infoblock   a {
   color: gray;
+}
+
+.infoblock:hover {
+  opacity: 1;
 }

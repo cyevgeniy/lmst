@@ -17,13 +17,8 @@ export function createMainPage(gn: GlobalNavigation) {
   let layout= createLayout(root, gn)
   childs(layout.right, [LInfo()])
 
-  function clearPage() {
-    root && (root.innerHTML = '')
-  }
-
   return {
     root,
     ...layout,
-    clearPage,
   }
 }

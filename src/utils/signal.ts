@@ -43,12 +43,12 @@ export function on<T=any>(signal: Signal<T>, cb: (p: T) => any) {
   if (signalEffects) {
     signalEffects.push(cb)
   } else {
-    effects.set(signal, [cb])
+    effects.set(signal, signalEffects = [cb])
   }
 
-  let idx = signalEffects?.findIndex(e => e === cb) ?? -1
+  return () => {
+    let idx = signalEffects?.findIndex(e => e === cb) ?? -1
 
-
-  // We don't remove listeners anywhere yet, just for the future
-  return () => idx !== -1 && signalEffects?.splice(idx, 1)
+    idx !== -1 && signalEffects?.splice(idx, 1)
+  }
 }

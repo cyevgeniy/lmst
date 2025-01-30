@@ -25,26 +25,6 @@ function cacheAndNavigate(path: string, mountpoint: HTMLElement, cb: () => Page)
   mountpoint.appendChild(page.el)
 }
 
-function createPageProxy(pageConstructor: () => any) {
-  let toCleanup: () => void = noop
-
-  function createPage() {
-    toCleanup?.()
-
-    // Kind of tricky thing - we call onUnmount not when the page is
-    // unloaded, but before loading it for the next time
-    let page = pageConstructor()
-    toCleanup = page?.onUnmount ?? noop
-
-    return { el: page.el } as ElLike
-  }
-
-  return {
-    createPage,
-  }
-}
-
-
 user.verifyCredentials().then(() => {
   function _createProfilePage(params: RouteParams) {
     let cb = () => createProfilePage(mainPage.middle, {
@@ -55,8 +35,7 @@ user.verifyCredentials().then(() => {
     cacheAndNavigate(params._path, mainPage.middle, cb)
   }
 
-  let mainPage = createMainPage(appManager.globalMediator),
-  composePageProxy = createPageProxy(() => createComposePage(mainPage.middle, appManager))
+  let mainPage = createMainPage(appManager.globalMediator)
 
   lRouter.on('/', (params) =>{
     cacheAndNavigate(params._path, mainPage.middle, () => createTimelinePage(mainPage.middle, appManager))
@@ -64,7 +43,7 @@ user.verifyCredentials().then(() => {
   lRouter.on('/profile/:webfinger', (params) => (_createProfilePage(params)))
   lRouter.on('/notifications', () => createNotificationsPage(mainPage.middle))
   lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
-  lRouter.on('/compose', composePageProxy.createPage)
+  lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
   lRouter.on('/search', (params) => {
     cacheAndNavigate(params._path, mainPage.middle, () => createSearchPage(mainPage.middle, appManager))
   })

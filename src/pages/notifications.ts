@@ -43,7 +43,7 @@ export function createNotificationsPage(root: HTMLElement) {
         nRoot.appendChild(getNotificationNode(n))
   }
 
-  on(ns.notifications, () => {
+  let onUnmount = on(ns.notifications, () => {
     nRoot.innerHTML = ''
     renderNotifications()
     if (!ns.notifications().length) {
@@ -54,14 +54,12 @@ export function createNotificationsPage(root: HTMLElement) {
       show(actions)
   })
 
-  if (ns.notifications().length === 0)
-    ns.getNotifications()
-  else
-    renderNotifications()
+  ns.getNotifications()
 
   childs(root, [el])
 
   return {
     el,
+    onUnmount,
   }
 }

@@ -1,5 +1,6 @@
 import { sanitizePath, getPathParameters } from './router-utils'
 import { noop } from '../utils/shared'
+import { Page } from '../utils/page'
 
 export interface RouteParams {
   _path: string
@@ -44,12 +45,15 @@ function createRouter(): Router {
     return _callback
   }
 
+  // TODO: Of course, we expect Page or undefined maybe
+  let currPage: Page | void = undefined
+
   window.addEventListener('load', () => {
-    findCallback(window.location.pathname)()
+    currPage = findCallback(window.location.pathname)()
   })
 
   window.addEventListener('popstate', () => {
-    findCallback(window.location.pathname)()
+    currPage = findCallback(window.location.pathname)()
   })
 
   function on(path: string, cb: (params: RouteParams) => void) {
@@ -58,7 +62,12 @@ function createRouter(): Router {
 
   function navigateTo(path: string) {
     history.pushState({}, '', path)
-    findCallback(path)()
+
+    // Perform cleanup before navigating to the next page
+    if (typeof currPage?.onUnmount === 'function')
+      currPage.onUnmount()
+
+    currPage = findCallback(path)()
   }
 
   return {

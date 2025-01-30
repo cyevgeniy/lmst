@@ -9,11 +9,9 @@ import { createComposePage } from './pages/compose'
 import { ProfileTimelineManager, AppManager } from './appManager'
 import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
-import type { ElLike } from './utils/dom'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
 import { user } from './utils/user'
-import { noop } from './utils/shared'
 
 const appManager = new AppManager()
 

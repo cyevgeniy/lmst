@@ -77,12 +77,13 @@ export function createStatusPage(
       onInput,
     })
 
+
     postReply = LButton({
       text: 'Post', onClick: async () => {
-        if (!text()) return
+        if (!text() || !status) return
 
         const res = await appManager.statusManager.postStatus({
-          statusText: replyTextArea.value,
+          statusText: `@${status.account.acct} ${replyTextArea.value}`,
           files: files(),
           in_reply_to_id: statusId
         })

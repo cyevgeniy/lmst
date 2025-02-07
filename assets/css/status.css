@@ -130,6 +130,9 @@
 /* .status-linkAttachment is used to wrap image in a link */
 .status-imageAttachment, .status-videoAttachment, .status-linkAttachment {
 	width: 100%;
+	object-position: 50% 50%;
+	object-fit: cover;
+	max-height: 400px;
 }
 
 /* Container for sensitive content */

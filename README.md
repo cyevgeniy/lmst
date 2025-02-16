@@ -7,8 +7,8 @@ and simple interface.
 
 ## How it's different
 
-- Small JS bundle size - **up to 10 kB**, and this limit won't be increased in the future.
-  This is the mandatory requirement
+- Small JS bundle size - **up to 10 kB** brotlied, and this limit won't be increased in the future.
+  This is the mandatory requirement.
 - Classic, familiar ui layout. Lmst has simple ui, which reduces visual load on a user.
   It looks more like a website than a "web app".
 
@@ -17,37 +17,11 @@ became deprecated. As a consequence, lmst offers a very small subset
 of features: 
 
 - Follow/unfollow profile
-- Write statuses/replies with image attachments
+- Compose statuses/replies with image attachments
+- Distraction-free compose mode (zen)
 - Boost/unboost statuses
 - Search (profiles, statuses, hashtags)
 - Delete own statuses
 
-## Screenshots
 
-### Compose page
-<table>
-  <tr>
-    <th><img src="screenshots/compose.png" width="500"></th>
-  </tr>
-</table>
 
-### Zen mode
-<table>
-  <tr>
-    <th><img src="screenshots/zen.png" width="500"></th>
-  </tr>
-</table>
-
-### Search page
-<table>
-  <tr>
-    <th><img src="screenshots/search.png" width="500"></th>
-  </tr>
-</table>
-
-### Home page
-<table>
-  <tr>
-    <th><img src="screenshots/home.png" width="500"></th>
-  </tr>
-</table>

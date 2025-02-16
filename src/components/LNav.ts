@@ -39,6 +39,8 @@ export function LNav(gn: GlobalNavigation) {
     profileLink.link =  u.id ? `/profile/${u.acct}/` : '/'
     profileLink.visible = notificationsLink.visible = !!u.id
 
+    searchLink.visible = user.isLoaded()
+
     composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
 
     logoutLink.visible = user.isLoaded()

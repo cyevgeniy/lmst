@@ -1,4 +1,4 @@
-import { childs, getIcon, h, span } from '../utils/dom'
+import { childs, getIcon, h } from '../utils/dom'
 import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'

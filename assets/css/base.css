@@ -17,7 +17,7 @@ textarea {
   outline: none !important;
 }
 
-input {
+input[type="search"] {
   width: 100%;
   box-sizing: border-box;
   display: block;
@@ -29,4 +29,10 @@ input {
 
 textarea:focus, input:focus {
   border-color: darkgray;
+}
+
+div:has(>input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

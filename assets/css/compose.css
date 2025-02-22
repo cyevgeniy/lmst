@@ -3,6 +3,10 @@
   padding-right: 1rem;
 }
 
+.compose__wrapper textarea {
+  margin-top: 8px;
+}
+
 .compose-toolbar {
   display: flex;
   gap: 8px;

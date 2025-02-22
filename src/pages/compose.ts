@@ -1,4 +1,4 @@
-import { childs, getIcon, h } from '../utils/dom'
+import { childs, getIcon, h, span } from '../utils/dom'
 import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
@@ -26,6 +26,11 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   let cleanText = on(text, newValue => textArea.value = newValue),
   cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue),
   btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick}),
+  sensitiveCheckbox =  h('input', { attrs: {type: 'checkbox', id: 'sensitive'}}),
+  sensitive = h('div', null, [
+    sensitiveCheckbox,
+    h('label', {attrs: {for: 'sensitive'}}, 'sensitive content')
+  ]),
   filePicker = LFilePicker(files),
   zenModeBtn = h(
     'button',
@@ -62,12 +67,17 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   async function onPostClick() {
-    let res = await appManager.statusManager.postStatus({statusText: text(), files: files()})
+    let res = await appManager.statusManager.postStatus({
+      statusText: text(),
+      files: files(),
+      sensitive:sensitiveCheckbox.checked,
+    })
 
     if (res.ok) {
       text('')
       // It will also sync empty array with `files` signal
       filePicker.clear()
+      sensitiveCheckbox.checked = false
     }
     else {
       alert(res.error)
@@ -84,6 +94,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
      { className: 'compose__wrapper' },
      [
         textToolbar,
+        sensitive,
         textArea,
         h('div', { className: 'compose__post'}, [filePicker.el, btn.el]),
         preview.el,

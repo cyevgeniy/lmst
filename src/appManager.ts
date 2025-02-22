@@ -253,7 +253,12 @@ export class StatusManager implements IStatusManager {
     return (await Promise.allSettled(proms)).map(r =>  r.status === 'fulfilled' ? r.value?.id : undefined).filter(Boolean)
   }
 
-  public async postStatus(params: {statusText: string, in_reply_to_id?: string, files?: File[]}): Promise<ApiResult<Status>> {
+  public async postStatus(params: {
+    statusText: string,
+    in_reply_to_id?: string, 
+    files?: File[],
+    sensitive?: boolean
+  }): Promise<ApiResult<Status>> {
     user.loadTokenFromStore()
 
     let mediaIds = params.files ? await this.uploadFiles(params.files) : []
@@ -264,6 +269,8 @@ export class StatusManager implements IStatusManager {
       payload.append('media_ids[]', id)
 
     params.in_reply_to_id && payload.append('in_reply_to_id', params.in_reply_to_id)
+    // TODO: need to create a function that generates FormData for specified payload
+    params.sensitive && payload.append('sensitive', params.sensitive.toString())
 
     try {
       let resp = await fetchJson<Status>(`${this.server()}/api/v1/statuses`, {

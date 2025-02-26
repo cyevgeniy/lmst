@@ -8,13 +8,12 @@ export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
   const { text, onClick, ...handlers } = props
 
   let loading = false,
-
-  btn = LButton({
-    text: 'Load more',
-    className: ['timeline__load-more'],
-    ...handlers,
-    onClick: _onClick,
-  })
+    btn = LButton({
+      text: 'Load more',
+      className: ['timeline__load-more'],
+      ...handlers,
+      onClick: _onClick,
+    })
 
   function _onClick(e: MouseEvent) {
     !loading && onClick?.(e)
@@ -27,8 +26,7 @@ export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
       btn.el.style.display = v ? 'block' : 'none'
     },
     set loading(v: boolean) {
-      if (loading === v)
-        return
+      if (loading === v) return
 
       loading = v
       btn.disabled = v
@@ -38,6 +36,6 @@ export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
       } else {
         btn.text = text
       }
-    }
+    },
   }
 }

@@ -4,7 +4,7 @@
   padding: 8px;
   font-size: 14px;
   opacity: 0.6;
-  transition: opacity .25s;
+  transition: opacity 0.25s;
 }
 
 .infoblock > h2 {
@@ -12,7 +12,7 @@
   font-size: 16px;
   font-weight: 600;
 }
-.infoblock   a {
+.infoblock a {
   color: gray;
 }
 

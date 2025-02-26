@@ -1,39 +1,38 @@
 .filepicker {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .filepicker > button {
-	display: inline-flex;
-	align-items: center;
-	background: transparent;
-	border: none;
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: none;
 }
 
 .filepicker > button > svg {
-	width: 24px;
-	height: 24px;
-	cursor: pointer;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
 @media screen and (min-width: 1240px) {
-	.filepicker > button > svg {
-		width: 20px;
-		height: 20px;
-		cursor: pointer;
-	}
+  .filepicker > button > svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 }
 
-
 .filepicker > input {
-	display: none;
+  display: none;
 }
 
 .filepicker > span {
-	color: gray;
-	cursor: pointer;
+  color: gray;
+  cursor: pointer;
 }
 
 .filepicker > span:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }

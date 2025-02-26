@@ -1,23 +1,20 @@
 export function toError(e: unknown): Error {
-    if (e instanceof Error)
-        return e
+  if (e instanceof Error) return e
 
-    let msg = ''
+  let msg = ''
 
-    try {
-        msg = JSON.stringify(e)
-    }
-    catch{
-        msg = 'Unknown error'
-    }
+  try {
+    msg = JSON.stringify(e)
+  } catch {
+    msg = 'Unknown error'
+  }
 
-
-    return new Error(msg)
+  return new Error(msg)
 }
 
 export function logErr(e: unknown) {
-    let m = toError(e).message
-    console.error(m)
+  let m = toError(e).message
+  console.error(m)
 
-    return m
+  return m
 }

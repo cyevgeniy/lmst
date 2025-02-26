@@ -1,35 +1,36 @@
 .search-input {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
-.search-form, .search-profileDetails {
-    padding: 0 4px 0 4px;
+.search-form,
+.search-profileDetails {
+  padding: 0 4px 0 4px;
 }
 
 .search-profileDetails {
-    cursor: pointer;
-    border: 1px solid rgb(235, 238, 240);
-    padding: 4px;
-    border-radius: 4px;
-    margin: 0 4px 16px;
+  cursor: pointer;
+  border: 1px solid rgb(235, 238, 240);
+  padding: 4px;
+  border-radius: 4px;
+  margin: 0 4px 16px;
 }
 
 .search-profileDetails > summary {
-    padding: 4px;
+  padding: 4px;
 }
 
 .search-accountsList {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-height: 200px;
-    overflow-y: auto;
-    margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 8px;
 }
 
 .search-accountItem {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
 }

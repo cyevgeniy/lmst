@@ -4,22 +4,24 @@ import { LNoMoreRows } from '../components/LNoMoreRows'
 import { div, h, hide } from '../utils/dom'
 import type { AppManager } from '../appManager.ts'
 
-export function createTimelinePage(
-  root: HTMLElement,
-  appManager: AppManager,
-) {
+export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
   root.innerHTML = ''
 
   let noMoreDataText = LNoMoreRows(),
-  loadMoreBtn = LLoadMoreBtn({ text: 'Load more', onClick: () => loadMore() }),
-  loadMoreBtnContainer = div('timeline__load-more-container', [loadMoreBtn.el, noMoreDataText]),
-
-  statusesListEl = h('div'),
-  statusesList = LStatusesList({
-    root: statusesListEl,
-    statuses: [],
-    sm: appManager.statusManager
-  })
+    loadMoreBtn = LLoadMoreBtn({
+      text: 'Load more',
+      onClick: () => loadMore(),
+    }),
+    loadMoreBtnContainer = div('timeline__load-more-container', [
+      loadMoreBtn.el,
+      noMoreDataText,
+    ]),
+    statusesListEl = h('div'),
+    statusesList = LStatusesList({
+      root: statusesListEl,
+      statuses: [],
+      sm: appManager.statusManager,
+    })
 
   hide(noMoreDataText)
 
@@ -27,8 +29,11 @@ export function createTimelinePage(
     statusesList.clearStatuses()
   })
 
-  let timelineContainer = h('div', { className: 'timeline-container' }, [statusesListEl, loadMoreBtnContainer]),
-  el = h('div', { attrs: { id: 'timeline-root' } }, [timelineContainer])
+  let timelineContainer = h('div', { className: 'timeline-container' }, [
+      statusesListEl,
+      loadMoreBtnContainer,
+    ]),
+    el = h('div', { attrs: { id: 'timeline-root' } }, [timelineContainer])
 
   async function loadMore() {
     loadMoreBtn.loading = true

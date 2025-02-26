@@ -8,14 +8,20 @@ export type NavLinkProps = {
 } & HTMLEventHandler
 
 export function LNavLink(props: NavLinkProps) {
-  let { text, link, icon, onClick = (e) => {
-    e.preventDefault()
-    lRouter.navigateTo(link)
-  }, ...handlers} = props
+  let {
+    text,
+    link,
+    icon,
+    onClick = (e) => {
+      e.preventDefault()
+      lRouter.navigateTo(link)
+    },
+    ...handlers
+  } = props
   let el = h('a', {
     className: 'navBar-link',
     innerHTML: `${icon ?? ''}<span>${text}</span>`,
-    attrs: { href: link},
+    attrs: { href: link },
     onClick,
     ...handlers,
   })
@@ -31,6 +37,6 @@ export function LNavLink(props: NavLinkProps) {
     set visible(v: boolean) {
       if (v) show()
       else hide()
-    }
+    },
   }
 }

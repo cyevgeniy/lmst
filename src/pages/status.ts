@@ -13,59 +13,51 @@ import { useCompose } from '../store/composeStore'
 export function createStatusPage(
   root: HTMLElement,
   appManager: AppManager,
-  params?: Record<string, string>
+  params?: Record<string, string>,
 ) {
   let statusId = params?.id ?? '',
-  server = `https://${params?.server ?? ''}`
+    server = `https://${params?.server ?? ''}`
 
   root.innerHTML = ''
 
   let status: Status | undefined = undefined,
-
-  descendantsRoot = div('status-descendants'),
-  statusesList = LStatusesList({
-    sm: appManager.statusManager,
-    root: descendantsRoot,
-    statuses: [],
-  }),
-
-  statusRoot = div(''),
-
-  replyToStatus = h(
-    'div',
-    {
-      className: 'compose-wrapper'
-    }
-  ),
-
-  el = div('', [statusRoot, replyToStatus, descendantsRoot])
+    descendantsRoot = div('status-descendants'),
+    statusesList = LStatusesList({
+      sm: appManager.statusManager,
+      root: descendantsRoot,
+      statuses: [],
+    }),
+    statusRoot = div(''),
+    replyToStatus = h('div', {
+      className: 'compose-wrapper',
+    }),
+    el = div('', [statusRoot, replyToStatus, descendantsRoot])
 
   root.appendChild(el)
 
   let { text, postAvailable, cleanup, files } = useCompose()
 
   let postReply: ReturnType<typeof LButton>,
-  filePicker: ReturnType<typeof LFilePicker>,
-  replyTextArea: HTMLTextAreaElement,
-  preview: ReturnType<typeof LPreview>,
-
-  cleanText = on(text, newValue => replyTextArea.value = newValue),
-  cleanDisabled = on(postAvailable, newValue => postReply.disabled = !newValue),
-
-  onUnmount = () => {
-    cleanup()
-    cleanDisabled()
-    cleanText()
-  },
-
-  onInput = (e: Event) => {
-    const area = e.target as HTMLTextAreaElement
-    text(area.value)
-  }
+    filePicker: ReturnType<typeof LFilePicker>,
+    replyTextArea: HTMLTextAreaElement,
+    preview: ReturnType<typeof LPreview>,
+    cleanText = on(text, (newValue) => (replyTextArea.value = newValue)),
+    cleanDisabled = on(
+      postAvailable,
+      (newValue) => (postReply.disabled = !newValue),
+    ),
+    onUnmount = () => {
+      cleanup()
+      cleanDisabled()
+      cleanText()
+    },
+    onInput = (e: Event) => {
+      const area = e.target as HTMLTextAreaElement
+      text(area.value)
+    }
 
   async function addReplyBlock() {
-    if (!user.isLoaded())
-      return
+    if (!user.isLoaded()) return
 
     replyTextArea = h('textarea', {
       attrs: {
@@ -77,27 +69,26 @@ export function createStatusPage(
       onInput,
     })
 
-
     postReply = LButton({
-      text: 'Post', onClick: async () => {
+      text: 'Post',
+      onClick: async () => {
         if (!text() || !status) return
 
         const res = await appManager.statusManager.postStatus({
           statusText: `@${status.account.acct} ${replyTextArea.value}`,
           files: files(),
-          in_reply_to_id: statusId
+          in_reply_to_id: statusId,
         })
 
         if (res.ok) {
           statusesList.addStatuses([res.value])
           text('')
           filePicker.clear()
-        }
-        else {
+        } else {
           alert(res.error)
         }
       },
-      className: 'compose__button'
+      className: 'compose__button',
     })
 
     postReply.disabled = !postAvailable()
@@ -106,20 +97,22 @@ export function createStatusPage(
 
     preview = LPreview(files)
 
-    childs(replyToStatus, [replyTextArea, div('compose__post', [filePicker.el, postReply.el]), preview.el])
+    childs(replyToStatus, [
+      replyTextArea,
+      div('compose__post', [filePicker.el, postReply.el]),
+      preview.el,
+    ])
   }
 
-
-
-  on(user.user, _ => {
-    if (!user.isLoaded())
-      hide(replyToStatus)
-    else
-      show(replyToStatus)
+  on(user.user, (_) => {
+    if (!user.isLoaded()) hide(replyToStatus)
+    else show(replyToStatus)
   })
 
   async function loadStatus() {
-    const resp = await appManager.statusManager.getStatus(statusId, { server: server })
+    const resp = await appManager.statusManager.getStatus(statusId, {
+      server: server,
+    })
     status = resp.ok ? resp.value : undefined
 
     renderStatus()
@@ -128,14 +121,19 @@ export function createStatusPage(
   async function loadDescendants() {
     statusesList.clearStatuses()
 
-    const res = await appManager.statusManager.getStatusContext(statusId, { server: server })
-    if (res.ok)
-      statusesList.addStatuses(res.value.descendants)
+    const res = await appManager.statusManager.getStatusContext(statusId, {
+      server: server,
+    })
+    if (res.ok) statusesList.addStatuses(res.value.descendants)
   }
 
   function renderStatus() {
     if (status) {
-      const st = LStatus({ status: status, clickableContent: false, singleView: true })
+      const st = LStatus({
+        status: status,
+        clickableContent: false,
+        singleView: true,
+      })
       statusRoot.appendChild(st.el)
     } else {
       statusRoot.innerText = 'No status'

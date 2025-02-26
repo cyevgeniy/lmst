@@ -1,7 +1,7 @@
 import { useAppConfig } from '../appConfig'
 import { getRelation } from '../api/account'
 import { fetchJson } from './fetch'
-import {Relationship, type Account} from '../types/shared'
+import { Relationship, type Account } from '../types/shared'
 import { createSignal } from '../utils/signal'
 
 export function useProfileRelation() {
@@ -12,22 +12,23 @@ export function useProfileRelation() {
   /**
    * Depending on current relationship, this function
    * follows or unfollows the profile with specified id
-  */
+   */
   async function followunfollow(id: Account['id']) {
     let endpoint = relation()?.following ? 'unfollow' : 'follow'
     try {
       loading(true)
-      let res = await fetchJson<Relationship>(`${server()}/api/v1/accounts/${id}/${endpoint}`, {
-        method: 'POST',
-        withCredentials: true,
-      })
+      let res = await fetchJson<Relationship>(
+        `${server()}/api/v1/accounts/${id}/${endpoint}`,
+        {
+          method: 'POST',
+          withCredentials: true,
+        },
+      )
 
       relation(res)
-    }
-    catch(e) {
-      relation(undefined) 
-    }
-    finally {
+    } catch (e) {
+      relation(undefined)
+    } finally {
       loading(false)
     }
   }

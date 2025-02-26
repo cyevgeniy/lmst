@@ -6,11 +6,7 @@ export interface NodeProps {
 
 // Normalizes T | T[] to T[]
 function toArray<T>(p: T | T[] | null | undefined): T[] {
-  return p
-    ? Array.isArray(p)
-      ? p
-      : [p]
-    : []
+  return p ? (Array.isArray(p) ? p : [p]) : []
 }
 
 /**
@@ -35,12 +31,14 @@ function toArray<T>(p: T | T[] | null | undefined): T[] {
  */
 type TagName = keyof HTMLElementTagNameMap
 export type HTMLEventHandler = {
-  [K in keyof HTMLElementEventMap as `on${Capitalize<K>}`]? : (evt: HTMLElementEventMap[K]) => void
+  [K in keyof HTMLElementEventMap as `on${Capitalize<K>}`]?: (
+    evt: HTMLElementEventMap[K],
+  ) => void
 }
 export function h<T extends TagName>(
   nodeName: T,
-  props?: NodeProps & HTMLEventHandler | null,
-  childs?: Array<HTMLElement | undefined> | string
+  props?: (NodeProps & HTMLEventHandler) | null,
+  childs?: Array<HTMLElement | undefined> | string,
 ) {
   const el = document.createElement<T>(nodeName)
 
@@ -58,33 +56,36 @@ export function h<T extends TagName>(
   }
 
   if (props?.attrs) {
-    for (const attr in props.attrs)
-      el.setAttribute(attr, props.attrs[attr])
+    for (const attr in props.attrs) el.setAttribute(attr, props.attrs[attr])
   }
 
   props?.innerHTML && (el.innerHTML = props.innerHTML)
 
   if (childs) {
     if (Array.isArray(childs))
-      childs.forEach(child => {
+      childs.forEach((child) => {
         child && el.appendChild(child)
       })
-    else if (typeof childs === 'string')
-      el.textContent = childs
+    else if (typeof childs === 'string') el.textContent = childs
   }
 
   return el
 }
 
-export let div = (className: string | string[], childs: Array<HTMLElement | undefined> = []) => h('div', {className }, childs)
+export let div = (
+  className: string | string[],
+  childs: Array<HTMLElement | undefined> = [],
+) => h('div', { className }, childs)
 
-export let span = (className: string | string[], text: string): HTMLElement => h('span', {className }, text)
+export let span = (className: string | string[], text: string): HTMLElement =>
+  h('span', { className }, text)
 
-export let a = (className: string | string[], href: string, text: string) => h('a', { className, attrs: { href, target: '_blank'}}, text)
+export let a = (className: string | string[], href: string, text: string) =>
+  h('a', { className, attrs: { href, target: '_blank' } }, text)
 
-export let hide = (el: HTMLElement) => el.style.display = 'none'
+export let hide = (el: HTMLElement) => (el.style.display = 'none')
 
-export let show =(el: HTMLElement) => el.style.display = ''
+export let show = (el: HTMLElement) => (el.style.display = '')
 
 export function useCommonEl<T extends HTMLElement>(el: T) {
   function _show() {
@@ -124,14 +125,12 @@ function isElLike<T extends HTMLElement>(v: T | ElLike<T>): v is ElLike<T> {
  */
 export function childs<T extends HTMLElement, K extends HTMLElement>(
   el: T | ElLike<T>,
-  childs: (K | ElLike<K>)[]
+  childs: (K | ElLike<K>)[],
 ): void {
   let _el = isElLike(el) ? el.el : el
-  childs.forEach(c => {
-    if (isElLike(c))
-      _el.appendChild(c.el)
-    else
-      _el.appendChild(c)
+  childs.forEach((c) => {
+    if (isElLike(c)) _el.appendChild(c.el)
+    else _el.appendChild(c)
   })
 }
 
@@ -141,8 +140,7 @@ let icons = new Map<string, string>()
 // If there's no element with provided id, returns empty string.
 export function getIcon(id: string): string {
   let i = icons.get(id)
-  if (!i)
-    icons.set(id, i = document.getElementById(id)?.innerHTML ?? '')
+  if (!i) icons.set(id, (i = document.getElementById(id)?.innerHTML ?? ''))
 
   return i
 }

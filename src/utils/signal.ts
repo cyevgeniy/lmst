@@ -1,4 +1,4 @@
-export interface Signal<T=any> {
+export interface Signal<T = any> {
   (): T
   (p: T): void
   (fn: (p: T) => T): void
@@ -6,13 +6,13 @@ export interface Signal<T=any> {
 
 let effects = new Map<Signal, any[]>()
 
-export function createSignal<T=any>(value: T): Signal<T>  {
+export function createSignal<T = any>(value: T): Signal<T> {
   let _value = value
 
   function signal(): T
   function signal(v: T): void
-  function signal(v: (p: T)=> T): void
-  function signal(v?: ((p: T)=> T) | T): T | void {
+  function signal(v: (p: T) => T): void
+  function signal(v?: ((p: T) => T) | T): T | void {
     let isSetter = arguments.length > 0
 
     if (isSetter) {
@@ -27,7 +27,7 @@ export function createSignal<T=any>(value: T): Signal<T>  {
       // Find registered callbacks
       let signalEffects = effects.get(signal)
       if (signalEffects) {
-        signalEffects.forEach(cb => cb(_value))
+        signalEffects.forEach((cb) => cb(_value))
       }
     } else {
       return _value
@@ -37,17 +37,17 @@ export function createSignal<T=any>(value: T): Signal<T>  {
   return signal
 }
 
-export function on<T=any>(signal: Signal<T>, cb: (p: T) => any) {
+export function on<T = any>(signal: Signal<T>, cb: (p: T) => any) {
   let signalEffects = effects.get(signal)
 
   if (signalEffects) {
     signalEffects.push(cb)
   } else {
-    effects.set(signal, signalEffects = [cb])
+    effects.set(signal, (signalEffects = [cb]))
   }
 
   return () => {
-    let idx = signalEffects?.findIndex(e => e === cb) ?? -1
+    let idx = signalEffects?.findIndex((e) => e === cb) ?? -1
 
     idx !== -1 && signalEffects?.splice(idx, 1)
   }

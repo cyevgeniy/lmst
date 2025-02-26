@@ -21,25 +21,26 @@ export function LStatusesList(props: StatusesListProps) {
     props.sm.deleteStatus(s.id)
   }
 
-  let onBoost=(s: Status, boosted: boolean) => {
-    if (boosted)
-      props.sm.boostStatus(s.id)
-    else
-      props.sm.unboostStatus(s.id)  
+  let onBoost = (s: Status, boosted: boolean) => {
+    if (boosted) props.sm.boostStatus(s.id)
+    else props.sm.unboostStatus(s.id)
   }
 
   let onContentClick = (s: Status) => props.sm.navigateToStatus(s),
-  clearStatuses = () => el.innerHTML = ''
+    clearStatuses = () => (el.innerHTML = '')
 
   function addStatuses(statuses: Status[]) {
     for (const status of statuses) {
       let own = props.sm.ownStatus(status.reblog ?? status),
-      perm = props.sm.getPermissions(),
-      permissions = { canBoost: perm.canBoost && !own, canDelete: perm.canDelete && own }
+        perm = props.sm.getPermissions(),
+        permissions = {
+          canBoost: perm.canBoost && !own,
+          canDelete: perm.canDelete && own,
+        }
 
       const statusComp = LStatus({
         status,
-        permissions, 
+        permissions,
         onBoost: (s, b) => onBoost(s, b),
         onDelete: (s) => onDelete(statusComp, s),
         onContentClick: (s) => onContentClick(s),
@@ -55,4 +56,3 @@ export function LStatusesList(props: StatusesListProps) {
     clearStatuses,
   }
 }
-

@@ -17,24 +17,19 @@ function createLocalStorageStore(prefix: string): Store {
     setItem(key: string, value: unknown) {
       let v: string = ''
 
-      if (typeof value === 'string')
-        v = value
+      if (typeof value === 'string') v = value
 
-      if (typeof value === 'object')
-        v = JSON.stringify(value)
+      if (typeof value === 'object') v = JSON.stringify(value)
 
-      if (typeof value === 'number')
-        v = value.toString()
+      if (typeof value === 'number') v = value.toString()
 
-      if (v)
-        localStorage.setItem(getKey(key), v)
-      else
-        localStorage.removeItem(getKey(key))
+      if (v) localStorage.setItem(getKey(key), v)
+      else localStorage.removeItem(getKey(key))
     },
 
     removeItem(key: string) {
       localStorage.removeItem(getKey(key))
-    }
+    },
   }
 }
 

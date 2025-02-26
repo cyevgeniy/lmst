@@ -6,11 +6,11 @@ import type { Account } from '../types/shared'
 export function LProfileLink(a: Account): HTMLAnchorElement {
   return h('a', {
     attrs: {
-      href: `/profile/${a.acct}/`
+      href: `/profile/${a.acct}/`,
     },
     onClick: (e) => {
       e.preventDefault()
       lRouter.navigateTo(`/profile/${a.acct}/`)
-    }
+    },
   })
 }

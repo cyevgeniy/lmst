@@ -28,13 +28,13 @@ function createRouter(): Router {
 
   function findCallback(path: string): () => void {
     let entries = callbacks.entries(),
-    _callback = noop
+      _callback = noop
 
     for (const [routePath, cb] of entries) {
       const matched = getPathParameters(routePath, path)
       // Always store path in callback parameters
       // It's used for caching content as a key for the history Map structure
-      const patchedParams = { ...matched.params, _path: path}
+      const patchedParams = { ...matched.params, _path: path }
 
       if (matched.matched) {
         _callback = () => cb(patchedParams)
@@ -64,8 +64,7 @@ function createRouter(): Router {
     history.pushState({}, '', path)
 
     // Perform cleanup before navigating to the next page
-    if (typeof currPage?.onUnmount === 'function')
-      currPage.onUnmount()
+    if (typeof currPage?.onUnmount === 'function') currPage.onUnmount()
 
     currPage = findCallback(path)()
   }

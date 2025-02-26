@@ -21,17 +21,22 @@ export interface Application {
   vapid_key: string
 }
 
-export async function registerApp(params: RegisterAppParams): Promise<ApiResult<Application>> {
+export async function registerApp(
+  params: RegisterAppParams,
+): Promise<ApiResult<Application>> {
   let payload = new FormData()
   payload.append('client_name', params.clientName)
   payload.append('redirect_uris', params.redirectUris)
   payload.append('scopes', params.scopes)
 
   try {
-    let response = await fetchJson<Application>(`${params.server}/api/v1/apps`, {
-      method: 'POST',
-      body: payload,
-    })
+    let response = await fetchJson<Application>(
+      `${params.server}/api/v1/apps`,
+      {
+        method: 'POST',
+        body: payload,
+      },
+    )
 
     return success(response)
   } catch (e: unknown) {
@@ -55,10 +60,12 @@ export interface Token {
   created_at: number
 }
 
-export async function getAppToken(params: GetAppTokenParams): Promise<ApiResult<Token>> {
+export async function getAppToken(
+  params: GetAppTokenParams,
+): Promise<ApiResult<Token>> {
   let payload = new FormData()
 
-  let {server, ...rest} = params
+  let { server, ...rest } = params
 
   for (const key in rest) {
     payload.append(key, rest[key])
@@ -71,7 +78,7 @@ export async function getAppToken(params: GetAppTokenParams): Promise<ApiResult<
     })
 
     return success(token)
-  } catch(e: unknown) {
+  } catch (e: unknown) {
     return fail(logErr(e))
   }
 }

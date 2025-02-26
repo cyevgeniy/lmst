@@ -1,5 +1,14 @@
-import { getPublicTimeline, getHomeTimeline, getTagTimeline } from './api/timeline'
-import { type MediaAttachment, type Context, type Search, type Status } from './types/shared'
+import {
+  getPublicTimeline,
+  getHomeTimeline,
+  getTagTimeline,
+} from './api/timeline'
+import {
+  type MediaAttachment,
+  type Context,
+  type Search,
+  type Status,
+} from './types/shared'
 import type { AppConfig } from './appConfig'
 import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
@@ -44,7 +53,6 @@ export class TimelineManager implements ITimelineManager {
   public statuses: Status[]
   public noMoreData: boolean
 
-
   constructor() {
     this.maxId = ''
     this.statuses = []
@@ -58,10 +66,11 @@ export class TimelineManager implements ITimelineManager {
 
   public async loadStatuses(): Promise<Status[]> {
     let { server } = useAppConfig()
-    let fn = async () => await getPublicTimeline(server(), {max_id: this.maxId})
+    let fn = async () =>
+      await getPublicTimeline(server(), { max_id: this.maxId })
 
     if (user.isLoaded())
-      fn = async () => await getHomeTimeline(server(), {max_id: this.maxId})
+      fn = async () => await getHomeTimeline(server(), { max_id: this.maxId })
 
     let st = await fn()
 
@@ -69,7 +78,6 @@ export class TimelineManager implements ITimelineManager {
       let statuses = st.value
 
       if (statuses.length) {
-
         this.statuses.push(...statuses)
         this.maxId = last(statuses)!.id
         return statuses
@@ -80,7 +88,6 @@ export class TimelineManager implements ITimelineManager {
     }
 
     return []
-
   }
 
   public resetPagination() {
@@ -117,9 +124,7 @@ export class ProfileTimelineManager implements ITimelineManager {
       if (res.value.length) {
         this.maxId = last(res.value)!.id
         return res.value
-      }
-      else
-        this.noMoreData = true
+      } else this.noMoreData = true
     }
 
     return []
@@ -160,9 +165,7 @@ export class TagsTimelineManager implements ITimelineManager {
   public tag: string
   public noMoreData: boolean
 
-  constructor(opts: {
-    keepStatuses: boolean
-  }) {
+  constructor(opts: { keepStatuses: boolean }) {
     this.maxId = ''
     this.keepStatuses = opts.keepStatuses
     this.tag = ''
@@ -177,17 +180,18 @@ export class TagsTimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses() {
-    const resp = await getTagTimeline(this.tag, {server: this.appConfig.server(), params: {max_id: this.maxId}})
+    const resp = await getTagTimeline(this.tag, {
+      server: this.appConfig.server(),
+      params: { max_id: this.maxId },
+    })
 
     if (resp.ok) {
       const statuses = resp.value
       this._lastChunk = statuses
       this.keepStatuses && this.statuses.push(...statuses)
 
-      if (statuses.length)
-        this.maxId = last(statuses)!.id
-      else
-        this.noMoreData = true
+      if (statuses.length) this.maxId = last(statuses)!.id
+      else this.noMoreData = true
     } else {
       this._lastChunk = []
     }
@@ -198,11 +202,13 @@ export class TagsTimelineManager implements ITimelineManager {
     this._lastChunk = []
     this.noMoreData = false
   }
-
 }
 
 export interface IStatusManager {
-  postStatus(params: {statusText: string, files?: File[]}): Promise<ApiResult<Status>>
+  postStatus(params: {
+    statusText: string
+    files?: File[]
+  }): Promise<ApiResult<Status>>
   boostStatus(id: Status['id']): Promise<void>
   unboostStatus(id: Status['id']): Promise<void>
   deleteStatus(id: Status['id']): Promise<void>
@@ -234,10 +240,9 @@ export class StatusManager implements IStatusManager {
       return await fetchJson<MediaAttachment>(`${this.server()}/api/v2/media`, {
         method: 'post',
         withCredentials: true,
-        body
+        body,
       })
-    }
-    catch {
+    } catch {
       // we want to return undefined in such cases
     }
   }
@@ -246,17 +251,18 @@ export class StatusManager implements IStatusManager {
   private async uploadFiles(files: File[]): Promise<string[]> {
     let proms: Promise<MediaAttachment | undefined>[] = []
 
-    for (const f of files)
-      proms.push(this.uploadFile(f))
+    for (const f of files) proms.push(this.uploadFile(f))
 
     // @ts-expect-error don't add type guard to the filter for size limit reasons
-    return (await Promise.allSettled(proms)).map(r =>  r.status === 'fulfilled' ? r.value?.id : undefined).filter(Boolean)
+    return (await Promise.allSettled(proms))
+      .map((r) => (r.status === 'fulfilled' ? r.value?.id : undefined))
+      .filter(Boolean)
   }
 
   public async postStatus(params: {
-    statusText: string,
-    in_reply_to_id?: string, 
-    files?: File[],
+    statusText: string
+    in_reply_to_id?: string
+    files?: File[]
     sensitive?: boolean
   }): Promise<ApiResult<Status>> {
     user.loadTokenFromStore()
@@ -265,10 +271,10 @@ export class StatusManager implements IStatusManager {
 
     let payload = new FormData()
     payload.append('status', params.statusText)
-    for (const id of mediaIds)
-      payload.append('media_ids[]', id)
+    for (const id of mediaIds) payload.append('media_ids[]', id)
 
-    params.in_reply_to_id && payload.append('in_reply_to_id', params.in_reply_to_id)
+    params.in_reply_to_id &&
+      payload.append('in_reply_to_id', params.in_reply_to_id)
     // TODO: need to create a function that generates FormData for specified payload
     params.sensitive && payload.append('sensitive', params.sensitive.toString())
 
@@ -280,41 +286,34 @@ export class StatusManager implements IStatusManager {
       })
 
       return success(resp)
-
-    } catch(e: unknown) {
+    } catch (e: unknown) {
       return fail(logErr(e))
     }
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {
-    if (!user.isLoaded())
-      return
+    if (!user.isLoaded()) return
 
     try {
-        await fetchJson(`${this.server()}/api/v1/statuses/${id}/reblog`, {
-          method: 'POST',
-          withCredentials: true,
+      await fetchJson(`${this.server()}/api/v1/statuses/${id}/reblog`, {
+        method: 'POST',
+        withCredentials: true,
       })
-    }
-    catch(e: unknown) {
-      if (import.meta.env.DEV)
-        logErr(e)
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) logErr(e)
     }
   }
 
   public async unboostStatus(id: Status['id']): Promise<void> {
-    if (!user.isLoaded())
-      return
+    if (!user.isLoaded()) return
 
     try {
-        await fetchJson(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
-          method: 'POST',
-          withCredentials: true,
+      await fetchJson(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
+        method: 'POST',
+        withCredentials: true,
       })
-    }
-    catch(e: unknown) {
-      if (import.meta.env.DEV)
-        logErr(e)
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) logErr(e)
     }
   }
 
@@ -325,46 +324,47 @@ export class StatusManager implements IStatusManager {
       await fetchJson(`${this.server()}/api/v1/statuses/${id}`, {
         method: 'DELETE',
         withCredentials: true,
-       })
-    }
-    catch (e: unknown) {
-      if (import.meta.env.DEV)
-        logErr(e)
+      })
+    } catch (e: unknown) {
+      if (import.meta.env.DEV) logErr(e)
     }
   }
 
-  public async getStatus(id: Status['id'], opts?: {server?: string}): Promise<ApiResult<Status>> {
-    
+  public async getStatus(
+    id: Status['id'],
+    opts?: { server?: string },
+  ): Promise<ApiResult<Status>> {
     try {
-      const resp = await fetchJson<Status>(`${opts?.server ?? this.server()}/api/v1/statuses/${id}`)
+      const resp = await fetchJson<Status>(
+        `${opts?.server ?? this.server()}/api/v1/statuses/${id}`,
+      )
 
       return success(resp)
-    }
-    catch(e: unknown) {
+    } catch (e: unknown) {
       return fail(logErr(e))
     }
   }
 
-  public async getStatusContext(id: Status['id'], opts?: {server: string}): Promise<ApiResult<Context>> {
-
+  public async getStatusContext(
+    id: Status['id'],
+    opts?: { server: string },
+  ): Promise<ApiResult<Context>> {
     let result: ApiResult<Context>
 
     try {
-      let resp = await fetch(`${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`)
+      let resp = await fetch(
+        `${opts?.server ?? this.server()}/api/v1/statuses/${id}/context`,
+      )
 
-      if (resp.status !== 200)
-        throw new Error('Context was not fetched')
+      if (resp.status !== 200) throw new Error('Context was not fetched')
 
       result = success(await resp.json())
-    }
-    catch(e: unknown) {
+    } catch (e: unknown) {
       result = fail(logErr(e))
     }
 
     return result
   }
-
-
 
   public getPermissions(): ActionPermissions {
     return {
@@ -382,9 +382,8 @@ export function useGlobalNavigation(
   tm: TimelineManager,
   router: Router,
   config: AppConfig,
-  hm: PageHistoryManager
+  hm: PageHistoryManager,
 ): GlobalNavigation {
-
   function goHome() {
     router.navigateTo('/')
   }
@@ -397,20 +396,18 @@ export function useGlobalNavigation(
     // it exists in the cache, but the statuses list is empty (due to `timelineManager.clearStatuses` call)
     hm.clear()
     tm.clearStatuses()
-    goHome() 
+    goHome()
   }
 
   async function login() {
-      if (user.isLoaded())
-        goHome()
-      else {
-        const server = prompt('Enter server:')
-        if (!server)
-          return
+    if (user.isLoaded()) goHome()
+    else {
+      const server = prompt('Enter server:')
+      if (!server) return
 
-        config.server(server)
-        await user.authorize()
-      }
+      config.server(server)
+      await user.authorize()
+    }
   }
 
   return {
@@ -428,9 +425,9 @@ type SearchParams = {
 
 function createSearchManager() {
   let res: Search,
-  offset = 0,
-  _noMoreData = false,
-  loading = createSignal(false)
+    offset = 0,
+    _noMoreData = false,
+    loading = createSignal(false)
 
   let { server } = useAppConfig()
 
@@ -460,8 +457,7 @@ function createSearchManager() {
         statuses: [],
         hashtags: [],
       }
-    }
-    finally {
+    } finally {
       loading(false)
     }
   }
@@ -492,7 +488,7 @@ export class AppManager {
     this.config = useAppConfig()
     this.statusManager = new StatusManager()
     this.timelineManager = new TimelineManager()
-    this.tagsManager = new TagsTimelineManager({keepStatuses: false})
+    this.tagsManager = new TagsTimelineManager({ keepStatuses: false })
     this.pageHistoryManager = usePageHistory()
     this.searchManager = createSearchManager()
 
@@ -500,7 +496,7 @@ export class AppManager {
       this.timelineManager,
       lRouter,
       this.config,
-      this.pageHistoryManager
+      this.pageHistoryManager,
     )
   }
 }

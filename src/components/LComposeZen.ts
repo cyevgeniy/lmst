@@ -7,17 +7,21 @@ export interface ComposeZenProps {
 }
 
 export function LComposeZen(props: ComposeZenProps) {
-  let { onClose = noop} = props
-  let btn = h('button',{className: ['icon-button', 'compose-zen__button'], innerHTML: getIcon('icon-exitFullScreen'), onClick: onClose}),
-  el = div('compose-zen'),
-  wrapper = div('compose-zen-wrapper'),
-  textarea = h('textarea', {
-    className: 'compose-zen__textarea',
-    attrs: {
-      placeholder: 'What is on your mind?'
-    },
-    onKeyup,
-  })
+  let { onClose = noop } = props
+  let btn = h('button', {
+      className: ['icon-button', 'compose-zen__button'],
+      innerHTML: getIcon('icon-exitFullScreen'),
+      onClick: onClose,
+    }),
+    el = div('compose-zen'),
+    wrapper = div('compose-zen-wrapper'),
+    textarea = h('textarea', {
+      className: 'compose-zen__textarea',
+      attrs: {
+        placeholder: 'What is on your mind?',
+      },
+      onKeyup,
+    })
 
   props.text && (textarea.value = props.text)
 
@@ -26,12 +30,11 @@ export function LComposeZen(props: ComposeZenProps) {
   }
 
   function onKeyup(e: KeyboardEvent) {
-    if (e.key === 'Escape')
-      onClose() 
+    if (e.key === 'Escape') onClose()
   }
 
   childs(wrapper, [textarea, btn])
-  
+
   el.appendChild(wrapper)
 
   return {

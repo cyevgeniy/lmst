@@ -15,17 +15,17 @@ t.test('sanitizePath function', (t) => {
 t.test('getPathparameters works', (t) => {
   t.match(getPathParameters('/profile', '/profile'), {
     matched: true,
-    params: undefined
+    params: undefined,
   })
 
   t.match(getPathParameters('/profile/:id', '/profile'), {
     matched: false,
-    params: undefined
+    params: undefined,
   })
 
   t.match(getPathParameters('/profile/:id', '/profile/123'), {
     matched: true,
-    params: {id: '123'}
+    params: { id: '123' },
   })
 
   t.match(getPathParameters('/', '/'), {
@@ -43,27 +43,33 @@ t.test('getPathparameters works', (t) => {
   t.match(getPathParameters('/:name', '/john'), {
     matched: true,
     params: {
-      name: 'john'
-    }
+      name: 'john',
+    },
   })
 
-  t.match(getPathParameters('/profile/:id/questions/:questionId', '/profile/123/questions/13'), {
-    matched: true,
-    params: {
-      id: '123',
-      questionId: '13',
-    }
-  })
+  t.match(
+    getPathParameters(
+      '/profile/:id/questions/:questionId',
+      '/profile/123/questions/13',
+    ),
+    {
+      matched: true,
+      params: {
+        id: '123',
+        questionId: '13',
+      },
+    },
+  )
 
   t.match(getPathParameters('/profile/:id/', '/profile/13/'), {
     matched: true,
     params: {
       id: '13',
-    }
+    },
   })
 
   t.match(getPathParameters('/profile/:id/questions', '/profile/13/'), {
-    matched: false
+    matched: false,
   })
 
   t.end()

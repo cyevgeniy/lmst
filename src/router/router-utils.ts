@@ -6,7 +6,10 @@
  * @returns sanitized string
  */
 export function sanitizePath(path: string): string {
-  let arr = path.split('/').filter(i => i !== '').join('/')
+  let arr = path
+    .split('/')
+    .filter((i) => i !== '')
+    .join('/')
 
   return ['/', ...arr].join('')
 }
@@ -19,36 +22,35 @@ export interface MatchResult {
   params?: Record<string, string>
 }
 
-export function getPathParameters(routePath: string, path: string): MatchResult  {
+export function getPathParameters(
+  routePath: string,
+  path: string,
+): MatchResult {
   let _routePath = sanitizePath(routePath),
-  _path = sanitizePath(path),
+    _path = sanitizePath(path),
+    // TODO: Don't use filter, edge case is when
+    //       our route path is '/:id' and current location is '/'.
+    //
+    //       In this case first array is ['', ':id'], and the second is '['', '']'.
+    //       It leads to returning {matched: true, params: { id: ''}} situation.
+    //       By using filter, we avoid such situation.
+    _pathS = _path.split('/').filter((i) => i !== ''),
+    _routePathS = _routePath.split('/').filter((i) => i !== '')
 
-  // TODO: Don't use filter, edge case is when
-  //       our route path is '/:id' and current location is '/'.
-  //
-  //       In this case first array is ['', ':id'], and the second is '['', '']'.
-  //       It leads to returning {matched: true, params: { id: ''}} situation.
-  //       By using filter, we avoid such situation.
-  _pathS = _path.split('/').filter(i => i !== ''),
-  _routePathS = _routePath.split('/').filter(i => i !== '')
+  if (_pathS.length !== _routePathS.length) return { matched: false }
 
-  if (_pathS.length !== _routePathS.length)
-    return { matched: false}
-  
   let res: Record<string, string> = {}
 
   for (let i = 0; i < _routePathS.length; ++i) {
     if (_routePathS[i][0] !== ':') {
-      if (_routePathS[i] !== _pathS[i])
-        return { matched: false }
-    }
-    else {
+      if (_routePathS[i] !== _pathS[i]) return { matched: false }
+    } else {
       res[_routePathS[i].substring(1)] = _pathS[i]
     }
   }
 
   return {
     matched: true,
-    params: Object.keys(res).length > 0 ? res : undefined // TODO: set params to undefined if res is an empty object
+    params: Object.keys(res).length > 0 ? res : undefined, // TODO: set params to undefined if res is an empty object
   }
 }

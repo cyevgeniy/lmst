@@ -21,7 +21,7 @@
   line-height: 40px;
   font-variant: small-caps;
   color: #212427;
-  text-decoration: none;  
+  text-decoration: none;
 }
 
 .navBar-link + .navBar-link {
@@ -36,7 +36,7 @@
 
 /* A container that holds links that should be aligned to the right side of a sidebar */
 .navBar-rightItems {
-  margin-left: auto; 
+  margin-left: auto;
   display: flex;
   align-content: center;
 }
@@ -59,5 +59,4 @@
     width: 1rem;
     height: 1rem;
   }
-  
 }

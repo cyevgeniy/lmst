@@ -32,7 +32,6 @@ export interface Account {
   username: string
 }
 
-
 /**
  * This interface represents media that can be attached to a Status
  */
@@ -52,7 +51,6 @@ export interface StatusMention {
   url: string
   acct: string
 }
-
 
 export interface Status {
   /**
@@ -153,7 +151,18 @@ interface Search {
   hashtags: Tag[]
 }
 
-export type NotificationType = 'mention' | 'status' | 'follow' | 'reblog' | 'follow_request' | 'favourite' | 'poll' | 'update' | 'admin.sign_up' | 'admin.report' | 'severed_relationships'
+export type NotificationType =
+  | 'mention'
+  | 'status'
+  | 'follow'
+  | 'reblog'
+  | 'follow_request'
+  | 'favourite'
+  | 'poll'
+  | 'update'
+  | 'admin.sign_up'
+  | 'admin.report'
+  | 'severed_relationships'
 
 export interface Notification {
   id: string

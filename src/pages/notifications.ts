@@ -11,17 +11,18 @@ import type { Notification } from '../types/shared'
 export function createNotificationsPage(root: HTMLElement) {
   root.innerHTML = ''
   let dismissBtn = LButton({
-    text: 'Clear all notifications',
-    onClick: ns.dismissAll,
-    className: 'notifications-clear',
-  }),
-  actions = div('notification-actions', [dismissBtn.el]),
-  noData = h('div', {className: 'notification-noData'}, 'You have no unread notifications'),
-  nRoot = div('notifications-root'),
-  el = h('div', null, [
-    actions,
-    nRoot
-  ])
+      text: 'Clear all notifications',
+      onClick: ns.dismissAll,
+      className: 'notifications-clear',
+    }),
+    actions = div('notification-actions', [dismissBtn.el]),
+    noData = h(
+      'div',
+      { className: 'notification-noData' },
+      'You have no unread notifications',
+    ),
+    nRoot = div('notifications-root'),
+    el = h('div', null, [actions, nRoot])
 
   // Initially, hide actions block, because if there're no
   // notifications, it will be visible during fetch, while we want to show it
@@ -30,17 +31,22 @@ export function createNotificationsPage(root: HTMLElement) {
 
   function getNotificationNode(n: Notification): HTMLDivElement {
     switch (n.type) {
-      case 'follow': return LFollowedNotification(n).el
-      case 'reblog': return LReblogNotification(n).el
-      case 'mention': return LStatus({status: n.status!}).el
-      case 'favourite': return LReblogNotification(n).el
-      default: return LUnimplementedNotification(n).el
+      case 'follow':
+        return LFollowedNotification(n).el
+      case 'reblog':
+        return LReblogNotification(n).el
+      case 'mention':
+        return LStatus({ status: n.status! }).el
+      case 'favourite':
+        return LReblogNotification(n).el
+      default:
+        return LUnimplementedNotification(n).el
     }
   }
 
   function renderNotifications() {
-      for (const n of ns.notifications())
-        nRoot.appendChild(getNotificationNode(n))
+    for (const n of ns.notifications())
+      nRoot.appendChild(getNotificationNode(n))
   }
 
   let onUnmount = on(ns.notifications, () => {
@@ -49,9 +55,7 @@ export function createNotificationsPage(root: HTMLElement) {
     if (!ns.notifications().length) {
       hide(actions)
       childs(nRoot, [noData])
-    }
-    else
-      show(actions)
+    } else show(actions)
   })
 
   ns.getNotifications()

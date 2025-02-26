@@ -1,4 +1,8 @@
-import type { Status, MediaAttachment, StatusEventHandlers } from '../types/shared'
+import type {
+  Status,
+  MediaAttachment,
+  StatusEventHandlers,
+} from '../types/shared'
 import { h, a, div, span } from '../utils/dom'
 import { fmtDate } from '../utils/dates'
 import { lRouter } from '../router'
@@ -9,8 +13,8 @@ import { parseContent, noop } from '../utils/shared'
 import { LButton } from './LButton'
 
 type StatusProps = {
-  status: Status,
-  permissions?: ActionPermissions,
+  status: Status
+  permissions?: ActionPermissions
   clickableContent?: boolean
   singleView?: boolean
 } & StatusEventHandlers
@@ -26,16 +30,24 @@ export function LStatus(opts: StatusProps) {
   } = opts
 
   let _status = status.reblog ?? status,
-  isReblogged = Boolean(status.reblog),
-  renderedStatus = status,
-  createDate = fmtDate(renderedStatus.created_at) ?? '',
-  avatar = LAvatar({img: _status.account.avatar}),
-  statusButtons = LStatusButtons({status, permissions, ...statuButtonsHandlers}),
-  attachments = !_status.sensitive ? getAttachmentsEl() : undefined,
-  dispName = renderedStatus.account.display_name,
-  sensitiveButton = LButton({className: 'status-showSensitiveContent', text: 'Show sensitive content', onClick: () => onShowSensitiveClick()})
+    isReblogged = Boolean(status.reblog),
+    renderedStatus = status,
+    createDate = fmtDate(renderedStatus.created_at) ?? '',
+    avatar = LAvatar({ img: _status.account.avatar }),
+    statusButtons = LStatusButtons({
+      status,
+      permissions,
+      ...statuButtonsHandlers,
+    }),
+    attachments = !_status.sensitive ? getAttachmentsEl() : undefined,
+    dispName = renderedStatus.account.display_name,
+    sensitiveButton = LButton({
+      className: 'status-showSensitiveContent',
+      text: 'Show sensitive content',
+      onClick: () => onShowSensitiveClick(),
+    })
 
-  function onShowSensitiveClick()  {
+  function onShowSensitiveClick() {
     sensitiveEl?.remove()
     const attachments = getAttachmentsEl()
     _status.content && el.appendChild(h('div', { innerHTML: _status.content }))
@@ -46,73 +58,82 @@ export function LStatus(opts: StatusProps) {
     ? div('status-sensitiveContent', [sensitiveButton.el])
     : undefined
 
-  let avatarLink = h('a', {
-    attrs: {
-      href: `/profile/${_status.account.acct}/`
+  let avatarLink = h(
+    'a',
+    {
+      attrs: {
+        href: `/profile/${_status.account.acct}/`,
+      },
+      onClick: (e) => {
+        e.preventDefault()
+        lRouter.navigateTo(`/profile/${_status.account.acct}/`)
+      },
     },
-    onClick: (e) => {
-      e.preventDefault()
-      lRouter.navigateTo(`/profile/${_status.account.acct}/`)
-    }
-  }, [avatar.el])
+    [avatar.el],
+  )
 
   let statusContent = _status.sensitive
     ? undefined
     : h('div', {
-      className: ['status-content', clickableContent ? 'status-content--clickable': ''],
-      innerHTML: parseContent(_status),
-      onClick: (e) => {
-        if (e.target instanceof HTMLParagraphElement) {
-          // Don't redirect to the single status view if some text is selected -
-          // we only redirect on click
-          let selection = window.getSelection()
-          if (selection?.type !== 'Range')
-            onContentClick?.(_status)
-        }
-      }
-    })
+        className: [
+          'status-content',
+          clickableContent ? 'status-content--clickable' : '',
+        ],
+        innerHTML: parseContent(_status),
+        onClick: (e) => {
+          if (e.target instanceof HTMLParagraphElement) {
+            // Don't redirect to the single status view if some text is selected -
+            // we only redirect on click
+            let selection = window.getSelection()
+            if (selection?.type !== 'Range') onContentClick?.(_status)
+          }
+        },
+      })
 
   let linkToAccount = a(
     'status-profileLink',
     _status.account?.url,
-    _status.account?.acct || ''
+    _status.account?.acct || '',
   )
 
   function getAttachmentsEl(): HTMLElement | undefined {
     let mediaCnt = _status.media_attachments.length,
-    
-    contClass = mediaCnt > 1
-      ? 'status-attachment2Col'
-      : 'status-attachment',
+      contClass = mediaCnt > 1 ? 'status-attachment2Col' : 'status-attachment',
+      result = mediaCnt > 0 ? div(contClass) : undefined
 
-    result = mediaCnt > 0
-      ? div(contClass)
-      : undefined
-
-    result && _status.media_attachments.forEach(attachment => {
-      const node = attachmentNode(attachment)
-      node && result.appendChild(node)
-    })
+    result &&
+      _status.media_attachments.forEach((attachment) => {
+        const node = attachmentNode(attachment)
+        node && result.appendChild(node)
+      })
 
     return result
-
   }
 
-  function attachmentNode(attachment: MediaAttachment): HTMLElement | undefined {
+  function attachmentNode(
+    attachment: MediaAttachment,
+  ): HTMLElement | undefined {
     if (attachment.type === 'image')
-      return h('a', {
-        attrs: {
-          href: attachment.url,
-          target: '_blank'
+      return h(
+        'a',
+        {
+          attrs: {
+            href: attachment.url,
+            target: '_blank',
+          },
+          className: 'status-linkAttachment',
         },
-        className: 'status-linkAttachment'
-      },
         [
           h('img', {
             className: 'status-imageAttachment',
-            attrs: { src: attachment.preview_url ?? attachment.url, alt: attachment.description ?? '', loading: 'lazy'}
-          })
-        ])
+            attrs: {
+              src: attachment.preview_url ?? attachment.url,
+              alt: attachment.description ?? '',
+              loading: 'lazy',
+            },
+          }),
+        ],
+      )
 
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {
@@ -120,35 +141,32 @@ export function LStatus(opts: StatusProps) {
         attrs: {
           src: attachment.url,
           controls: '',
-        }
+        },
       })
-      else
-      return undefined
+    else return undefined
   }
 
-
-  let el = div(['status', singleView ? 'status--isSingle' : ''], [
-    isReblogged
-      ? div( 'status-boostedText', [span('', `${dispName} boosted: `)])
-      : undefined,
-    div('status-header', [
-      avatarLink,
-      div('status-profileInfo', [
-        span('status-profileName', `${_status.account?.display_name || ''}`),
-        linkToAccount,
+  let el = div(
+    ['status', singleView ? 'status--isSingle' : ''],
+    [
+      isReblogged
+        ? div('status-boostedText', [span('', `${dispName} boosted: `)])
+        : undefined,
+      div('status-header', [
+        avatarLink,
+        div('status-profileInfo', [
+          span('status-profileName', `${_status.account?.display_name || ''}`),
+          linkToAccount,
+        ]),
+        span('status-createDate', `${createDate}`),
       ]),
-      span('status-createDate', `${createDate}`),
-    ]),
-    statusContent,
-    _status.sensitive
-      ? sensitiveEl
-      : attachments,
-    statusButtons.el,
-  ])
+      statusContent,
+      _status.sensitive ? sensitiveEl : attachments,
+      statusButtons.el,
+    ],
+  )
 
   return {
     el,
   }
-
 }
-

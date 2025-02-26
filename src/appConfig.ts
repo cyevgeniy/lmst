@@ -50,8 +50,7 @@ function createConfig(): AppConfig {
     baseUrl: import.meta.env.VITE_BASE_URL,
     version: import.meta.env.VITE_APP_VERSION,
     get server() {
-      if (!_server())
-        load()
+      if (!_server()) load()
 
       return _server
     },

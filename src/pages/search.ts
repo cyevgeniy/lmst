@@ -9,120 +9,131 @@ import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
 
 function isTag(s: string): boolean {
-	return s.length > 0 && s[0] === '#'
+  return s.length > 0 && s[0] === '#'
 }
 
 export function createSearchPage(root: HTMLElement, appManager: AppManager) {
-	root.innerHTML = ''
-	let input = h('input', {className: 'search-input'}),
-	noMoreDataText = LNoMoreRows() //h('div', {className: 'timelime-no-more-rows'}, 'No more records')
-	hide(noMoreDataText)
-	
-	input.type = 'search'
-	input.placeholder = 'Search text or #hashtag'
-	input.autofocus = true
+  root.innerHTML = ''
+  let input = h('input', { className: 'search-input' }),
+    noMoreDataText = LNoMoreRows() //h('div', {className: 'timelime-no-more-rows'}, 'No more records')
+  hide(noMoreDataText)
 
-	let loadMore = LLoadMoreBtn({
-		text: 'Load more',
-		onClick: () => search({type: 'statuses'}),
-	})
+  input.type = 'search'
+  input.placeholder = 'Search text or #hashtag'
+  input.autofocus = true
 
-	loadMore.visible = false
+  let loadMore = LLoadMoreBtn({
+    text: 'Load more',
+    onClick: () => search({ type: 'statuses' }),
+  })
 
-	let summary = '<summary>Profiles</summary>',
-	profilesRoot = div('search-accountsList'),
-	profiles = h('details', {className: 'search-profileDetails', innerHTML: summary})
-	
-	childs(profiles, [profilesRoot])
-	hide(profiles)
+  loadMore.visible = false
 
-	let sm = appManager.searchManager
+  let summary = '<summary>Profiles</summary>',
+    profilesRoot = div('search-accountsList'),
+    profiles = h('details', {
+      className: 'search-profileDetails',
+      innerHTML: summary,
+    })
 
-	let { loading } = sm
+  childs(profiles, [profilesRoot])
+  hide(profiles)
 
-	// We don't use cleanup function because we cache search page and load it once
-	on(loading, (newVal) => {
-		loadMore.loading = newVal
-	})
+  let sm = appManager.searchManager
 
-	function renderProfiles(accounts: Account[]) {
-		for(const acct of accounts) {
-			profilesRoot.appendChild(LProfileListInfo(acct, {
-				onClick: () => lRouter.navigateTo(`/profile/${acct.acct}/`)
-			}).el)
-		}
-	}
-	
-	async function search(opts: {
-		updateProfiles?: boolean,
-		type?: string
-	} = {}) {
-		let { updateProfiles = false, type } = opts
-		if (input.value !== '') {
-			await sm.search({q: input.value, type })
-			let { accounts, statuses } = sm.searchResult
-			slist.addStatuses(statuses)
+  let { loading } = sm
 
-			if (updateProfiles) {
-				renderProfiles(accounts)
-				!!accounts.length ? show(profiles) : hide(profiles)
-			}
+  // We don't use cleanup function because we cache search page and load it once
+  on(loading, (newVal) => {
+    loadMore.loading = newVal
+  })
 
-			if (sm.noMoreData) {
-				loadMore.visible = false
-				show(noMoreDataText)
-			}
-		}
-	}
+  function renderProfiles(accounts: Account[]) {
+    for (const acct of accounts) {
+      profilesRoot.appendChild(
+        LProfileListInfo(acct, {
+          onClick: () => lRouter.navigateTo(`/profile/${acct.acct}/`),
+        }).el,
+      )
+    }
+  }
 
-	async function onSubmit(e: SubmitEvent) {
-		e.preventDefault()
-		sm.resetOffset()
-		hide(profiles)
-		profilesRoot.innerHTML = ''
-		slist.clearStatuses()
+  async function search(
+    opts: {
+      updateProfiles?: boolean
+      type?: string
+    } = {},
+  ) {
+    let { updateProfiles = false, type } = opts
+    if (input.value !== '') {
+      await sm.search({ q: input.value, type })
+      let { accounts, statuses } = sm.searchResult
+      slist.addStatuses(statuses)
 
-		if (isTag(input.value)) {
-			lRouter.navigateTo(`tags/${input.value.slice(1)}`)
-			input.value = ''
-			loadMore.visible = false
-			return
-		}
+      if (updateProfiles) {
+        renderProfiles(accounts)
+        !!accounts.length ? show(profiles) : hide(profiles)
+      }
 
-		// We show profiles on new search only
-		// Clicking on the 'load more' button will update only statuses list
-		await search({updateProfiles: true})
+      if (sm.noMoreData) {
+        loadMore.visible = false
+        show(noMoreDataText)
+      }
+    }
+  }
 
-		// Show 'load more' button after the first search, but only when search didn't return an empty set
-		// and the search query was not empty
-		if (input.value) {
-			!sm.noMoreData && (loadMore.visible = true) && hide(noMoreDataText)
-		}
-		else {
-			loadMore.visible = false
-			show(noMoreDataText)
-		}
-	}
+  async function onSubmit(e: SubmitEvent) {
+    e.preventDefault()
+    sm.resetOffset()
+    hide(profiles)
+    profilesRoot.innerHTML = ''
+    slist.clearStatuses()
 
-	let statusesListRoot = h('div'),
-	form = h('form', {onSubmit, className: 'search-form'}, [input]),
-	el = h('div', null, [form, profiles, statusesListRoot, noMoreDataText, loadMore.el]),
+    if (isTag(input.value)) {
+      lRouter.navigateTo(`tags/${input.value.slice(1)}`)
+      input.value = ''
+      loadMore.visible = false
+      return
+    }
 
-	slist = LStatusesList({
-		root: statusesListRoot,
-		statuses: [],
-		sm: appManager.statusManager,
-	})	
+    // We show profiles on new search only
+    // Clicking on the 'load more' button will update only statuses list
+    await search({ updateProfiles: true })
 
-	childs(root, [el])
-	onMount()
+    // Show 'load more' button after the first search, but only when search didn't return an empty set
+    // and the search query was not empty
+    if (input.value) {
+      !sm.noMoreData && (loadMore.visible = true) && hide(noMoreDataText)
+    } else {
+      loadMore.visible = false
+      show(noMoreDataText)
+    }
+  }
 
-	function onMount() {
-		setTimeout(() => input.focus(), 0)
-	}
+  let statusesListRoot = h('div'),
+    form = h('form', { onSubmit, className: 'search-form' }, [input]),
+    el = h('div', null, [
+      form,
+      profiles,
+      statusesListRoot,
+      noMoreDataText,
+      loadMore.el,
+    ]),
+    slist = LStatusesList({
+      root: statusesListRoot,
+      statuses: [],
+      sm: appManager.statusManager,
+    })
 
-	return {
-		el,
-		onMount,
-	}
+  childs(root, [el])
+  onMount()
+
+  function onMount() {
+    setTimeout(() => input.focus(), 0)
+  }
+
+  return {
+    el,
+    onMount,
+  }
 }

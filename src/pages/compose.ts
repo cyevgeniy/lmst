@@ -14,7 +14,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     attrs: {
       maxLength: '300',
       rows: '10',
-      placeholder: 'What\'s on your mind?',
+      placeholder: "What's on your mind?",
       spellcheck: 'false',
     },
     onInput,
@@ -23,28 +23,29 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   // Display current text in the text area
   textArea.value = text()
 
-  let cleanText = on(text, newValue => textArea.value = newValue),
-  cleanDisabled = on(postAvailable, newValue => btn.disabled = !newValue),
-  btn = LButton({text: 'Post', className: 'compose__button', onClick: onPostClick}),
-  sensitiveCheckbox =  h('input', { attrs: {type: 'checkbox', id: 'sensitive'}}),
-  sensitive = h('div', null, [
-    sensitiveCheckbox,
-    h('label', {attrs: {for: 'sensitive'}}, 'sensitive content')
-  ]),
-  filePicker = LFilePicker(files),
-  zenModeBtn = h(
-    'button',
-    {
+  let cleanText = on(text, (newValue) => (textArea.value = newValue)),
+    cleanDisabled = on(postAvailable, (newValue) => (btn.disabled = !newValue)),
+    btn = LButton({
+      text: 'Post',
+      className: 'compose__button',
+      onClick: onPostClick,
+    }),
+    sensitiveCheckbox = h('input', {
+      attrs: { type: 'checkbox', id: 'sensitive' },
+    }),
+    sensitive = h('div', null, [
+      sensitiveCheckbox,
+      h('label', { attrs: { for: 'sensitive' } }, 'sensitive content'),
+    ]),
+    filePicker = LFilePicker(files),
+    zenModeBtn = h('button', {
       className: ['icon-button', 'ml-auto', 'compose-toolbar__zen'],
       innerHTML: getIcon('icon-fullscreen'),
       onClick: showZen,
-    }
-  ),
-
-  textToolbar = h('div', {className: 'compose-toolbar'}, [zenModeBtn]),
-  preview = LPreview(files),
-
-  composeZen: ReturnType<typeof LComposeZen>
+    }),
+    textToolbar = h('div', { className: 'compose-toolbar' }, [zenModeBtn]),
+    preview = LPreview(files),
+    composeZen: ReturnType<typeof LComposeZen>
 
   btn.disabled = !postAvailable()
 
@@ -61,7 +62,10 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   function showZen() {
-    composeZen = LComposeZen({onClose: () => onComposeZenClose(), text: text()})
+    composeZen = LComposeZen({
+      onClose: () => onComposeZenClose(),
+      text: text(),
+    })
     childs(el, [composeZen])
     composeZen.setFocus()
   }
@@ -70,7 +74,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     let res = await appManager.statusManager.postStatus({
       statusText: text(),
       files: files(),
-      sensitive:sensitiveCheckbox.checked,
+      sensitive: sensitiveCheckbox.checked,
     })
 
     if (res.ok) {
@@ -78,8 +82,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
       // It will also sync empty array with `files` signal
       filePicker.clear()
       sensitiveCheckbox.checked = false
-    }
-    else {
+    } else {
       alert(res.error)
     }
   }
@@ -89,15 +92,12 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     text(area.value)
   }
 
-  let el = h(
-     'div',
-     { className: 'compose__wrapper' },
-     [
-        textToolbar,
-        sensitive,
-        textArea,
-        h('div', { className: 'compose__post'}, [filePicker.el, btn.el]),
-        preview.el,
+  let el = h('div', { className: 'compose__wrapper' }, [
+    textToolbar,
+    sensitive,
+    textArea,
+    h('div', { className: 'compose__post' }, [filePicker.el, btn.el]),
+    preview.el,
   ])
 
   root.appendChild(el)

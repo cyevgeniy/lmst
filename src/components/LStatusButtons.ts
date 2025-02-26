@@ -16,47 +16,49 @@ const BOOSTED_CLASS = 'status-button-isBoosted'
 export function LStatusButtons(props: StatusButtonsProps) {
   let status = props.status.reblog ?? props.status
 
-  let boostBtn: HTMLButtonElement | undefined, deleteBtn: HTMLButtonElement | undefined
+  let boostBtn: HTMLButtonElement | undefined,
+    deleteBtn: HTMLButtonElement | undefined
 
   function createBoostBtn() {
     let className: string[] = ['icon-button', 'status-button']
-    if (status.reblogged)
-      className.push('status-button-isBoosted')
+    if (status.reblogged) className.push('status-button-isBoosted')
 
-    return h('button', {className, innerHTML: getIcon('icon-boost'), onClick: onBoostClick})
+    return h('button', {
+      className,
+      innerHTML: getIcon('icon-boost'),
+      onClick: onBoostClick,
+    })
   }
 
   function createDeleteBtn() {
     return h('button', {
       className: ['icon-button', 'status-button', 'ml-auto'],
       innerHTML: getIcon('icon-delete'),
-      onClick: onDeleteClick
+      onClick: onDeleteClick,
     })
   }
 
   props.permissions.canBoost && (boostBtn = createBoostBtn())
   props.permissions.canDelete && (deleteBtn = createDeleteBtn())
 
-  const el = h('div', {
-    className: 'status-buttons' },
-    [
-      boostBtn,
-      deleteBtn,
-    ]
+  const el = h(
+    'div',
+    {
+      className: 'status-buttons',
+    },
+    [boostBtn, deleteBtn],
   )
 
   function onBoostClick() {
-      if (props.onBoost) {
-        props.onBoost(status, !status.reblogged)
-      }
+    if (props.onBoost) {
+      props.onBoost(status, !status.reblogged)
+    }
 
-      // Toggle boosted class
-      if (!status.reblogged)
-        boostBtn?.classList.add(BOOSTED_CLASS)
-      else
-        boostBtn?.classList.remove(BOOSTED_CLASS)
+    // Toggle boosted class
+    if (!status.reblogged) boostBtn?.classList.add(BOOSTED_CLASS)
+    else boostBtn?.classList.remove(BOOSTED_CLASS)
 
-      status.reblogged !== undefined && (status.reblogged = !status.reblogged)
+    status.reblogged !== undefined && (status.reblogged = !status.reblogged)
   }
 
   function onDeleteClick() {

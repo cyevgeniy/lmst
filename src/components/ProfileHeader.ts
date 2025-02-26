@@ -8,24 +8,19 @@ import { user } from '../utils/user'
 
 export function LProfileHeader(account?: Account) {
   let displayNameEl = div('profileHeader-name'),
-  noteEl = div('profileHeader-note'),
-  actionsEl = div('profileHeader-actions'),
-  id: Account['id']
-  
-  let {
-    updateRelation,
-    loading,
-    relation,
-    followunfollow,
-  } = useProfileRelation()
+    noteEl = div('profileHeader-note'),
+    actionsEl = div('profileHeader-actions'),
+    id: Account['id']
 
+  let { updateRelation, loading, relation, followunfollow } =
+    useProfileRelation()
 
   // let { followunfollow } = useProfileRelation(id)
   // followunfollow
 
-  let avatar = LAvatar({img: '', size: 'lg'}),
-  follow = LButton({text: '', onClick: () => followunfollow(id)})
-  
+  let avatar = LAvatar({ img: '', size: 'lg' }),
+    follow = LButton({ text: '', onClick: () => followunfollow(id) })
+
   actionsEl.appendChild(follow.el)
   const { show, hide } = useCommonEl(follow.el)
   hide()
@@ -41,15 +36,11 @@ export function LProfileHeader(account?: Account) {
 
   on(loading, (newVal) => {
     follow.disabled = newVal
-    if (newVal)
-      follow.text = 'loading...'
+    if (newVal) follow.text = 'loading...'
   })
 
   const el = div('profileHeader', [
-    div('profileHeader-userInfo', [
-      avatar.el,
-      displayNameEl,
-    ]),
+    div('profileHeader-userInfo', [avatar.el, displayNameEl]),
     noteEl,
     actionsEl,
   ])
@@ -67,7 +58,7 @@ export function LProfileHeader(account?: Account) {
 
     // Don't show 'follow'/'unfollow' on your own profile
     if (account && user.user().id !== account.id && user.isLoaded()) {
-      updateRelation(id = account.id)
+      updateRelation((id = account.id))
     }
   }
 

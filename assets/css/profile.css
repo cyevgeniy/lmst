@@ -1,24 +1,24 @@
 /** A single profile block which is used on the search page **/
 .profileItem {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    padding: 8px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 8px;
 }
 
 .profileItem:hover {
-    background-color: rgb(235, 238, 240);
+  background-color: rgb(235, 238, 240);
 }
 
 /** A user's display name **/
 .profileItem-name {
-    display: block;
-    margin-bottom: 4px;
+  display: block;
+  margin-bottom: 4px;
 }
 
 /** Text with the link to the profile  **/
 .profileItem-link {
-    font-size: 14px;
+  font-size: 14px;
   color: gray;
   text-decoration: none;
 }

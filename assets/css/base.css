@@ -3,7 +3,20 @@ body {
   padding: 0;
   font-size: 16px;
   color: #212427;
-  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    avenir next,
+    avenir,
+    segoe ui,
+    helvetica neue,
+    helvetica,
+    Cantarell,
+    Ubuntu,
+    roboto,
+    noto,
+    arial,
+    sans-serif;
 }
 
 textarea {
@@ -17,7 +30,7 @@ textarea {
   outline: none !important;
 }
 
-input[type="search"] {
+input[type='search'] {
   width: 100%;
   box-sizing: border-box;
   display: block;
@@ -27,11 +40,12 @@ input[type="search"] {
   outline: none !important;
 }
 
-textarea:focus, input:focus {
+textarea:focus,
+input:focus {
   border-color: darkgray;
 }
 
-div:has(>input[type="checkbox"]) {
+div:has(> input[type='checkbox']) {
   display: flex;
   align-items: center;
   gap: 4px;

@@ -1,9 +1,9 @@
-import { registerApp as _registerApp } from "./api/app"
+import { registerApp as _registerApp } from './api/app'
 import { AppConfig, useAppConfig } from './appConfig'
 import type { Application } from './api/app'
 import type { ApiResult } from './utils/api'
 import { store } from './store'
-import { success } from "./utils/api"
+import { success } from './utils/api'
 
 interface RegisteredApp {
   appInfo: Application
@@ -18,8 +18,7 @@ export class App {
   private config: AppConfig
 
   constructor() {
-    if (App.instance)
-      return
+    if (App.instance) return
 
     App.instance = this
     this.appInfo = undefined
@@ -29,13 +28,11 @@ export class App {
   public async registerApp(): Promise<ApiResult<RegisteredApp>> {
     let tmp = store.getItem(APP_INFO_KEY)
 
-    if (tmp)
-      this.appInfo = JSON.parse(tmp) as Application
+    if (tmp) this.appInfo = JSON.parse(tmp) as Application
 
-    if (this.appInfo)
-      return success({ appInfo: this.appInfo })
+    if (this.appInfo) return success({ appInfo: this.appInfo })
 
-    let res =  await _registerApp({
+    let res = await _registerApp({
       server: this.config.server(),
       redirectUris: `${this.config.baseUrl}/oauth`,
       clientName: this.config.clientName,
@@ -43,8 +40,7 @@ export class App {
       scopes: 'read write push follow',
     })
 
-    if (!res.ok)
-      return res
+    if (!res.ok) return res
 
     this.appInfo = res.value
     store.setItem(APP_INFO_KEY, this.appInfo)

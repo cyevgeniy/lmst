@@ -3,8 +3,8 @@ import { h } from '../utils/dom'
 import type { Notification } from '../types/shared'
 
 export function LUnimplementedNotification(n: Notification) {
-  // @ts-expect-error we know that there will be only these types
   let txt =
+    // @ts-expect-error we know that there will be only these types
     {
       follow_request: 'is requested to follow you',
       poll: 'a poll has ended',

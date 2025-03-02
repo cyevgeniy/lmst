@@ -20,13 +20,22 @@ export function LStatusButtons(props: StatusButtonsProps) {
     deleteBtn: HTMLButtonElement | undefined
 
   function createBoostBtn() {
-    let className: string[] = ['icon-button', 'status-button']
-    if (status.reblogged) className.push('status-button-isBoosted')
+    let className: string[] = ['icon-button', 'status-button'],
+      title = 'Boost'
+    if (status.reblogged) {
+      className.push('status-button-isBoosted')
+      title = 'Unboost'
+    }
+
+    console.log('title=', title)
 
     return h('button', {
       className,
       innerHTML: getIcon('icon-boost'),
       onClick: onBoostClick,
+      attrs: {
+        title,
+      },
     })
   }
 
@@ -38,8 +47,9 @@ export function LStatusButtons(props: StatusButtonsProps) {
     })
   }
 
-  props.permissions.canBoost && (boostBtn = createBoostBtn())
-  props.permissions.canDelete && (deleteBtn = createDeleteBtn())
+  let { canBoost, canDelete } = props.permissions
+  canBoost && (boostBtn = createBoostBtn())
+  canDelete && (deleteBtn = createDeleteBtn())
 
   const el = h(
     'div',

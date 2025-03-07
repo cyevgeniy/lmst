@@ -12,6 +12,7 @@ import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
 import { user } from './utils/user'
+import { createFollowingPage } from './pages/following'
 
 const appManager = new AppManager()
 
@@ -63,4 +64,10 @@ user.verifyCredentials().then(() => {
   lRouter.on('/status/:server/:webfinger/:id', (params) =>
     createStatusPage(mainPage.middle, appManager, params),
   )
+  lRouter.on('/profile/:webfinger/following', (params) => {
+    createFollowingPage(mainPage.middle, {
+      pm: new ProfileTimelineManager(),
+      params,
+    })
+  })
 })

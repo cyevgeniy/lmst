@@ -1,4 +1,4 @@
-import { div, useCommonEl } from '../utils/dom'
+import { div, h, useCommonEl } from '../utils/dom'
 import type { Account } from '../types/shared'
 import { LAvatar } from './Avatar'
 import { LButton } from './LButton'
@@ -9,6 +9,7 @@ import { user } from '../utils/user'
 export function LProfileHeader(account?: Account) {
   let displayNameEl = div('profileHeader-name'),
     noteEl = div('profileHeader-note'),
+    followingEl = h('a', { attrs: { href: 'following' } }, 'Following'),
     actionsEl = div('profileHeader-actions'),
     id: Account['id']
 
@@ -42,6 +43,7 @@ export function LProfileHeader(account?: Account) {
   const el = div('profileHeader', [
     div('profileHeader-userInfo', [avatar.el, displayNameEl]),
     noteEl,
+    followingEl,
     actionsEl,
   ])
 

@@ -27,8 +27,6 @@ export function LStatusButtons(props: StatusButtonsProps) {
       title = 'Unboost'
     }
 
-    console.log('title=', title)
-
     return h('button', {
       className,
       innerHTML: getIcon('icon-boost'),

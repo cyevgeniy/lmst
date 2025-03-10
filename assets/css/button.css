@@ -26,7 +26,8 @@
  *     </button>
  */
 .icon-button {
-  background-color: white;
+  background-color: var(--background-color);
+  color: var(--text-color);
   cursor: pointer;
   border: none;
   padding: 4px;
@@ -39,4 +40,11 @@
 .icon-button > * {
   height: 24px;
   width: 24px;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* .icon-button {
+    background-color: var(--background-color);
+    color: var(--text-)
+  } */
 }

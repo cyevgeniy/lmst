@@ -9,7 +9,7 @@
 
 .search-profileDetails {
   cursor: pointer;
-  border: 1px solid rgb(235, 238, 240);
+  border: 1px solid var(--base-border);
   padding: 4px;
   border-radius: 4px;
   margin: 0 4px 16px;

@@ -1,8 +1,17 @@
+:root {
+  --text-color: #212427;
+  --text-color-secondary: oklch(0.707 0.022 261.325);
+  --background-color: white;
+  --link-color: blue;
+  --base-border: rgb(235, 238, 240);
+}
+
 body {
   margin: 0;
   padding: 0;
   font-size: 16px;
-  color: #212427;
+  color: var(--text-color);
+  background-color: var(--background-color);
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -26,7 +35,7 @@ textarea {
   display: block;
   padding: 0.5rem;
   border-radius: 0.3rem;
-  border: 1px solid rgb(235, 238, 240);
+  border: 1px solid;
   outline: none !important;
 }
 
@@ -49,4 +58,23 @@ div:has(> input[type='checkbox']) {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+a {
+  color: var(--link-color);
+}
+
+textarea, input {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  border-color: var(--base-border);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: oklch(0.985 0.002 247.839);
+    --background-color: oklch(0.21 0.034 264.665);
+    --link-color: oklch(0.511 0.262 276.966);
+    --base-border: rgba(235, 238, 240, .25);
+  }
 }

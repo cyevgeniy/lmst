@@ -8,8 +8,8 @@
   place-items: center;
   padding-left: 16px;
   padding-right: 16px;
-  border-bottom: 1px solid rgb(235, 238, 240);
-  background-color: white;
+  border-bottom: 1px solid var(--base-border);
+  background-color: var(--background-color);
 }
 
 /* A link inside the navigation bar */
@@ -20,7 +20,7 @@
   cursor: pointer;
   line-height: 40px;
   font-variant: small-caps;
-  color: #212427;
+  color: var(--text-color);
   text-decoration: none;
 }
 

@@ -2,8 +2,11 @@
  * Base button.
  */
 .button {
-  border: 1px solid rgb(203 213 225);
-  background-color: white;
+  --border-color: hsl(213, 27%, 84%);
+  --background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
@@ -12,7 +15,7 @@
 }
 
 .button--disabled {
-  background-color: #f9f9f9;
+  --background-color: #f9f9f9;
   cursor: not-allowed;
 }
 
@@ -43,8 +46,11 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  /* .icon-button {
-    background-color: var(--background-color);
-    color: var(--text-)
-  } */
+  .button {
+    --border-color: rgba(243, 245, 247, 0.15);
+  }
+
+  .button--disabled {
+    --background-color: darkgray;
+  }
 }

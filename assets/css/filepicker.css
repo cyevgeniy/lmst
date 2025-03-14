@@ -8,6 +8,7 @@
   align-items: center;
   background: transparent;
   border: none;
+  color: var(--text-color);
 }
 
 .filepicker > button > svg {

@@ -46,7 +46,6 @@ export function LStatusesList(props: StatusesListProps) {
         onContentClick: (s) => onContentClick(s),
       })
 
-      statusComp.el.classList.add('status--withBorder')
       el?.appendChild(statusComp.el)
     }
   }

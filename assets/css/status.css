@@ -15,13 +15,12 @@
   padding-bottom: 16px;
 }
 
-.status:focus {
-  border: 2px solid red;
+.status + .status {
+  border-top: 1px solid var(--base-border);  
 }
 
 /* This modifier adds border to the top of the status, so it looks better inside a list of statuses */
 .status--withBorder {
-  border-top: 1px solid rgb(235, 238, 240);
 }
 
 /* When we view a single status, increase its font size */
@@ -172,10 +171,11 @@
   }
 
   /* This state is used for the 'boost' button when the status is already boosted */
-.status-button-isBoosted {
-  color: rgb(240, 28, 28);
-}
-.status-button-isBoosted:hover {
-  color: red;
-}
+  .status-button-isBoosted {
+    color: rgb(240, 28, 28);
+  }
+
+  .status-button-isBoosted:hover {
+    color: red;
+  }
 }

@@ -74,7 +74,7 @@ textarea, input {
   :root {
     --text-color: oklch(0.985 0.002 247.839);
     --background-color: oklch(0.21 0.034 264.665);
-    --link-color: oklch(0.511 0.262 276.966);
+    --link-color: #58a6ff;
     --base-border: rgba(235, 238, 240, .25);
   }
 }

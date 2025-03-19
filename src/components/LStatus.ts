@@ -48,10 +48,11 @@ export function LStatus(opts: StatusProps) {
     })
 
   function onShowSensitiveClick() {
-    sensitiveEl?.remove()
     const attachments = getAttachmentsEl()
-    _status.content && el.appendChild(h('div', { innerHTML: _status.content }))
-    attachments && el.appendChild(attachments)
+    _status.content &&
+      el.insertBefore(h('div', { innerHTML: _status.content }), sensitiveEl!)
+    attachments && el.insertBefore(attachments, sensitiveEl!)
+    sensitiveEl!.remove()
   }
 
   let sensitiveEl = _status.sensitive

@@ -39,6 +39,17 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
   childs(profiles, [profilesRoot])
   hide(profiles)
 
+  /**
+   * Click event on a profile is delegated to rool Element.
+   * The profiles are rendered with their `acct.acct` as 'data-acct' attribute.
+   */
+  profilesRoot.addEventListener('click', (e) => {
+    let pLink = (e.target as any)?.closest('.profileItem'),
+      acct = pLink?.getAttribute('data-acct')
+
+    acct && lRouter.navigateTo(`/profile/${acct}/`)
+  })
+
   let sm = appManager.searchManager
 
   let { loading } = sm
@@ -50,11 +61,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
 
   function renderProfiles(accounts: Account[]) {
     for (const acct of accounts) {
-      profilesRoot.appendChild(
-        LProfileListInfo(acct, {
-          onClick: () => lRouter.navigateTo(`/profile/${acct.acct}/`),
-        }).el,
-      )
+      profilesRoot.appendChild(LProfileListInfo(acct).el)
     }
   }
 

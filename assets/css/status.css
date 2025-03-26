@@ -24,18 +24,18 @@
 }
 
 /* When we view a single status, increase its font size */
-.status--isSingle {
+.status.single {
   font-size: 1.1rem;
 }
 
 /* A block with a text that indicates that the status was boosted */
-.status-boostedText {
+.status .boostedText {
   margin-bottom: 8px;
   color: var(--text-color-secondary);
 }
 
 /* A header block of a status, with avatar, username and status date */
-.status-header {
+.status .header {
   display: flex;
   gap: 16px;
   align-items: center;
@@ -46,7 +46,7 @@
 }
 
 /* A wrapper around profile info - profile name and link to the profile */
-.status-profileInfo {
+.status .profileInfo {
   display: flex;
   gap: 2px;
   flex-direction: column;
@@ -57,7 +57,7 @@
 }
 
 /* Profile name, empty for now */
-.status-profileName {
+.status .profileName {
   font-weight: 500;
 }
 
@@ -73,7 +73,7 @@
 }
 
 /* Status creation date */
-.status-createDate {
+.status .createDate {
   color: var(--text-color-secondary);
   font-style: italic;
   margin-left: auto;
@@ -135,9 +135,9 @@
   border-radius: 4px;
 }
 /* .status-linkAttachment is used to wrap image in a link */
-.status-imageAttachment,
-.status-videoAttachment,
-.status-linkAttachment {
+.status .imageAttachment,
+.status .videoAttachment,
+.status .linkAttachment {
   width: 100%;
   object-position: 50% 50%;
   object-fit: cover;

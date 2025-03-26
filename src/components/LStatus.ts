@@ -73,6 +73,14 @@ export function LStatus(opts: StatusProps) {
     [avatar.el],
   )
 
+  function onStatusClick(e: MouseEvent) {
+    let el = (e.composedPath() as HTMLElement[]).find((el) =>
+        ['A', 'IMG', 'VIDEO'].includes(el.tagName?.toUpperCase()),
+      ),
+      selection = window.getSelection()?.toString()
+    if (!el && !selection) onContentClick?.(_status)
+  }
+
   let statusContent = _status.sensitive
     ? undefined
     : h('div', {
@@ -81,14 +89,6 @@ export function LStatus(opts: StatusProps) {
           clickableContent ? 'status-content--clickable' : '',
         ],
         innerHTML: parseContent(_status),
-        onClick: (e) => {
-          if (e.target instanceof HTMLParagraphElement) {
-            // Don't redirect to the single status view if some text is selected -
-            // we only redirect on click
-            let selection = window.getSelection()
-            if (selection?.type !== 'Range') onContentClick?.(_status)
-          }
-        },
       })
 
   let linkToAccount = a(
@@ -122,11 +122,11 @@ export function LStatus(opts: StatusProps) {
             href: attachment.url,
             target: '_blank',
           },
-          className: 'status-linkAttachment',
+          className: 'linkAttachment',
         },
         [
           h('img', {
-            className: 'status-imageAttachment',
+            className: 'imageAttachment',
             attrs: {
               src: attachment.preview_url ?? attachment.url,
               alt: attachment.description ?? '',
@@ -138,7 +138,7 @@ export function LStatus(opts: StatusProps) {
 
     if (['gifv', 'video'].includes(attachment.type))
       return h('video', {
-        className: 'status-videoAttachment',
+        className: 'videoAttachment',
         attrs: {
           src: attachment.url,
           controls: '',
@@ -147,19 +147,29 @@ export function LStatus(opts: StatusProps) {
     else return undefined
   }
 
-  let el = div(
-    ['status', singleView ? 'status--isSingle' : ''],
+  let el = h(
+    'div',
+    {
+      className: ['status', singleView ? 'single' : ''],
+      attrs: {
+        tabIndex: '0',
+      },
+      onClick: onStatusClick,
+      onKeypress: (e) => {
+        if (e.key === 'Enter') onContentClick?.(_status)
+      },
+    },
     [
       isReblogged
-        ? div('status-boostedText', [span('', `${dispName} boosted: `)])
+        ? div('boostedText', [span('', `${dispName} boosted: `)])
         : undefined,
-      div('status-header', [
+      div('header', [
         avatarLink,
-        div('status-profileInfo', [
-          span('status-profileName', `${_status.account?.display_name || ''}`),
+        div('profileInfo', [
+          span('profileName', `${_status.account?.display_name || ''}`),
           linkToAccount,
         ]),
-        span('status-createDate', `${createDate}`),
+        span('createDate', `${createDate}`),
       ]),
       statusContent,
       _status.sensitive ? sensitiveEl : attachments,

@@ -1,1 +1,2 @@
-Content-Security-Policy-Report-Only: default-src 'none';script-src 'self';style-src 'self';base-uri 'self';form-action 'self'
+/index.html
+  Content-Security-Policy-Report-Only: default-src 'none';script-src 'self';style-src 'self';base-uri 'self';form-action 'self'

@@ -14,7 +14,7 @@
   padding-bottom: 4px;
 }
 
-.button--disabled {
+.button.disabled{
   --background-color: #f9f9f9;
   cursor: not-allowed;
 }
@@ -22,7 +22,7 @@
 /**
  * This button is used for icons that
  * should be used as a buttons.
- * 
+ *
  * This class should be used like this:
  *     <button class="icon-button">
  *         <svg ...>
@@ -50,7 +50,7 @@
     --border-color: rgba(243, 245, 247, 0.15);
   }
 
-  .button--disabled {
+  .button.disabled {
     --background-color: darkgray;
   }
 }

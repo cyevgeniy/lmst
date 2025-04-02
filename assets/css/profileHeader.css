@@ -1,10 +1,10 @@
 /* The main wrapper for the profile header */
-.profileHeader {
+.ph {
   padding: 1rem;
 }
 
 /* The wrapper for avatar and user name */
-.profileHeader-userInfo {
+.ph-userInfo {
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
@@ -12,22 +12,22 @@
 }
 
 /* Profile name */
-.profileHeader-name {
+.ph-name {
   font-size: 24px;
   font-weight: 700;
 }
 
 /* Profile description */
-.profileHeader-note {
+.ph-note {
   font-size: 14px;
   padding-top: 14px;
 }
 
-.profileHeader-note p {
+.ph-note p {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.profileHeader-actions {
+.ph-actions {
   margin-top: 14px;
 }

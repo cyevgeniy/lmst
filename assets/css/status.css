@@ -16,7 +16,7 @@
 }
 
 .status + .status {
-  border-top: 1px solid var(--base-border);  
+  border-top: 1px solid var(--base-border);
 }
 
 /* This modifier adds border to the top of the status, so it looks better inside a list of statuses */
@@ -62,13 +62,13 @@
 }
 
 /* Link to a profile */
-.status-profileLink {
+.status .profileLink {
   font-size: 14px;
   color: var(--text-color-secondary);
   text-decoration: none;
 }
 
-.status-profileLink:hover {
+.status .profileLink:hover {
   text-decoration: underline;
 }
 
@@ -82,12 +82,12 @@
 }
 
 /* A wrapper arount status content */
-.status-content {
+.status .content {
   overflow: hidden;
 }
 
 /* A state that indicates that status content can be clicked with a mouse */
-.status-content--clickable p {
+.status .content--clickable p {
   cursor: pointer;
 }
 
@@ -116,7 +116,7 @@
 }
 
 /* Basic container for attachments */
-.status-attachment {
+.status .attachment {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
@@ -124,13 +124,13 @@
 }
 
 /* 2-column grid container for attachments */
-.status-attachment2Col {
+.status .attachment2Col {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
-.status-imageAttachment {
+.status .imageAttachment {
   height: 100%;
   border-radius: 4px;
 }
@@ -145,12 +145,12 @@
 }
 
 /* Container for sensitive content */
-.status-sensitiveContent {
+.status .sensitiveContent {
   margin-top: 8px;
 }
 
 /* A button that shows sensitive content */
-.status-showSensitiveContent {
+.status .showSensitiveContent {
   width: 100%;
 }
 

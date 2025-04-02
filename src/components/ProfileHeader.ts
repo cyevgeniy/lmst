@@ -7,9 +7,9 @@ import { useProfileRelation } from '../utils/useProfileRelation'
 import { user } from '../utils/user'
 
 export function LProfileHeader(account?: Account) {
-  let displayNameEl = div('profileHeader-name'),
-    noteEl = div('profileHeader-note'),
-    actionsEl = div('profileHeader-actions'),
+  let displayNameEl = div('ph-name'),
+    noteEl = div('ph-note'),
+    actionsEl = div('ph-actions'),
     id: Account['id']
 
   let { updateRelation, loading, relation, followunfollow } =
@@ -39,8 +39,8 @@ export function LProfileHeader(account?: Account) {
     if (newVal) follow.text = 'loading...'
   })
 
-  const el = div('profileHeader', [
-    div('profileHeader-userInfo', [avatar.el, displayNameEl]),
+  const el = div('ph', [
+    div('ph-userInfo', [avatar.el, displayNameEl]),
     noteEl,
     actionsEl,
   ])

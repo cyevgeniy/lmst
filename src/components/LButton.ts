@@ -1,7 +1,7 @@
 import { h } from '../utils/dom'
 import type { NodeProps, HTMLEventHandler } from '../utils/dom'
 
-const DISABLED_CLASS = 'button--disabled'
+const DISABLED_CLASS = 'disabled'
 
 export type ButtonProps = {
   text: string

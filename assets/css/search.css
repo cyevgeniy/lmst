@@ -1,13 +1,13 @@
-.search-input {
+.search .input {
   margin-bottom: 2rem;
 }
 
-.search-form,
-.search-profileDetails {
+.search .form,
+.search .profileDetails {
   padding: 0 4px 0 4px;
 }
 
-.search-profileDetails {
+.search .profileDetails {
   cursor: pointer;
   border: 1px solid var(--base-border);
   padding: 4px;
@@ -15,11 +15,11 @@
   margin: 0 4px 16px;
 }
 
-.search-profileDetails > summary {
+.search .profileDetails > summary {
   padding: 4px;
 }
 
-.search-accountsList {
+.search .accountsList {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -28,7 +28,7 @@
   margin-top: 8px;
 }
 
-.search-accountItem {
+.search .accountItem {
   display: flex;
   gap: 0.5rem;
   justify-content: center;

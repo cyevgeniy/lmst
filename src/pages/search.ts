@@ -14,7 +14,7 @@ function isTag(s: string): boolean {
 
 export function createSearchPage(root: HTMLElement, appManager: AppManager) {
   root.innerHTML = ''
-  let input = h('input', { className: 'search-input' }),
+  let input = h('input', { className: 'input' }),
     noMoreDataText = LNoMoreRows() //h('div', {className: 'timelime-no-more-rows'}, 'No more records')
   hide(noMoreDataText)
 
@@ -30,9 +30,9 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
   loadMore.visible = false
 
   let summary = '<summary>Profiles</summary>',
-    profilesRoot = div('search-accountsList'),
+    profilesRoot = div('accountsList'),
     profiles = h('details', {
-      className: 'search-profileDetails',
+      className: 'profileDetails',
       innerHTML: summary,
     })
 
@@ -118,8 +118,8 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
   }
 
   let statusesListRoot = h('div'),
-    form = h('form', { onSubmit, className: 'search-form' }, [input]),
-    el = h('div', null, [
+    form = h('form', { onSubmit, className: 'form' }, [input]),
+    el = h('div', { className: 'search' }, [
       form,
       profiles,
       statusesListRoot,

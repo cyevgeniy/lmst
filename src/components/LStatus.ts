@@ -42,7 +42,7 @@ export function LStatus(opts: StatusProps) {
     attachments = !_status.sensitive ? getAttachmentsEl() : undefined,
     dispName = renderedStatus.account.display_name,
     sensitiveButton = LButton({
-      className: 'status-showSensitiveContent',
+      className: 'showSensitiveContent',
       text: 'Show sensitive content',
       onClick: () => onShowSensitiveClick(),
     })
@@ -56,7 +56,7 @@ export function LStatus(opts: StatusProps) {
   }
 
   let sensitiveEl = _status.sensitive
-    ? div('status-sensitiveContent', [sensitiveButton.el])
+    ? div('sensitiveContent', [sensitiveButton.el])
     : undefined
 
   let avatarLink = h(
@@ -84,22 +84,19 @@ export function LStatus(opts: StatusProps) {
   let statusContent = _status.sensitive
     ? undefined
     : h('div', {
-        className: [
-          'status-content',
-          clickableContent ? 'status-content--clickable' : '',
-        ],
+        className: ['content', clickableContent ? 'content--clickable' : ''],
         innerHTML: parseContent(_status),
       })
 
   let linkToAccount = a(
-    'status-profileLink',
+    'profileLink',
     _status.account?.url,
     _status.account?.acct || '',
   )
 
   function getAttachmentsEl(): HTMLElement | undefined {
     let mediaCnt = _status.media_attachments.length,
-      contClass = mediaCnt > 1 ? 'status-attachment2Col' : 'status-attachment',
+      contClass = mediaCnt > 1 ? 'attachment2Col' : 'attachment',
       result = mediaCnt > 0 ? div(contClass) : undefined
 
     result &&

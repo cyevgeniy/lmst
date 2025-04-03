@@ -140,6 +140,7 @@
 .status .linkAttachment {
   width: 100%;
   object-position: 50% 50%;
+  min-height: 250px;
   object-fit: cover;
   max-height: 400px;
 }

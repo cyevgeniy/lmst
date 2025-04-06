@@ -44,7 +44,7 @@ export function LStatus(opts: StatusProps) {
     sensitiveButton = LButton({
       className: 'showSensitiveContent',
       text: 'Show sensitive content',
-      onClick: () => onShowSensitiveClick(),
+      onClick: onShowSensitiveClick,
     })
 
   function onShowSensitiveClick() {
@@ -75,7 +75,7 @@ export function LStatus(opts: StatusProps) {
 
   function onStatusClick(e: MouseEvent) {
     let el = (e.composedPath() as HTMLElement[]).find((el) =>
-        ['A', 'IMG', 'VIDEO'].includes(el.tagName?.toUpperCase()),
+        ['A', 'IMG', 'VIDEO', 'BUTTON'].includes(el.tagName?.toUpperCase()),
       ),
       selection = window.getSelection()?.toString()
     if (!el && !selection) onContentClick?.(_status)

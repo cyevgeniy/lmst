@@ -41,9 +41,9 @@ export function LStatusesList(props: StatusesListProps) {
       const statusComp = LStatus({
         status,
         permissions,
-        onBoost: (s, b) => onBoost(s, b),
+        onBoost: onBoost,
         onDelete: (s) => onDelete(statusComp, s),
-        onContentClick: (s) => onContentClick(s),
+        onContentClick: onContentClick,
       })
 
       el?.appendChild(statusComp.el)

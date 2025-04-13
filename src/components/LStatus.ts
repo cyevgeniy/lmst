@@ -15,7 +15,6 @@ import { LButton } from './LButton'
 type StatusProps = {
   status: Status
   permissions?: ActionPermissions
-  clickableContent?: boolean
   singleView?: boolean
 } & StatusEventHandlers
 
@@ -23,7 +22,6 @@ export function LStatus(opts: StatusProps) {
   let {
     status,
     permissions = { canDelete: false, canBoost: false },
-    clickableContent = true,
     singleView = false,
     onContentClick = noop,
     ...statuButtonsHandlers
@@ -84,7 +82,7 @@ export function LStatus(opts: StatusProps) {
   let statusContent = _status.sensitive
     ? undefined
     : h('div', {
-        className: ['content', clickableContent ? 'content--clickable' : ''],
+        className: ['content'],
         innerHTML: parseContent(_status),
       })
 

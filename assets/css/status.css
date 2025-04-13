@@ -86,11 +86,6 @@
   overflow: hidden;
 }
 
-/* A state that indicates that status content can be clicked with a mouse */
-.status .content--clickable p {
-  cursor: pointer;
-}
-
 /* A wrapper around buttons with status actions */
 .status-buttons {
   margin-top: 12px;

@@ -131,7 +131,6 @@ export function createStatusPage(
     if (status) {
       const st = LStatus({
         status: status,
-        clickableContent: false,
         singleView: true,
       })
       statusRoot.appendChild(st.el)

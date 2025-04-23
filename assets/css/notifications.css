@@ -32,7 +32,7 @@
 }
 
 .notifications-root > * + * {
-  border-top: 1px solid #ebeef0;
+  border-top: 1px solid var(--base-border);
 }
 
 .notificationReblog__profile {

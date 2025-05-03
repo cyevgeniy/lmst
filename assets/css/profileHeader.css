@@ -30,4 +30,19 @@
 
 .ph-actions {
   margin-top: 14px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.ph-actions > button {
+  flex-basis: 1;
+  flex-grow: 1;
+}
+
+@media  screen and (min-width: 640px) {
+  .ph-actions > button {
+    flex-basis: content;
+    flex-grow: 0;
+  }  
 }

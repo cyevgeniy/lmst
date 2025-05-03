@@ -6,11 +6,16 @@ import { on } from '../utils/signal'
 import { useProfileRelation } from '../utils/useProfileRelation'
 import { user } from '../utils/user'
 
+function openOriginalSite(url: string): void {
+  url && window.open(`${url}`, '_blank')
+}
+
 export function LProfileHeader(account?: Account) {
   let displayNameEl = div('ph-name'),
     noteEl = div('ph-note'),
     actionsEl = div('ph-actions'),
-    id: Account['id']
+    id: Account['id'],
+    url: Account['url']
 
   let { updateRelation, loading, relation, followunfollow } =
     useProfileRelation()
@@ -19,9 +24,14 @@ export function LProfileHeader(account?: Account) {
   // followunfollow
 
   let avatar = LAvatar({ img: '', size: 'lg' }),
-    follow = LButton({ text: '', onClick: () => followunfollow(id) })
+    follow = LButton({ text: '', onClick: () => followunfollow(id) }),
+    originalSite = LButton({
+      text: 'Open in original site',
+      onClick: () => openOriginalSite(url),
+    })
 
   actionsEl.appendChild(follow.el)
+  actionsEl.appendChild(originalSite.el)
   const { show, hide } = useCommonEl(follow.el)
   hide()
 
@@ -55,6 +65,10 @@ export function LProfileHeader(account?: Account) {
     const parsedContent = account?.note ?? ''
     noteEl.innerHTML = parsedContent
     avatar.img = account?.avatar ?? ''
+    url = account?.url ?? ''
+
+    // Hide 'open in original site' button if account url is empty
+    if (!url) hide(openOriginalSite.el)
 
     // Don't show 'follow'/'unfollow' on your own profile
     if (account && user.user().id !== account.id && user.isLoaded()) {

@@ -30,6 +30,10 @@ export function LProfileHeader(account?: Account) {
       onClick: () => openOriginalSite(url),
     })
 
+  let { show: showOriginalSite, hide: hideOriginalSite } = useCommonEl(
+    originalSite.el,
+  )
+
   actionsEl.appendChild(follow.el)
   actionsEl.appendChild(originalSite.el)
   const { show, hide } = useCommonEl(follow.el)
@@ -68,7 +72,8 @@ export function LProfileHeader(account?: Account) {
     url = account?.url ?? ''
 
     // Hide 'open in original site' button if account url is empty
-    if (!url) hide(openOriginalSite.el)
+    if (!url) hideOriginalSite()
+    else showOriginalSite()
 
     // Don't show 'follow'/'unfollow' on your own profile
     if (account && user.user().id !== account.id && user.isLoaded()) {

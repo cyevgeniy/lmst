@@ -280,7 +280,7 @@ export class StatusManager implements IStatusManager {
 
     try {
       let resp = await fetchJson<Status>(`${this.server()}/api/v1/statuses`, {
-        method: 'POST',
+        method: 'post',
         withCredentials: true,
         body: payload,
       })
@@ -296,7 +296,7 @@ export class StatusManager implements IStatusManager {
 
     try {
       await fetchJson(`${this.server()}/api/v1/statuses/${id}/reblog`, {
-        method: 'POST',
+        method: 'post',
         withCredentials: true,
       })
     } catch (e: unknown) {
@@ -309,7 +309,7 @@ export class StatusManager implements IStatusManager {
 
     try {
       await fetchJson(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
-        method: 'POST',
+        method: 'post',
         withCredentials: true,
       })
     } catch (e: unknown) {
@@ -367,9 +367,10 @@ export class StatusManager implements IStatusManager {
   }
 
   public getPermissions(): ActionPermissions {
+    let loaded = user.isLoaded()
     return {
-      canDelete: user.isLoaded(),
-      canBoost: user.isLoaded(),
+      canDelete: loaded,
+      canBoost: loaded,
     }
   }
 

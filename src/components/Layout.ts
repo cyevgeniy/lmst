@@ -3,11 +3,11 @@ import { LNav } from './LNav'
 import type { GlobalNavigation } from '../types/shared'
 
 export function createLayout(root: HTMLElement, gn: GlobalNavigation) {
-  let middle = div('layout__middle'),
-    right = div('layout__right'),
-    footer = div('layout__footer')
+  let middle = div('ltMiddle'),
+    right = div('ltRight'),
+    footer = div('ltFooter')
 
-  childs(root, [LNav(gn), div('layout__container', [middle, right]), footer])
+  childs(root, [LNav(gn), div('ltContainer', [middle, right]), footer])
 
   return {
     middle,

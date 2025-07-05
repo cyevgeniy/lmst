@@ -30,8 +30,8 @@ export function LStatusesList(props: StatusesListProps) {
     clearStatuses = () => (el.innerHTML = '')
 
   function addStatuses(statuses: Status[]) {
-    const fragment = document.createDocumentFragment()
-    for (const status of statuses) {
+    let fragment = document.createDocumentFragment()
+    for (let status of statuses) {
       let own = props.sm.ownStatus(status.reblog ?? status),
         perm = props.sm.getPermissions(),
         permissions = {
@@ -39,7 +39,7 @@ export function LStatusesList(props: StatusesListProps) {
           canDelete: perm.canDelete && own,
         }
 
-      const statusComp = LStatus({
+      let statusComp = LStatus({
         status,
         permissions,
         onBoost: onBoost,

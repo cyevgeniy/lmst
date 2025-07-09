@@ -5,12 +5,12 @@ import type {
 } from '../types/shared'
 import { h, a, div, span } from '../utils/dom'
 import { fmtDate } from '../utils/dates'
-import { lRouter } from '../router'
 import { LAvatar } from './Avatar'
 import { LStatusButtons } from './LStatusButtons'
 import type { ActionPermissions } from './LStatusButtons'
 import { parseContent, noop } from '../utils/shared'
 import { LButton } from './LButton'
+import { LProfileLink } from './LProfileLink'
 
 type StatusProps = {
   status: Status
@@ -57,19 +57,7 @@ export function LStatus(opts: StatusProps) {
     ? div('sensitiveContent', [sensitiveButton.el])
     : undefined
 
-  let avatarLink = h(
-    'a',
-    {
-      attrs: {
-        href: `/profile/${_status.account.acct}/`,
-      },
-      onClick: (e) => {
-        e.preventDefault()
-        lRouter.navigateTo(`/profile/${_status.account.acct}/`)
-      },
-    },
-    [avatar.el],
-  )
+  let avatarLink = LProfileLink(_status.account, [avatar.el])
 
   function onStatusClick(e: MouseEvent) {
     let el = (e.composedPath() as HTMLElement[]).find((el) =>

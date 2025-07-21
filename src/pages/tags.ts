@@ -10,7 +10,7 @@ export function createTagsPage(
 ) {
   root.innerHTML = ''
 
-  let tagHeader = h('h2'),
+  let tagHeader = h('h2', { className: 'tagHeader' }),
     noMoreDataText = h(
       'div',
       { className: 'timelime-no-more-rows' },

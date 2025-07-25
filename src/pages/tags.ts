@@ -2,6 +2,7 @@ import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { h, div, hide, show } from '../utils/dom'
 import { AppManager } from '../appManager'
+import { LNoMoreRows } from '../components/LNoMoreRows'
 
 export function createTagsPage(
   root: HTMLElement,
@@ -11,11 +12,7 @@ export function createTagsPage(
   root.innerHTML = ''
 
   let tagHeader = h('h2', { className: 'tagHeader' }),
-    noMoreDataText = h(
-      'div',
-      { className: 'timelime-no-more-rows' },
-      'No more records',
-    ),
+    noMoreDataText = LNoMoreRows('No more records'),
     loadMoreBtn = LLoadMoreBtn({
       text: 'Load more',
       onClick: () => loadStatuses(appManager.tagsManager.tag),

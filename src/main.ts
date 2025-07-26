@@ -57,8 +57,6 @@ user.verifyCredentials().then(() => {
     cacheAndNavigate(params._path, mainPage.middle, () =>
       createTagsPage(mainPage.middle, appManager, params),
     )
-    // xxx: need to fix that - we call a constructor twice
-    createTagsPage(mainPage.middle, appManager, params)
   })
   lRouter.on('/status/:server/:webfinger/:id', (params) =>
     createStatusPage(mainPage.middle, appManager, params),

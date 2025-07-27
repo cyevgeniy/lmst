@@ -4,7 +4,7 @@ import { notificationsStore as ns } from '../store/notificationsStore'
 import { LStatus } from '../components/LStatus'
 import { LButton } from '../components/LButton'
 import { LFollowedNotification } from '../components/LFollowedNotification'
-import { LReblogNotification } from '../components/LReblogNotification'
+import { LNotificationWithStatus } from '../components/LNotificationWithStatus'
 import { LUnimplementedNotification } from '../components/LUnimplementedNotification'
 import type { Notification } from '../types/shared'
 
@@ -33,12 +33,12 @@ export function createNotificationsPage(root: HTMLElement) {
     switch (n.type) {
       case 'follow':
         return LFollowedNotification(n).el
-      case 'reblog':
-        return LReblogNotification(n).el
       case 'mention':
         return LStatus({ status: n.status! }).el
       case 'favourite':
-        return LReblogNotification(n).el
+      case 'reblog':
+      case 'update':
+        return LNotificationWithStatus(n).el
       default:
         return LUnimplementedNotification(n).el
     }

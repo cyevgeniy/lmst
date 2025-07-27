@@ -38,6 +38,7 @@ export function createNotificationsPage(root: HTMLElement) {
       case 'favourite':
       case 'reblog':
       case 'update':
+        /** @ts-expect-error we handle only these three types in LNotificationWithStatus */
         return LNotificationWithStatus(n).el
       default:
         return LUnimplementedNotification(n).el

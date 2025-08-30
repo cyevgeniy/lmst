@@ -8,7 +8,7 @@ export type AvatarProps = {
 export function LAvatar(props: AvatarProps) {
   const { img, size = 'md', ...handlers } = props
   const el = h('img', {
-    className: ['avatar', size === 'md' ? 'avatar--md' : 'avatar--lg'],
+    className: ['avatar', size],
     attrs: { src: img },
     ...handlers,
   })

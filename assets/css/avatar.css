@@ -3,12 +3,12 @@
   border-radius: 9000px;
 }
 
-.avatar--md {
+.avatar.md {
   width: 40px;
   height: 40px;
 }
 
-.avatar--lg {
+.avatar.lg {
   width: 60px;
   height: 60px;
 }

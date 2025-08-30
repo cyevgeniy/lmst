@@ -1,6 +1,5 @@
 import { h, div, show, hide, getIcon } from '../utils/dom'
 import { user } from '../utils/user'
-//import { lRouter } from '../router'
 import type { Account, GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'

@@ -71,11 +71,15 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   }
 
   async function onPostClick() {
+    postAvailable(false)
+
     let res = await appManager.statusManager.postStatus({
       statusText: text(),
       files: files(),
       sensitive: sensitiveCheckbox.checked,
     })
+
+    postAvailable(true)
 
     if (res.ok) {
       text('')

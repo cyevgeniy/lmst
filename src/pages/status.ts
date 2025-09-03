@@ -74,11 +74,13 @@ export function createStatusPage(
       onClick: async () => {
         if (!text() || !status) return
 
+        postAvailable(false)
         const res = await appManager.statusManager.postStatus({
           statusText: `@${status.account.acct} ${replyTextArea.value}`,
           files: files(),
           in_reply_to_id: statusId,
         })
+        postAvailable(true)
 
         if (res.ok) {
           statusesList.addStatuses([res.value])

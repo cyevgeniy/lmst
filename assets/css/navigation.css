@@ -10,6 +10,7 @@
   padding-right: 16px;
   border-bottom: 1px solid var(--base-border);
   background-color: var(--background-color);
+  z-index: 50;
 }
 
 /* A link inside the navigation bar */

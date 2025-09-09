@@ -10,7 +10,8 @@
   padding-right: 16px;
   border-bottom: 1px solid var(--base-border);
   background-color: var(--background-color);
-  z-index: 50;
+  /* Should be less than in compose-zen wrapper (30) */
+  z-index: 20;
 }
 
 /* A link inside the navigation bar */

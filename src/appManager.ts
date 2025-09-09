@@ -65,14 +65,10 @@ export class TimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    let { server } = useAppConfig()
-    let fn = async () =>
-      await getPublicTimeline(server(), { max_id: this.maxId })
+    let { server } = useAppConfig(),
+      fn = user.isLoaded() ? getHomeTimeline : getPublicTimeline
 
-    if (user.isLoaded())
-      fn = async () => await getHomeTimeline(server(), { max_id: this.maxId })
-
-    let st = await fn()
+    let st = await fn.call(null, server(), { max_id: this.maxId })
 
     if (st.ok) {
       let statuses = st.value

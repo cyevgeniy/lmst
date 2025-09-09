@@ -1,37 +1,37 @@
-.notifications-clear {
+.ntf-clear {
   width: 100%;
 }
 
-.notification-actions {
+.ntf-actions {
   padding: 0px 4px;
 }
 
-.notification-noData {
+.ntf-noData {
   text-align: center;
   color: gray;
 }
 
 @media screen and (min-width: 1240px) {
-  .notifications-clear {
+  .ntf-clear {
     width: auto;
     margin: 0;
   }
-  .notification-actions {
+  .ntf-actions {
     padding: 0;
   }
 }
 
-.notifications-root {
+.ntf-root {
   display: flex;
   flex-direction: column;
 }
 
-.notifications-root > * {
+.ntf-root > * {
   margin-top: 24px;
   padding: 16px 4px;
 }
 
-.notifications-root > * + * {
+.ntf-root > * + * {
   border-top: 1px solid var(--base-border);
 }
 

@@ -103,10 +103,10 @@
 }
 
 /* This state is used for the 'boost' button when the status is already boosted */
-.status-button-isBoosted {
+.status-button.boosted {
   color: darkred;
 }
-.status-button-isBoosted:hover {
+.status-button.boosted:hover {
   color: red;
 }
 

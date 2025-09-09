@@ -11,7 +11,7 @@ type StatusButtonsProps = {
   permissions: ActionPermissions
 } & StatusEventHandlers
 
-const BOOSTED_CLASS = 'status-button-isBoosted'
+const BOOSTED_CLASS = 'boosted'
 
 export function LStatusButtons(props: StatusButtonsProps) {
   let status = props.status.reblog ?? props.status
@@ -23,7 +23,7 @@ export function LStatusButtons(props: StatusButtonsProps) {
     let className: string[] = ['icon-button', 'status-button'],
       title = 'Boost'
     if (status.reblogged) {
-      className.push('status-button-isBoosted')
+      className.push(BOOSTED_CLASS)
       title = 'Unboost'
     }
 

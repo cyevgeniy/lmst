@@ -20,9 +20,6 @@ export function LProfileHeader(account?: Account) {
   let { updateRelation, loading, relation, followunfollow } =
     useProfileRelation()
 
-  // let { followunfollow } = useProfileRelation(id)
-  // followunfollow
-
   let avatar = LAvatar({ img: '', size: 'lg' }),
     follow = LButton({ text: '', onClick: () => followunfollow(id) }),
     originalSite = LButton({
@@ -66,8 +63,7 @@ export function LProfileHeader(account?: Account) {
    */
   async function update(account?: Account) {
     displayNameEl.innerText = account?.display_name ?? ''
-    const parsedContent = account?.note ?? ''
-    noteEl.innerHTML = parsedContent
+    noteEl.innerHTML = account?.note ?? ''
     avatar.img = account?.avatar ?? ''
     url = account?.url ?? ''
 

@@ -13,15 +13,15 @@ export function createNotificationsPage(root: HTMLElement) {
   let dismissBtn = LButton({
       text: 'Clear all notifications',
       onClick: ns.dismissAll,
-      className: 'notifications-clear',
+      className: 'ntf-clear',
     }),
-    actions = div('notification-actions', [dismissBtn.el]),
+    actions = div('ntf-actions', [dismissBtn.el]),
     noData = h(
       'div',
-      { className: 'notification-noData' },
+      { className: 'ntf-noData' },
       'You have no unread notifications',
     ),
-    nRoot = div('notifications-root'),
+    nRoot = div('ntf-root'),
     el = h('div', null, [actions, nRoot])
 
   // Initially, hide actions block, because if there're no

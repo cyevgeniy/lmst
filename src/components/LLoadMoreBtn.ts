@@ -1,21 +1,21 @@
-import { HTMLEventHandler } from '../utils/dom'
+import { hide, HTMLEventHandler, show } from '../utils/dom'
 import { LButton } from './LButton'
 
 export interface LoadMoreBtnProps {
   text: string
 }
 export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
-  const { text, onClick, ...handlers } = props
+  const { text = 'Load more', onClick, ...handlers } = props
 
   let loading = false,
     btn = LButton({
-      text: 'Load more',
+      text,
       className: ['timeline__load-more'],
       ...handlers,
       onClick: _onClick,
     })
 
-  function _onClick(e: MouseEvent) {
+  function _onClick(e: PointerEvent) {
     !loading && onClick?.(e)
   }
 
@@ -23,19 +23,14 @@ export function LLoadMoreBtn(props: LoadMoreBtnProps & HTMLEventHandler) {
     el: btn.el,
 
     set visible(v: boolean) {
-      btn.el.style.display = v ? 'block' : 'none'
+      if (v) show(btn.el)
+      else hide(btn.el)
     },
     set loading(v: boolean) {
       if (loading === v) return
 
-      loading = v
-      btn.disabled = v
-
-      if (v) {
-        btn.text = 'Loading...'
-      } else {
-        btn.text = text
-      }
+      loading = btn.disabled = v
+      btn.text = v ? `Loading...` : text
     },
   }
 }

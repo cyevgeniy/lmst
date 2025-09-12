@@ -33,7 +33,7 @@
     "simple-git-hooks": "^2.13.0",
     "size-limit": "^11.2.0",
     "tap": "^21.0.1",
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.2",
     "vite": "^6.3.5",
     "zod": "^3.25.74"
   }

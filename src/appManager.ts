@@ -399,8 +399,10 @@ export function useGlobalNavigation(
   async function login() {
     if (user.isLoaded()) goHome()
     else {
-      const server = prompt('Enter server:')
+      let server = prompt('Enter server:')
       if (!server) return
+
+      if (!server.startsWith('http')) server = `https://${server}`
 
       config.server(server)
       await user.authorize()

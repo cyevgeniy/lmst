@@ -1,3 +1,9 @@
+export interface Field {
+  name: string
+  value: string
+  verified_at: string | null
+}
+
 export interface Account {
   /**
    * Account id
@@ -30,6 +36,8 @@ export interface Account {
   acct: string
 
   username: string
+
+  fields: Field[]
 }
 
 /**

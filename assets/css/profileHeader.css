@@ -4,7 +4,7 @@
 }
 
 /* The wrapper for avatar and user name */
-.ph-userInfo {
+.phUserInfo {
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
@@ -12,32 +12,39 @@
 }
 
 /* Profile name */
-.ph-name {
+.phName {
   font-size: 24px;
   font-weight: 700;
 }
 
 /* Profile description */
-.ph-note {
+.phNote {
   font-size: 14px;
   padding-top: 14px;
 }
 
-.ph-note p {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.ph-actions {
+.phActions {
   margin-top: 14px;
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
 }
 
-.ph-actions > button {
+.phActions > button {
   flex-basis: 1;
   flex-grow: 1;
+}
+
+.phFields {
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+}
+
+.phFieldItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 @media  screen and (min-width: 640px) {

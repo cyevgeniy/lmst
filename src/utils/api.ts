@@ -26,10 +26,9 @@ export function success<T>(v: T): Succeed<T> {
 
 export function getQueryParams<T extends object>(params: T): string {
   let queryArr = Object.entries(params)
-    .filter(([_, value]) => value)
-    .map(([key, value]) => `${key}=${value}`)
-
-  let queryParams = queryArr.join('&')
+      .filter(([_, value]) => value)
+      .map(([key, value]) => `${key}=${value}`),
+    queryParams = queryArr.join('&')
 
   return queryParams.length > 0 ? `?${queryParams}` : ''
 }

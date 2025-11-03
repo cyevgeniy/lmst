@@ -17,14 +17,11 @@ export function LNotificationWithStatus(n: SupportedNotification) {
       update: 'updated his status',
       favourite: 'bookmarked your status',
     }[n.type],
-    profile = div('notificationReblog__profile', [
+    profile = div('nfReblog__profile', [
       LAvatarLink(n.account).el,
       h('p', null, `${n.account.display_name} ${text}:`),
     ]),
-    el = div('notification--reblog', [
-      profile,
-      LStatus({ status: n.status! }).el,
-    ])
+    el = div('nfReblog', [profile, LStatus({ status: n.status! }).el])
 
   return {
     el,

@@ -2,7 +2,7 @@ import { div, getIcon, h, show, hide } from '../utils/dom'
 import type { Signal } from '../utils/signal'
 
 export function LFilePicker(files: Signal<File[]>) {
-  let t = h('div')
+  let t = div('')
 
   t.innerHTML = `<input type="file" class="filepicker-input" accept="image/*" multiple>`
   let input = t.firstElementChild as HTMLInputElement,

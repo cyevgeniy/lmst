@@ -1,6 +1,6 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
-import { h, div, hide, show } from '../utils/dom'
+import { h, div, hide, show, childs } from '../utils/dom'
 import { AppManager } from '../appManager'
 import { LNoMoreRows } from '../components/LNoMoreRows'
 
@@ -37,7 +37,8 @@ export function createTagsPage(
     timelineContainer,
     loadMoreBtnContainer,
   ])
-  root.appendChild(el)
+
+  childs(root, [el])
 
   async function loadStatuses(tag: string) {
     loadMoreBtn.loading = true

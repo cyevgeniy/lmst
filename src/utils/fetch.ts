@@ -1,6 +1,6 @@
 import { user } from './user'
 
-export function $fetch(
+function $fetch(
   url: string,
   opts: RequestInit & { withCredentials?: boolean } = {},
 ): Promise<Response> {

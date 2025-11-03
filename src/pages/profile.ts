@@ -36,13 +36,13 @@ export function createProfilePage(
 
   hide(noMoreDataText)
 
-  timelineContainer.appendChild(loadMoreBtnContainer)
+  childs(timelineContainer, [loadMoreBtnContainer])
 
   let el = h('div', { attrs: { id: 'timeline-root' } }),
     profileHeaderComponent = LProfileHeader()
 
   childs(el, [profileHeaderComponent, timelineContainer])
-  root.appendChild(el)
+  childs(root, [el])
 
   async function loadStatuses() {
     if (!profileId) return

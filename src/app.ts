@@ -9,42 +9,43 @@ interface RegisteredApp {
   appInfo: Application
 }
 
-export const APP_INFO_KEY = 'appInfo'
+let KEY = 'appInfo'
 
-export class App {
-  private static instance: App
-  private appInfo: Application | undefined
-  // @ts-ignore config is always assigned, check out constructor
-  private config: AppConfig
+function createApp() {
+  let appInfo: Application | undefined,
+    config: AppConfig = useAppConfig()
 
-  constructor() {
-    if (App.instance) return
+  async function registerApp(): Promise<ApiResult<RegisteredApp>> {
+    let tmp = store.getItem(KEY)
 
-    App.instance = this
-    this.appInfo = undefined
-    this.config = useAppConfig()
-  }
+    if (tmp) appInfo = JSON.parse(tmp) as Application
 
-  public async registerApp(): Promise<ApiResult<RegisteredApp>> {
-    let tmp = store.getItem(APP_INFO_KEY)
-
-    if (tmp) this.appInfo = JSON.parse(tmp) as Application
-
-    if (this.appInfo) return success({ appInfo: this.appInfo })
+    if (appInfo) return success({ appInfo })
 
     let res = await _registerApp({
-      server: this.config.server(),
-      redirectUris: `${this.config.baseUrl}/oauth`,
-      clientName: this.config.clientName,
-      website: `${this.config.baseUrl}`,
+      server: config.server(),
+      redirectUris: `${config.baseUrl}/oauth`,
+      clientName: config.clientName,
+      website: `${config.baseUrl}`,
       scopes: 'read write push follow',
     })
 
     if (!res.ok) return res
 
-    this.appInfo = res.value
-    store.setItem(APP_INFO_KEY, this.appInfo)
+    appInfo = res.value
+    store.setItem(KEY, appInfo)
 
-    return success({ appInfo: this.appInfo })
+    return success({ appInfo })
+  }
+
+  function clearStore() {
+    store.removeItem(KEY)
+  }
+
+  return {
+    registerApp,
+    clearStore,
   }
 }
+
+export let app = createApp()

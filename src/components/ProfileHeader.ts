@@ -1,4 +1,4 @@
-import { div, useCommonEl } from '../utils/dom'
+import { childs, div, h, useCommonEl } from '../utils/dom'
 import type { Account } from '../types/shared'
 import { LAvatar } from './Avatar'
 import { LButton } from './LButton'
@@ -11,9 +11,10 @@ function openOriginalSite(url: string): void {
 }
 
 export function LProfileHeader(account?: Account) {
-  let displayNameEl = div('ph-name'),
-    noteEl = div('ph-note'),
-    actionsEl = div('ph-actions'),
+  let displayNameEl = div('phName'),
+    noteEl = div('phNote'),
+    fieldsEl = div('phFields'),
+    actionsEl = div('phActions'),
     id: Account['id'],
     url: Account['url']
 
@@ -31,8 +32,7 @@ export function LProfileHeader(account?: Account) {
     originalSite.el,
   )
 
-  actionsEl.appendChild(follow.el)
-  actionsEl.appendChild(originalSite.el)
+  childs(actionsEl, [follow, originalSite])
   const { show, hide } = useCommonEl(follow.el)
   hide()
 
@@ -51,8 +51,9 @@ export function LProfileHeader(account?: Account) {
   })
 
   const el = div('ph', [
-    div('ph-userInfo', [avatar.el, displayNameEl]),
+    div('phUserInfo', [avatar.el, displayNameEl]),
     noteEl,
+    fieldsEl,
     actionsEl,
   ])
 
@@ -66,6 +67,18 @@ export function LProfileHeader(account?: Account) {
     noteEl.innerHTML = account?.note ?? ''
     avatar.img = account?.avatar ?? ''
     url = account?.url ?? ''
+
+    account?.fields.forEach((field) => {
+      childs(fieldsEl, [
+        div('phFieldItem', [
+          h('div', {
+            className: ['name', field.verified_at ? 'verified' : ''],
+            innerHTML: field.name,
+          }),
+          h('div', { className: 'value', innerHTML: field.value }),
+        ]),
+      ])
+    })
 
     // Hide 'open in original site' button if account url is empty
     if (!url) hideOriginalSite()

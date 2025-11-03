@@ -88,22 +88,10 @@ export let hide = (el: HTMLElement) => (el.style.display = 'none')
 export let show = (el: HTMLElement) => (el.style.display = '')
 
 export function useCommonEl<T extends HTMLElement>(el: T) {
-  function _show() {
-    show(el)
-  }
-
-  function _hide() {
-    hide(el)
-  }
-
-  function setText(t: string) {
-    el.innerText = t
-  }
-
   return {
-    show: _show,
-    hide: _hide,
-    setText,
+    show: () => show(el),
+    hide: () => hide(el),
+    setText: (t: string) => (el.innerText = t),
   }
 }
 
@@ -111,10 +99,8 @@ export interface ElLike<T extends HTMLElement = HTMLElement> {
   el: T
 }
 
-function isElLike<T extends HTMLElement>(v: T | ElLike<T>): v is ElLike<T> {
-  return 'el' in v
-}
-
+let isElLike = <T extends HTMLElement>(v: T | ElLike<T>): v is ElLike<T> =>
+  'el' in v
 /**
  * Appends childs to the specified element
  * Each of elements can be a 'native' html element,

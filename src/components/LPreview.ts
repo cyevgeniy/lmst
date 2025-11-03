@@ -1,4 +1,4 @@
-import { div, h } from '../utils/dom'
+import { childs, div, h } from '../utils/dom'
 import { on } from '../utils/signal.ts'
 import type { Signal } from '../utils/signal.ts'
 
@@ -18,7 +18,7 @@ export function LPreview(files: Signal<File[]>) {
         let src = URL.createObjectURL(file),
           img = h('img', { attrs: { src } })
 
-        el.appendChild(img)
+        childs(el, [img])
       }
     })
 

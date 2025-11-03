@@ -1,7 +1,7 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LNoMoreRows } from '../components/LNoMoreRows'
-import { div, h, hide } from '../utils/dom'
+import { childs, div, h, hide } from '../utils/dom'
 import type { AppManager } from '../appManager.ts'
 
 export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
@@ -50,7 +50,7 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
     statusesList?.addStatuses(st)
   }
 
-  root.appendChild(el)
+  childs(root, [el])
   loadMore()
 
   return {

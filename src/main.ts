@@ -12,6 +12,7 @@ import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
 import { user } from './utils/user'
+import { childs } from './utils/dom'
 
 const appManager = new AppManager()
 
@@ -23,7 +24,7 @@ function cacheAndNavigate(
   let page = getCached(path, cb)
 
   mountpoint.innerHTML = ''
-  mountpoint.appendChild(page.el)
+  childs(mountpoint, [page])
 }
 
 user.verifyCredentials().then(() => {

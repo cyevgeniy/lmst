@@ -46,8 +46,7 @@ export function createNotificationsPage(root: HTMLElement) {
   }
 
   function renderNotifications() {
-    for (const n of ns.notifications())
-      nRoot.appendChild(getNotificationNode(n))
+    childs(nRoot, ns.notifications().map(getNotificationNode))
   }
 
   let onUnmount = on(ns.notifications, () => {

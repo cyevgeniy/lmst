@@ -33,7 +33,7 @@ export function createStatusPage(
     }),
     el = div('', [statusRoot, replyToStatus, descendantsRoot])
 
-  root.appendChild(el)
+  childs(root, [el])
 
   let { text, postAvailable, cleanup, files } = useCompose()
 
@@ -135,7 +135,7 @@ export function createStatusPage(
         status: status,
         singleView: true,
       })
-      statusRoot.appendChild(st.el)
+      childs(statusRoot, [st])
     } else {
       statusRoot.innerText = 'No status'
     }

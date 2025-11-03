@@ -104,7 +104,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
     preview.el,
   ])
 
-  root.appendChild(el)
+  childs(root, [el])
   textArea.focus()
 
   return {

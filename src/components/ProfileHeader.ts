@@ -69,7 +69,7 @@ export function LProfileHeader(account?: Account) {
     url = account?.url ?? ''
 
     account?.fields.forEach((field) => {
-      fieldsEl.appendChild(
+      childs(fieldsEl, [
         div('phFieldItem', [
           h('div', {
             className: ['name', field.verified_at ? 'verified' : ''],
@@ -77,7 +77,7 @@ export function LProfileHeader(account?: Account) {
           }),
           h('div', { className: 'value', innerHTML: field.value }),
         ]),
-      )
+      ])
     })
 
     // Hide 'open in original site' button if account url is empty

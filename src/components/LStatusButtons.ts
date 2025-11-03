@@ -1,4 +1,4 @@
-import { getIcon, h } from '../utils/dom'
+import { div, getIcon, h } from '../utils/dom'
 import type { Status, StatusEventHandlers } from '../types/shared.d.ts'
 
 export interface ActionPermissions {
@@ -49,18 +49,10 @@ export function LStatusButtons(props: StatusButtonsProps) {
   canBoost && (boostBtn = createBoostBtn())
   canDelete && (deleteBtn = createDeleteBtn())
 
-  const el = h(
-    'div',
-    {
-      className: 'status-buttons',
-    },
-    [boostBtn, deleteBtn],
-  )
+  const el = div('status-buttons', [boostBtn, deleteBtn])
 
   function onBoostClick() {
-    if (props.onBoost) {
-      props.onBoost(status, !status.reblogged)
-    }
+    props.onBoost?.(status, !status.reblogged)
 
     // Toggle boosted class
     if (!status.reblogged) boostBtn?.classList.add(BOOSTED_CLASS)
@@ -70,7 +62,7 @@ export function LStatusButtons(props: StatusButtonsProps) {
   }
 
   function onDeleteClick() {
-    props.onDelete && props.onDelete(status)
+    props.onDelete?.(status)
   }
 
   return {

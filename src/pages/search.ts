@@ -60,9 +60,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
   })
 
   function renderProfiles(accounts: Account[]) {
-    for (const acct of accounts) {
-      profilesRoot.appendChild(LProfileListInfo(acct).el)
-    }
+    childs(profilesRoot, accounts.map(LProfileListInfo))
   }
 
   async function search(

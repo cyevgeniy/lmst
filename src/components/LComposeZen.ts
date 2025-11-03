@@ -35,7 +35,7 @@ export function LComposeZen(props: ComposeZenProps) {
 
   childs(wrapper, [textarea, btn])
 
-  el.appendChild(wrapper)
+  childs(el, [wrapper])
 
   return {
     el,

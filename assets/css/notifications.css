@@ -35,7 +35,7 @@
   border-top: 1px solid var(--base-border);
 }
 
-.notificationReblog__profile {
+.nfReblog__profile {
   display: flex;
   align-items: center;
   gap: 8px;

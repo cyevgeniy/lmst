@@ -70,8 +70,11 @@ export function LProfileHeader(account?: Account) {
 
     account?.fields.forEach((field) => {
       fieldsEl.appendChild(
-        div('fieldItem', [
-          h('div', { className: 'name', innerHTML: field.name }),
+        div('phFieldItem', [
+          h('div', {
+            className: ['name', field.verified_at ? 'verified' : ''],
+            innerHTML: field.name,
+          }),
           h('div', { className: 'value', innerHTML: field.value }),
         ]),
       )

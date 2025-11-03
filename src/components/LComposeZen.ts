@@ -9,14 +9,14 @@ export interface ComposeZenProps {
 export function LComposeZen(props: ComposeZenProps) {
   let { onClose = noop } = props
   let btn = h('button', {
-      className: ['icon-button', 'compose-zen__button'],
+      className: ['icon-button', 'zenButton'],
       innerHTML: getIcon('icon-exitFullScreen'),
       onClick: onClose,
     }),
-    el = div('compose-zen'),
-    wrapper = div('compose-zen-wrapper'),
+    el = div('zen'),
+    wrapper = div('zenWrapper'),
     textarea = h('textarea', {
-      className: 'compose-zen__textarea',
+      className: 'zenTextarea',
       attrs: {
         placeholder: 'What is on your mind?',
       },

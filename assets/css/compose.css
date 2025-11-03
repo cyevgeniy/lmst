@@ -66,7 +66,7 @@
   }
 }
 
-.compose-zen {
+.zen {
   position: fixed;
   top: 0;
   left: 0;
@@ -79,32 +79,32 @@
   z-index: 30;
 }
 
-.compose-zen__textarea {
+.zenTextarea {
   font-size: 20px;
   height: 100%;
   border: none;
   padding: 16px;
 }
 
-.compose-zen__textarea:focus {
+.zenTextarea:focus {
   outline: none;
 }
 
-.compose-zen__button {
+.zenButton {
   position: absolute;
   top: 12px;
   right: 12px;
 }
 
-.compose-zen__button > svg {
+.zenButton > svg {
   color: darkgray;
 }
 
-.compose-zen__button > svg:hover {
+.zenButton > svg:hover {
   color: black;
 }
 
-.compose-zen-wrapper {
+.zenWrapper {
   margin: 0 auto;
   width: 100%;
   display: flex;
@@ -113,13 +113,13 @@
 }
 
 @media screen and (min-width: 1024px) {
-  .compose-zen-wrapper {
+  .zenWrapper {
     width: 700px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  .compose-toolbar__zen > svg:hover, .compose-zen__button > svg:hover {
+  .compose-toolbar__zen > svg:hover, .zenButton > svg:hover {
     color: white;
   }
 

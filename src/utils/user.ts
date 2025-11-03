@@ -1,17 +1,15 @@
 import { Token } from '../api/app'
-import { APP_INFO_KEY } from '../app'
 import { useAppConfig } from '../appConfig'
 import { ApiResult, fail, success } from './api'
 import { searchParams } from './url'
 import { store } from '../store'
-import { App } from '../app'
+import { app } from '../app'
 import { createSignal } from './signal'
 import { logErr } from './errors'
 import type { Account } from '../types/shared'
 
 function createUserStore() {
   let config = useAppConfig(),
-    app = new App(),
     user = createSignal<Account>({
       id: '',
       username: '',
@@ -20,6 +18,7 @@ function createUserStore() {
       display_name: '',
       note: '',
       avatar: '',
+      fields: [],
     }),
     token: Token | undefined
 
@@ -98,6 +97,7 @@ function createUserStore() {
       display_name: '',
       note: '',
       url: '',
+      fields: [],
     })
   }
 
@@ -115,7 +115,6 @@ function createUserStore() {
     loadCachedUser()
 
     if (user().id) {
-      //this.processCallbacks()
       return
     }
 
@@ -124,7 +123,6 @@ function createUserStore() {
     if (!tmp) {
       clearUserData()
       return
-      //this.processCallbacks()
     }
 
     let token = (JSON.parse(tmp) as Token).access_token,
@@ -144,19 +142,15 @@ function createUserStore() {
 
       store.setItem(USER_KEY, _user)
     }
-
-    //this.processCallbacks()
   }
 
   function logOut() {
     loadTokenFromStore()
     store.removeItem(USER_KEY)
     store.removeItem(TOKEN_KEY)
-    store.removeItem(APP_INFO_KEY)
+    app.clearStore()
     clearUserData()
     config.server('')
-
-    //this.processCallbacks()
   }
 
   return {

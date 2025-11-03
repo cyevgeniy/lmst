@@ -47,6 +47,11 @@
   gap: 2px;
 }
 
+.phFieldItem .name.verified::after {
+  content: ' (verified)';
+  color: green;
+}
+
 @media  screen and (min-width: 640px) {
   .ph-actions > button {
     flex-basis: content;

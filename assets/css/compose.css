@@ -84,6 +84,7 @@
   height: 100%;
   border: none;
   padding: 16px;
+  resize: none;
 }
 
 .zenTextarea:focus {

@@ -13,11 +13,12 @@ interface.
   a user. It looks more like a website than a "web app".
 
 Also it has zero dependencies, so it won't suffer from a library that became
-deprecated. As a consequence, lmst offers a very small subset of features:
+deprecated. Even so, it offers basic functionality which may be enough for you:
 
-- Follow/unfollow profile
+- Follow/unfollow profiles
 - Compose statuses/replies with image attachments
 - Distraction-free compose mode (zen)
 - Boost/unboost statuses
 - Search (profiles, statuses, hashtags)
-- Delete own statuses
+- Own statuses deletion
+- View notifications

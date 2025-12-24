@@ -1,6 +1,6 @@
 import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
-import { user } from '../utils/user'
+import { user, isLoaded as isUserLoaded } from '../utils/user'
 import { Status } from '../types/shared'
 import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
@@ -57,7 +57,7 @@ export function createStatusPage(
     }
 
   async function addReplyBlock() {
-    if (!user.isLoaded()) return
+    if (!isUserLoaded()) return
 
     replyTextArea = h('textarea', {
       attrs: {
@@ -106,8 +106,8 @@ export function createStatusPage(
     ])
   }
 
-  on(user.user, (_) => {
-    if (!user.isLoaded()) hide(replyToStatus)
+  on(user, (_) => {
+    if (!isUserLoaded()) hide(replyToStatus)
     else show(replyToStatus)
   })
 

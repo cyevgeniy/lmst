@@ -1,5 +1,5 @@
 import { h, div, show, hide, getIcon } from '../utils/dom'
-import { user } from '../utils/user'
+import { user, isLoaded } from '../utils/user'
 import type { Account, GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
@@ -58,16 +58,16 @@ export function LNav(gn: GlobalNavigation) {
     profileLink.link = u.id ? `/profile/${u.acct}/` : '/'
     profileLink.visible = notificationsLink.visible = !!u.id
 
-    searchLink.visible = user.isLoaded()
+    searchLink.visible = isLoaded()
 
-    composeLink.el.style.display = user.isLoaded() ? 'inline-flex' : 'none'
+    composeLink.el.style.display = isLoaded() ? 'inline-flex' : 'none'
 
-    logoutLink.visible = user.isLoaded()
+    logoutLink.visible = isLoaded()
   }
 
-  setupForUser(user.user())
+  setupForUser(user())
 
-  on(user.user, (u) => setupForUser(u))
+  on(user, (u) => setupForUser(u))
 
   function onAuthorizeClick() {
     gn.login()

@@ -1,4 +1,4 @@
-import { user } from './user'
+import { getToken } from './user'
 
 function $fetch(
   url: string,
@@ -7,11 +7,9 @@ function $fetch(
   let { withCredentials, headers = {}, ...init } = opts
 
   if (withCredentials) {
-    user.loadTokenFromStore()
-
     headers = {
       ...headers,
-      Authorization: `Bearer ${user.accessToken()}`,
+      Authorization: `Bearer ${getToken()?.access_token ?? ''}`,
     }
   }
 

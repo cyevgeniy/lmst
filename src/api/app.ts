@@ -21,6 +21,9 @@ export interface Application {
   vapid_key: string
 }
 
+/**
+ * Register application to obtain oauth token
+ */
 export async function registerApp(
   params: RegisterAppParams,
 ): Promise<ApiResult<Application>> {

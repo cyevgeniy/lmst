@@ -10,7 +10,7 @@ import {
   type Status,
 } from './types/shared'
 import type { AppConfig } from './core/config'
-import { user } from './utils/user'
+import { logOut, isLoaded as isUserLoaded, authorize, user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
 import type { GlobalNavigation } from './types/shared'
@@ -66,7 +66,7 @@ export class TimelineManager implements ITimelineManager {
 
   public async loadStatuses(): Promise<Status[]> {
     let { server } = appConfig,
-      fn = user.isLoaded() ? getHomeTimeline : getPublicTimeline
+      fn = isUserLoaded() ? getHomeTimeline : getPublicTimeline
 
     let st = await fn.call(null, server(), { max_id: this.maxId })
 
@@ -261,8 +261,6 @@ export class StatusManager implements IStatusManager {
     files?: File[]
     sensitive?: boolean
   }): Promise<ApiResult<Status>> {
-    user.loadTokenFromStore()
-
     let mediaIds = params.files ? await this.uploadFiles(params.files) : []
 
     let payload = new FormData()
@@ -288,7 +286,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public async boostStatus(id: Status['id']): Promise<void> {
-    if (!user.isLoaded()) return
+    if (!isUserLoaded()) return
 
     try {
       await fetchJson(`${this.server()}/api/v1/statuses/${id}/reblog`, {
@@ -301,7 +299,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public async unboostStatus(id: Status['id']): Promise<void> {
-    if (!user.isLoaded()) return
+    if (!isUserLoaded()) return
 
     try {
       await fetchJson(`${this.server()}/api/v1/statuses/${id}/unreblog`, {
@@ -314,8 +312,6 @@ export class StatusManager implements IStatusManager {
   }
 
   public async deleteStatus(id: Status['id']) {
-    user.loadTokenFromStore()
-
     try {
       await fetchJson(`${this.server()}/api/v1/statuses/${id}`, {
         method: 'DELETE',
@@ -363,7 +359,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public getPermissions(): ActionPermissions {
-    let loaded = user.isLoaded()
+    let loaded = isUserLoaded()
     return {
       canDelete: loaded,
       canBoost: loaded,
@@ -371,7 +367,7 @@ export class StatusManager implements IStatusManager {
   }
 
   public ownStatus(s: Status) {
-    return user.user().acct === s.account.acct
+    return user().acct === s.account.acct
   }
 }
 
@@ -386,7 +382,7 @@ export function useGlobalNavigation(
   }
 
   function logout() {
-    user.logOut()
+    logOut()
     // After logout, we clear all pages cache, so the user will navigate
     // pages like in the first time
     // Without this, the main page will be empty, because
@@ -397,7 +393,7 @@ export function useGlobalNavigation(
   }
 
   async function login() {
-    if (user.isLoaded()) goHome()
+    if (isUserLoaded()) goHome()
     else {
       let server = prompt('Enter server:')
       if (!server) return
@@ -405,7 +401,7 @@ export function useGlobalNavigation(
       if (!server.startsWith('http')) server = `https://${server}`
 
       config.server(server)
-      await user.authorize()
+      await authorize()
     }
   }
 

@@ -11,7 +11,7 @@ import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
-import { user } from './utils/user'
+import { verifyCredentials } from './utils/user'
 import { childs } from './utils/dom'
 
 const appManager = new AppManager()
@@ -27,7 +27,7 @@ function cacheAndNavigate(
   childs(mountpoint, [page])
 }
 
-user.verifyCredentials().then(() => {
+verifyCredentials().then(() => {
   function _createProfilePage(params: RouteParams) {
     let cb = () =>
       createProfilePage(mainPage.middle, {

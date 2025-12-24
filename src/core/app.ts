@@ -1,9 +1,9 @@
-import { registerApp as _registerApp } from './api/app'
-import { AppConfig, useAppConfig } from './appConfig'
-import type { Application } from './api/app'
-import type { ApiResult } from './utils/api'
-import { store } from './store'
-import { success } from './utils/api'
+import { registerApp as registerAppAPI } from '../api/app'
+import { appConfig } from './config'
+import type { Application } from '../api/app'
+import type { ApiResult } from '../utils/api'
+import { store } from '../store'
+import { success } from '../utils/api'
 
 interface RegisteredApp {
   appInfo: Application
@@ -12,8 +12,7 @@ interface RegisteredApp {
 let KEY = 'appInfo'
 
 function createApp() {
-  let appInfo: Application | undefined,
-    config: AppConfig = useAppConfig()
+  let appInfo: Application | undefined
 
   async function registerApp(): Promise<ApiResult<RegisteredApp>> {
     let tmp = store.getItem(KEY)
@@ -22,11 +21,11 @@ function createApp() {
 
     if (appInfo) return success({ appInfo })
 
-    let res = await _registerApp({
-      server: config.server(),
-      redirectUris: `${config.baseUrl}/oauth`,
-      clientName: config.clientName,
-      website: `${config.baseUrl}`,
+    let res = await registerAppAPI({
+      server: appConfig.server(),
+      redirectUris: `${appConfig.baseUrl}/oauth`,
+      clientName: appConfig.clientName,
+      website: `${appConfig.baseUrl}`,
       scopes: 'read write push follow',
     })
 

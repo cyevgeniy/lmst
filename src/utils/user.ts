@@ -1,15 +1,15 @@
 import { Token } from '../api/app'
-import { useAppConfig } from '../appConfig'
+import { appConfig } from '../core/config'
 import { ApiResult, fail, success } from './api'
 import { searchParams } from './url'
 import { store } from '../store'
-import { app } from '../app'
+import { app } from '../core/app'
 import { createSignal } from './signal'
 import { logErr } from './errors'
 import type { Account } from '../types/shared'
 
 function createUserStore() {
-  let config = useAppConfig(),
+  let config = appConfig,
     user = createSignal<Account>({
       id: '',
       username: '',

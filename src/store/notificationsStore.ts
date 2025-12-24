@@ -1,10 +1,10 @@
 import type { Notification } from '../types/shared'
 import { fetchJson } from '../utils/fetch.ts'
-import { useAppConfig } from '../appConfig'
+import { appConfig } from '../core/config'
 import { createSignal } from '../utils/signal'
 
 function createNotificationManager() {
-  let { server } = useAppConfig(),
+  let { server } = appConfig,
     notifications = createSignal<Notification[]>([])
 
   async function getNotifications() {

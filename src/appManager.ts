@@ -9,12 +9,12 @@ import {
   type Search,
   type Status,
 } from './types/shared'
-import type { AppConfig } from './appConfig'
+import type { AppConfig } from './core/config'
 import { user } from './utils/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
 import type { GlobalNavigation } from './types/shared'
-import { useAppConfig } from './appConfig'
+import { appConfig } from './core/config'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
 import { ApiResult, fail, success } from './utils/api.ts'
@@ -65,7 +65,7 @@ export class TimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses(): Promise<Status[]> {
-    let { server } = useAppConfig(),
+    let { server } = appConfig,
       fn = user.isLoaded() ? getHomeTimeline : getPublicTimeline
 
     let st = await fn.call(null, server(), { max_id: this.maxId })
@@ -168,7 +168,7 @@ export class TagsTimelineManager implements ITimelineManager {
     this._lastChunk = []
     this.statuses = []
     this.noMoreData = false
-    this.appConfig = useAppConfig()
+    this.appConfig = appConfig
   }
 
   get lastChunk() {
@@ -216,7 +216,7 @@ export class StatusManager implements IStatusManager {
   private server: AppConfig['server']
 
   constructor() {
-    this.server = useAppConfig().server
+    this.server = appConfig.server
   }
 
   public getLinkToStatus(status: Status): string {
@@ -428,7 +428,7 @@ function createSearchManager() {
     _noMoreData = false,
     loading = createSignal(false)
 
-  let { server } = useAppConfig()
+  let { server } = appConfig
 
   function resetOffset() {
     offset = 0
@@ -484,7 +484,7 @@ export class AppManager {
   public searchManager: ReturnType<typeof createSearchManager>
 
   constructor() {
-    this.config = useAppConfig()
+    this.config = appConfig
     this.statusManager = new StatusManager()
     this.timelineManager = new TimelineManager()
     this.tagsManager = new TagsTimelineManager({ keepStatuses: false })

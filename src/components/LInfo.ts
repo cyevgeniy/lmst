@@ -1,9 +1,9 @@
-import { useAppConfig } from '../appConfig'
+import { appConfig } from '../core/config'
 import { a, div, h, span } from '../utils/dom'
 import { on } from '../utils/signal'
 
 export function LInfo() {
-  const { server, repo, version } = useAppConfig()
+  const { server, repo, version } = appConfig
 
   let serverInfo = a('', server(), server()),
     el = div('infoblock', [

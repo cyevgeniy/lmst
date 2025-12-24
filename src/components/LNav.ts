@@ -1,5 +1,5 @@
 import { h, div, show, hide, getIcon } from '../utils/dom'
-import { user, isLoaded } from '../utils/user'
+import { user, isLoaded } from '../core/user'
 import type { Account, GlobalNavigation } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'

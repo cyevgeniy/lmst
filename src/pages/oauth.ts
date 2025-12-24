@@ -1,5 +1,5 @@
 import { logErr } from '../utils/errors'
-import { verifyCredentials, getUserToken } from '../utils/user'
+import { verifyCredentials, getUserToken } from '../core/user'
 
 export async function createOAuthPage(root: HTMLElement) {
   root.innerHTML = ''

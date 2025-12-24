@@ -1,13 +1,13 @@
 import { Token } from '../api/app'
 import { appConfig } from '../core/config'
-import { ApiResult, fail, success } from './api'
-import { searchParams } from './url'
+import { ApiResult, fail, success } from '../utils/api'
+import { searchParams } from '../utils/url'
 import { store } from '../store'
 import { app } from '../core/app'
-import { createSignal } from './signal'
-import { logErr } from './errors'
+import { createSignal } from '../utils/signal'
+import { logErr } from '../utils/errors'
 import type { Account } from '../types/shared'
-import { fetchJson } from './fetch'
+import { fetchJson } from '../utils/fetch'
 
 export let user = createSignal<Account>({
   id: '',

@@ -1,4 +1,4 @@
-import { getToken } from './user'
+import { getToken } from '../core/user'
 
 function $fetch(
   url: string,

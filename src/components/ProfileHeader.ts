@@ -4,7 +4,7 @@ import { LAvatar } from './Avatar'
 import { LButton } from './LButton'
 import { on } from '../utils/signal'
 import { useProfileRelation } from '../utils/useProfileRelation'
-import { user, isLoaded } from '../utils/user'
+import { user, isLoaded } from '../core/user'
 
 function openOriginalSite(url: string): void {
   url && window.open(`${url}`, '_blank')

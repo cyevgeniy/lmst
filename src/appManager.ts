@@ -10,7 +10,7 @@ import {
   type Status,
 } from './types/shared'
 import type { AppConfig } from './core/config'
-import { logOut, isLoaded as isUserLoaded, authorize, user } from './utils/user'
+import { logOut, isLoaded as isUserLoaded, authorize, user } from './core/user'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
 import type { GlobalNavigation } from './types/shared'

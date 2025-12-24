@@ -1,6 +1,6 @@
 import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
-import { user, isLoaded as isUserLoaded } from '../utils/user'
+import { user, isLoaded as isUserLoaded } from '../core/user'
 import { Status } from '../types/shared'
 import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'

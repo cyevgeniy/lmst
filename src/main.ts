@@ -11,7 +11,7 @@ import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
-import { verifyCredentials } from './utils/user'
+import { verifyCredentials } from './core/user'
 import { childs } from './utils/dom'
 
 const appManager = new AppManager()

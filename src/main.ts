@@ -11,10 +11,12 @@ import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
-import { verifyCredentials } from './core/user'
+import { refreshUserInfo } from './core/user'
 import { childs } from './utils/dom'
 
 const appManager = new AppManager()
+
+lRouter.onBeforeEach(refreshUserInfo)
 
 function cacheAndNavigate(
   path: string,
@@ -27,39 +29,38 @@ function cacheAndNavigate(
   childs(mountpoint, [page])
 }
 
-verifyCredentials().then(() => {
-  function _createProfilePage(params: RouteParams) {
-    let cb = () =>
-      createProfilePage(mainPage.middle, {
-        pm: new ProfileTimelineManager(),
-        sm: appManager.statusManager,
-        params,
-      })
-    cacheAndNavigate(params._path, mainPage.middle, cb)
-  }
+function _createProfilePage(params: RouteParams) {
+  let cb = () =>
+    createProfilePage(mainPage.middle, {
+      pm: new ProfileTimelineManager(),
+      sm: appManager.statusManager,
+      params,
+    })
+  cacheAndNavigate(params._path, mainPage.middle, cb)
+}
 
-  let mainPage = createMainPage(appManager.globalMediator)
+let mainPage = createMainPage(appManager.globalMediator)
 
-  lRouter.on('/', (params) => {
-    cacheAndNavigate(params._path, mainPage.middle, () =>
-      createTimelinePage(mainPage.middle, appManager),
-    )
-  })
-  lRouter.on('/profile/:webfinger', (params) => _createProfilePage(params))
-  lRouter.on('/notifications', () => createNotificationsPage(mainPage.middle))
-  lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
-  lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
-  lRouter.on('/search', (params) => {
-    cacheAndNavigate(params._path, mainPage.middle, () =>
-      createSearchPage(mainPage.middle, appManager),
-    )
-  })
-  lRouter.on('/tags/:tag', (params) => {
-    cacheAndNavigate(params._path, mainPage.middle, () =>
-      createTagsPage(mainPage.middle, appManager, params),
-    )
-  })
-  lRouter.on('/status/:server/:webfinger/:id', (params) =>
-    createStatusPage(mainPage.middle, appManager, params),
+lRouter.on('/', (params) => {
+  console.log('router callback')
+  cacheAndNavigate(params._path, mainPage.middle, () =>
+    createTimelinePage(mainPage.middle, appManager),
   )
 })
+lRouter.on('/profile/:webfinger', (params) => _createProfilePage(params))
+lRouter.on('/notifications', () => createNotificationsPage(mainPage.middle))
+lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
+lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
+lRouter.on('/search', (params) => {
+  cacheAndNavigate(params._path, mainPage.middle, () =>
+    createSearchPage(mainPage.middle, appManager),
+  )
+})
+lRouter.on('/tags/:tag', (params) => {
+  cacheAndNavigate(params._path, mainPage.middle, () =>
+    createTagsPage(mainPage.middle, appManager, params),
+  )
+})
+lRouter.on('/status/:server/:webfinger/:id', (params) =>
+  createStatusPage(mainPage.middle, appManager, params),
+)

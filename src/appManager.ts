@@ -10,7 +10,8 @@ import {
   type Status,
 } from './types/shared'
 import type { AppConfig } from './core/config'
-import { logOut, isLoaded as isUserLoaded, authorize, user } from './core/user'
+import { logOut, isLoaded as isUserLoaded, user } from './core/user'
+import { authorize } from './core/auth.ts'
 import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
 import type { GlobalNavigation } from './types/shared'
@@ -65,6 +66,7 @@ export class TimelineManager implements ITimelineManager {
   }
 
   public async loadStatuses(): Promise<Status[]> {
+    console.log('load statuses!')
     let { server } = appConfig,
       fn = isUserLoaded() ? getHomeTimeline : getPublicTimeline
 

@@ -21,10 +21,18 @@ export interface Router {
    * Navigates to specified path and execute router's callbacks for it if any
    */
   navigateTo(path: string): void
+
+  onBeforeEach(cb: () => void): void
 }
 
 function createRouter(): Router {
   const callbacks: Map<string, RouteCallback> = new Map()
+  /**
+   * This one is for the `refreshUserInfo` function.
+   * We need to call it BEFORE each route's callback is executed.
+   * Because we should aim to smaller bundle size, we use just a single variable.
+   */
+  let beforeEach: () => void = noop
 
   function findCallback(path: string): () => void {
     let entries = callbacks.entries(),
@@ -45,19 +53,38 @@ function createRouter(): Router {
     return _callback
   }
 
+  /**
+   * Executes required `beforeEach` callback and then runs route's callback
+   * @param cb Route's callback to execute
+   */
+  async function runCallback(cb: () => void) {
+    if (cb != noop) {
+      await Promise.resolve(beforeEach())
+      currPage = cb()
+    }
+  }
+
   // TODO: Of course, we expect Page or undefined maybe
   let currPage: Page | void = undefined
 
-  window.addEventListener('load', () => {
-    currPage = findCallback(window.location.pathname)()
+  window.addEventListener('load', async () => {
+    let cb = findCallback(window.location.pathname)
+
+    runCallback(cb)
   })
 
-  window.addEventListener('popstate', () => {
-    currPage = findCallback(window.location.pathname)()
+  window.addEventListener('popstate', async () => {
+    let cb = findCallback(window.location.pathname)
+
+    runCallback(cb)
   })
 
   function on(path: string, cb: (params: RouteParams) => void) {
     callbacks.set(sanitizePath(path), cb)
+  }
+
+  function onBeforeEach(cb: () => void) {
+    beforeEach = cb
   }
 
   function navigateTo(path: string) {
@@ -66,12 +93,15 @@ function createRouter(): Router {
     // Perform cleanup before navigating to the next page
     if (typeof currPage?.onUnmount === 'function') currPage.onUnmount()
 
-    currPage = findCallback(path)()
+    let cb = findCallback(path)
+
+    runCallback(cb)
   }
 
   return {
     on,
     navigateTo,
+    onBeforeEach,
   }
 }
 

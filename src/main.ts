@@ -56,7 +56,7 @@ lRouter.on('/search', (params) => {
 })
 lRouter.on('/tags/:tag', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () =>
-    createTagsPage(mainPage.middle, appManager, params),
+    createTagsPage(mainPage.middle, params),
   )
 })
 lRouter.on('/status/:server/:webfinger/:id', (params) =>

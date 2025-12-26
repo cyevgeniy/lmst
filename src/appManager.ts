@@ -1,8 +1,4 @@
-import {
-  getPublicTimeline,
-  getHomeTimeline,
-  getTagTimeline,
-} from './api/timeline'
+import { getPublicTimeline, getHomeTimeline } from './api/timeline'
 import { type Search, type Status } from './types/shared'
 import type { AppConfig } from './core/config'
 import { logOut, isLoaded as isUserLoaded } from './core/user'
@@ -65,51 +61,6 @@ export class TimelineManager implements ITimelineManager {
     this.resetPagination()
     this.statuses = []
     this.onClearCallback && this.onClearCallback()
-    this.noMoreData = false
-  }
-}
-
-export class TagsTimelineManager implements ITimelineManager {
-  private maxId: string
-  public statuses: Status[]
-  /**
-   * Stores last loaded statuses list
-   */
-  private appConfig: AppConfig
-  private keepStatuses: boolean
-  public tag: string
-  public noMoreData: boolean
-
-  constructor(opts: { keepStatuses: boolean }) {
-    this.maxId = ''
-    this.keepStatuses = opts.keepStatuses
-    this.tag = ''
-    this.statuses = []
-    this.noMoreData = false
-    this.appConfig = appConfig
-  }
-
-  public async loadStatuses() {
-    const resp = await getTagTimeline(this.tag, {
-      server: this.appConfig.server(),
-      params: { max_id: this.maxId },
-    })
-
-    let statuses: Status[] = []
-
-    if (resp.ok) {
-      statuses = resp.value
-      this.keepStatuses && this.statuses.push(...statuses)
-
-      if (statuses.length) this.maxId = last(statuses)!.id
-      else this.noMoreData = true
-    }
-
-    return statuses
-  }
-
-  public clearStatuses() {
-    this.statuses = []
     this.noMoreData = false
   }
 }
@@ -217,14 +168,12 @@ export class AppManager {
   private config: AppConfig
   public timelineManager: TimelineManager
   public globalMediator: GlobalNavigation
-  public tagsManager: TagsTimelineManager
   public pageHistoryManager: PageHistoryManager
   public searchManager: ReturnType<typeof createSearchManager>
 
   constructor() {
     this.config = appConfig
     this.timelineManager = new TimelineManager()
-    this.tagsManager = new TagsTimelineManager({ keepStatuses: false })
     this.pageHistoryManager = usePageHistory()
     this.searchManager = createSearchManager()
 

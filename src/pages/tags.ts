@@ -1,21 +1,28 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { h, div, hide, show, childs } from '../utils/dom'
-import { AppManager } from '../appManager'
 import { LNoMoreRows } from '../components/LNoMoreRows'
+import { tagTimeline } from '../core/tagTimeline'
+import { on } from '../utils/signal'
 
 export function createTagsPage(
   root: HTMLElement,
-  appManager: AppManager,
   params?: Record<string, string>,
 ) {
+  let {
+    tag,
+    noMoreData,
+    clearStatuses,
+    loadStatuses: fetchStatuses,
+    loading,
+  } = tagTimeline()
   root.innerHTML = ''
 
   let tagHeader = h('h2', { className: 'tagHeader' }),
     noMoreDataText = LNoMoreRows('No more records'),
     loadMoreBtn = LLoadMoreBtn({
       text: 'Load more',
-      onClick: () => loadStatuses(appManager.tagsManager.tag),
+      onClick: () => loadStatuses(tag()),
     }),
     loadMoreBtnContainer = div('timeline__load-more-container', [
       loadMoreBtn.el,
@@ -39,12 +46,15 @@ export function createTagsPage(
 
   childs(root, [el])
 
-  async function loadStatuses(tag: string) {
-    loadMoreBtn.loading = true
-    appManager.tagsManager.tag = tag
-    let statuses = await appManager.tagsManager.loadStatuses()
+  on(loading, (newVal) => {
+    loadMoreBtn.loading = newVal
+  })
 
-    if (appManager.tagsManager.noMoreData) {
+  async function loadStatuses(tagText: string) {
+    tag(tagText)
+    let statuses = await fetchStatuses()
+
+    if (noMoreData()) {
       show(noMoreDataText)
       loadMoreBtn.visible = false
     } else {
@@ -52,18 +62,17 @@ export function createTagsPage(
       loadMoreBtn.visible = true
     }
 
-    loadMoreBtn.loading = false
     statusesList.addStatuses(statuses)
   }
 
-  let tag = params?.tag ?? ''
+  let tagParameter = params?.tag ?? ''
 
-  appManager.tagsManager.tag = tag
-  tagHeader.innerText = `#${tag}`
+  tag(tagParameter)
+  tagHeader.innerText = `#${tag()}`
 
-  appManager.tagsManager.clearStatuses()
+  clearStatuses()
 
-  loadStatuses(tag)
+  loadStatuses(tag())
 
   return {
     el,

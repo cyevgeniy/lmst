@@ -1,6 +1,6 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
-import { h, div, hide, show, childs } from '../utils/dom'
+import { childs, div, h, hide, show } from '../utils/dom'
 import { LNoMoreRows } from '../components/LNoMoreRows'
 import { tagTimeline } from '../core/tagTimeline'
 import { on } from '../utils/signal'
@@ -10,7 +10,6 @@ export function createTagsPage(
   params?: Record<string, string>,
 ) {
   let {
-    tag,
     noMoreData,
     clearStatuses,
     loadStatuses: fetchStatuses,
@@ -22,7 +21,7 @@ export function createTagsPage(
     noMoreDataText = LNoMoreRows('No more records'),
     loadMoreBtn = LLoadMoreBtn({
       text: 'Load more',
-      onClick: () => loadStatuses(tag()),
+      onClick: () => loadStatuses(tagParameter),
     }),
     loadMoreBtnContainer = div('timeline__load-more-container', [
       loadMoreBtn.el,
@@ -51,8 +50,7 @@ export function createTagsPage(
   })
 
   async function loadStatuses(tagText: string) {
-    tag(tagText)
-    let statuses = await fetchStatuses()
+    let statuses = await fetchStatuses(tagText)
 
     if (noMoreData()) {
       show(noMoreDataText)
@@ -67,12 +65,11 @@ export function createTagsPage(
 
   let tagParameter = params?.tag ?? ''
 
-  tag(tagParameter)
-  tagHeader.innerText = `#${tag()}`
+  tagHeader.innerText = `#${tagParameter}`
 
   clearStatuses()
 
-  loadStatuses(tag())
+  loadStatuses(tagParameter)
 
   return {
     el,

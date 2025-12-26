@@ -7,10 +7,7 @@ import { Account } from '../types/shared'
 import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
 import { createSearchManager } from '../core/search'
-
-function isTag(s: string): boolean {
-  return s.length > 0 && s[0] === '#'
-}
+import { isTag } from '../utils/tags'
 
 export function createSearchPage(root: HTMLElement) {
   root.innerHTML = ''

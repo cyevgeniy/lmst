@@ -6,13 +6,12 @@ import { appConfig } from './config'
 
 export function tagTimeline() {
   let maxId: string = '',
-    tag = createSignal(''),
     noMoreData = createSignal(false),
     loading = createSignal(false)
 
-  async function loadStatuses() {
+  async function loadStatuses(tagText: string) {
     loading(true)
-    const resp = await getTagTimeline(tag(), {
+    const resp = await getTagTimeline(tagText, {
       server: appConfig.server(),
       params: { max_id: maxId },
     })
@@ -35,7 +34,6 @@ export function tagTimeline() {
   }
 
   return {
-    tag,
     noMoreData,
     loadStatuses,
     clearStatuses,

@@ -13,18 +13,6 @@ export interface StatusPermissions {
 
 type StatusId = Status['id']
 
-export interface IStatusManager {
-  postStatus(params: {
-    statusText: string
-    files?: File[]
-  }): Promise<ApiResult<Status>>
-  boostStatus(id: StatusId): Promise<void>
-  unboostStatus(id: StatusId): Promise<void>
-  deleteStatus(id: StatusId): Promise<void>
-  getPermissions: () => StatusPermissions
-  ownStatus(s: Status): boolean
-}
-
 /**
  * Returns a URL for the Status object
  * @param status Status
@@ -175,14 +163,20 @@ export async function getStatusContext(
   return result
 }
 
-export function getPermissions(): StatusPermissions {
-  let loaded = isUserLoaded()
-  return {
-    canDelete: loaded,
-    canBoost: loaded,
-  }
-}
-
 export function ownStatus(s: Status) {
   return user().acct === s.account.acct
+}
+
+export function getPermissions(status: Status): StatusPermissions {
+  let loaded = isUserLoaded(),
+    // If the status is a 'reblog' status, we need to check the
+    // original one
+    own = ownStatus(status.reblog ?? status),
+    // If the user is not logged in, none of actions can be performed
+    res: StatusPermissions = {
+      canDelete: loaded && own,
+      canBoost: loaded && !own,
+    }
+
+  return res
 }

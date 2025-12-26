@@ -6,7 +6,6 @@ import {
   deleteStatus,
   getPermissions,
   navigateToStatus,
-  ownStatus,
   unboostStatus,
 } from '../core/status.ts'
 
@@ -38,12 +37,7 @@ export function LStatusesList(props: StatusesListProps) {
   function addStatuses(statuses: Status[]) {
     let fragment = document.createDocumentFragment()
     for (let status of statuses) {
-      let own = ownStatus(status.reblog ?? status),
-        perm = getPermissions(),
-        permissions = {
-          canBoost: perm.canBoost && !own,
-          canDelete: perm.canDelete && own,
-        }
+      let permissions = getPermissions(status)
 
       let statusComp = LStatus({
         status,

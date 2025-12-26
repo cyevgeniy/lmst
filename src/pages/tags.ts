@@ -43,7 +43,7 @@ export function createTagsPage(
   async function loadStatuses(tag: string) {
     loadMoreBtn.loading = true
     appManager.tagsManager.tag = tag
-    await appManager.tagsManager.loadStatuses()
+    let statuses = await appManager.tagsManager.loadStatuses()
 
     if (appManager.tagsManager.noMoreData) {
       show(noMoreDataText)
@@ -54,7 +54,7 @@ export function createTagsPage(
     }
 
     loadMoreBtn.loading = false
-    statusesList.addStatuses(appManager.tagsManager.lastChunk)
+    statusesList.addStatuses(statuses)
   }
 
   let tag = params?.tag ?? ''

@@ -6,7 +6,7 @@ import { createProfilePage } from './pages/profile'
 import { createTagsPage } from './pages/tags'
 import { createOAuthPage } from './pages/oauth'
 import { createComposePage } from './pages/compose'
-import { ProfileTimelineManager, AppManager } from './appManager'
+import { AppManager } from './appManager'
 import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
@@ -32,7 +32,6 @@ function cacheAndNavigate(
 function _createProfilePage(params: RouteParams) {
   let cb = () =>
     createProfilePage(mainPage.middle, {
-      pm: new ProfileTimelineManager(),
       sm: appManager.statusManager,
       params,
     })

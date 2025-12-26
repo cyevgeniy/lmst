@@ -12,9 +12,8 @@ import {
 import type { AppConfig } from './core/config'
 import { logOut, isLoaded as isUserLoaded, user } from './core/user'
 import { authorize } from './core/auth.ts'
-import { getAccount, getStatuses, lookupAccount } from './api/account'
 import type { Router } from './router'
-import type { GlobalNavigation } from './types/shared'
+import type { GlobalNavigation, ITimelineManager } from './types/shared'
 import { appConfig } from './core/config'
 import { lRouter } from './router'
 import type { ActionPermissions } from './components/LStatusButtons'
@@ -25,28 +24,6 @@ import { searchParams } from './utils/url.ts'
 import { last } from './utils/arrays.ts'
 import { createSignal } from './utils/signal.ts'
 import { logErr } from './utils/errors.ts'
-
-export interface ITimelineManager {
-  /**
-   * List of statuses for current timeline
-   */
-  statuses: Status[]
-
-  /**
-   * Loads next portion of statuses
-   */
-  loadStatuses: () => void
-
-  /**
-   * Clears all statuses
-   */
-  clearStatuses: () => void
-
-  /**
-   * True if there're no more records in the timeline
-   */
-  noMoreData: boolean
-}
 
 export class TimelineManager implements ITimelineManager {
   private maxId: string
@@ -100,64 +77,13 @@ export class TimelineManager implements ITimelineManager {
   }
 }
 
-export class ProfileTimelineManager implements ITimelineManager {
-  private maxId: string
-  public statuses: Status[]
-  private profileId: string
-  public profileWebfinger: string
-  public noMoreData: boolean
-
-  constructor() {
-    this.maxId = ''
-    this.profileId = ''
-    this.profileWebfinger = ''
-    this.statuses = []
-    this.noMoreData = false
-  }
-
-  public async loadStatuses(): Promise<Status[]> {
-    const res = await getStatuses(this.profileId, { max_id: this.maxId })
-
-    if (res.ok) {
-      if (res.value.length) {
-        this.maxId = last(res.value)!.id
-        return res.value
-      } else this.noMoreData = true
-    }
-
-    return []
-  }
-
-  public resetPagination() {
-    this.maxId = ''
-  }
-
-  public clearStatuses() {
-    this.resetPagination()
-    this.statuses = []
-    this.noMoreData = false
-  }
-
-  public async getAccount() {
-    // Check whether profileId is a string
-    if (!this.profileId && this.profileWebfinger) {
-      const acc = await lookupAccount(this.profileWebfinger)
-      this.profileId = acc.id
-
-      return acc
-    }
-
-    return await getAccount(this.profileId)
-  }
-}
-
 export class TagsTimelineManager implements ITimelineManager {
   private maxId: string
   public statuses: Status[]
   /**
    * Stores last loaded statuses list
    */
-  private _lastChunk: Status[]
+  //private _lastChunk: Status[]
   private appConfig: AppConfig
   private keepStatuses: boolean
   public tag: string
@@ -167,15 +93,15 @@ export class TagsTimelineManager implements ITimelineManager {
     this.maxId = ''
     this.keepStatuses = opts.keepStatuses
     this.tag = ''
-    this._lastChunk = []
+    //this._lastChunk = []
     this.statuses = []
     this.noMoreData = false
     this.appConfig = appConfig
   }
 
-  get lastChunk() {
-    return this._lastChunk
-  }
+  // get lastChunk() {
+  //   return this._lastChunk
+  // }
 
   public async loadStatuses() {
     const resp = await getTagTimeline(this.tag, {
@@ -183,21 +109,23 @@ export class TagsTimelineManager implements ITimelineManager {
       params: { max_id: this.maxId },
     })
 
+    let statuses: Status[] = []
+
     if (resp.ok) {
-      const statuses = resp.value
-      this._lastChunk = statuses
+      statuses = resp.value
+      // this._lastChunk = statuses
       this.keepStatuses && this.statuses.push(...statuses)
 
       if (statuses.length) this.maxId = last(statuses)!.id
       else this.noMoreData = true
-    } else {
-      this._lastChunk = []
     }
+
+    return statuses
   }
 
   public clearStatuses() {
     this.statuses = []
-    this._lastChunk = []
+    //this._lastChunk = []
     this.noMoreData = false
   }
 }

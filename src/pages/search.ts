@@ -1,4 +1,3 @@
-import { AppManager } from '../appManager'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LProfileListInfo } from '../components/LProfileListItem'
 import { LStatusesList } from '../components/LStatusesList'
@@ -7,12 +6,13 @@ import { lRouter } from '../router'
 import { Account } from '../types/shared'
 import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
+import { createSearchManager } from '../core/search'
 
 function isTag(s: string): boolean {
   return s.length > 0 && s[0] === '#'
 }
 
-export function createSearchPage(root: HTMLElement, appManager: AppManager) {
+export function createSearchPage(root: HTMLElement) {
   root.innerHTML = ''
   let input = h('input', { className: 'input' }),
     noMoreDataText = LNoMoreRows() //h('div', {className: 'timelime-no-more-rows'}, 'No more records')
@@ -22,10 +22,11 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
   input.placeholder = 'Search text or #hashtag'
   input.autofocus = true
 
-  let loadMore = LLoadMoreBtn({
-    text: 'Load more',
-    onClick: () => search({ type: 'statuses' }),
-  })
+  let sm = createSearchManager(),
+    loadMore = LLoadMoreBtn({
+      text: 'Load more',
+      onClick: () => search({ type: 'statuses' }),
+    })
 
   loadMore.visible = false
 
@@ -50,7 +51,7 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
     acct && lRouter.navigateTo(`/profile/${acct}/`)
   })
 
-  let sm = appManager.searchManager
+  // let sm = createSearchManager()
 
   let { loading } = sm
 

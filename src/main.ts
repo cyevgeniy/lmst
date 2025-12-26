@@ -51,7 +51,7 @@ lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
 lRouter.on('/compose', () => createComposePage(mainPage.middle))
 lRouter.on('/search', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () =>
-    createSearchPage(mainPage.middle, appManager),
+    createSearchPage(mainPage.middle),
   )
 })
 lRouter.on('/tags/:tag', (params) => {

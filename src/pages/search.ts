@@ -127,7 +127,6 @@ export function createSearchPage(root: HTMLElement, appManager: AppManager) {
     slist = LStatusesList({
       root: statusesListRoot,
       statuses: [],
-      sm: appManager.statusManager,
     })
 
   childs(root, [el])

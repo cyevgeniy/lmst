@@ -32,7 +32,6 @@ function cacheAndNavigate(
 function _createProfilePage(params: RouteParams) {
   let cb = () =>
     createProfilePage(mainPage.middle, {
-      sm: appManager.statusManager,
       params,
     })
   cacheAndNavigate(params._path, mainPage.middle, cb)
@@ -49,7 +48,7 @@ lRouter.on('/', (params) => {
 lRouter.on('/profile/:webfinger', (params) => _createProfilePage(params))
 lRouter.on('/notifications', () => createNotificationsPage(mainPage.middle))
 lRouter.on('/oauth', () => createOAuthPage(mainPage.root))
-lRouter.on('/compose', () => createComposePage(mainPage.middle, appManager))
+lRouter.on('/compose', () => createComposePage(mainPage.middle))
 lRouter.on('/search', (params) => {
   cacheAndNavigate(params._path, mainPage.middle, () =>
     createSearchPage(mainPage.middle, appManager),
@@ -61,5 +60,5 @@ lRouter.on('/tags/:tag', (params) => {
   )
 })
 lRouter.on('/status/:server/:webfinger/:id', (params) =>
-  createStatusPage(mainPage.middle, appManager, params),
+  createStatusPage(mainPage.middle, params),
 )

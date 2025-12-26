@@ -3,13 +3,11 @@ import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LNoMoreRows } from '../components/LNoMoreRows'
 import { h, div, hide, show, childs } from '../utils/dom'
-import { StatusManager } from '../appManager'
 import { logErr } from '../utils/errors'
 import { profileTimeline } from '../core/profileTimeline'
 import { on } from '../utils/signal'
 
 interface ProfilePageConstructorParams {
-  sm: StatusManager
   params?: Record<string, string>
 }
 
@@ -32,7 +30,6 @@ export function createProfilePage(
     statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
-      sm: opts.sm,
     })
 
   on(pm.loading, (newVal) => {

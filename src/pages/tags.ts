@@ -25,7 +25,6 @@ export function createTagsPage(
     statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
-      sm: appManager.statusManager,
     })
 
   hide(noMoreDataText)

@@ -1,4 +1,3 @@
-import type { AppConfig } from './core/config'
 import { logOut, isLoaded as isUserLoaded } from './core/user'
 import { authorize } from './core/auth.ts'
 import type { Router } from './router'
@@ -11,7 +10,6 @@ import { homeTimeline } from './core/homeTimeline.ts'
 export function useGlobalNavigation(
   tm: ReturnType<typeof homeTimeline>,
   router: Router,
-  config: AppConfig,
   hm: PageHistoryManager,
 ): GlobalNavigation {
   function goHome() {
@@ -37,7 +35,7 @@ export function useGlobalNavigation(
 
       if (!server.startsWith('http')) server = `https://${server}`
 
-      config.server(server)
+      appConfig.server(server)
       await authorize()
     }
   }
@@ -50,20 +48,17 @@ export function useGlobalNavigation(
 }
 
 export class AppManager {
-  private config: AppConfig
   public timelineManager: ReturnType<typeof homeTimeline>
   public globalMediator: GlobalNavigation
   public pageHistoryManager: PageHistoryManager
 
   constructor() {
-    this.config = appConfig
     this.timelineManager = homeTimeline()
     this.pageHistoryManager = usePageHistory()
 
     this.globalMediator = useGlobalNavigation(
       this.timelineManager,
       lRouter,
-      this.config,
       this.pageHistoryManager,
     )
   }

@@ -1,10 +1,11 @@
 import { h, div, show, hide, getIcon } from '../utils/dom'
 import { user, isLoaded } from '../core/user'
-import type { Account, GlobalNavigation } from '../types/shared'
+import type { Account } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
+import { globalNavigation } from '../appManager'
 
-export function LNav(gn: GlobalNavigation) {
+export function LNav() {
   let profileLink = LNavLink({ text: '', link: '/' }),
     authorize = h(
       'div',
@@ -70,12 +71,12 @@ export function LNav(gn: GlobalNavigation) {
   on(user, (u) => setupForUser(u))
 
   function onAuthorizeClick() {
-    gn.login()
+    globalNavigation.login()
   }
 
   function onLogoutClick(e: MouseEvent) {
     e.preventDefault()
-    gn.logout()
+    globalNavigation.logout()
   }
 
   return {

@@ -6,15 +6,12 @@ import { createProfilePage } from './pages/profile'
 import { createTagsPage } from './pages/tags'
 import { createOAuthPage } from './pages/oauth'
 import { createComposePage } from './pages/compose'
-import { AppManager } from './appManager'
 import { createStatusPage } from './pages/status'
 import { createMainPage, Page } from './utils/page'
 import { getCached } from './utils/pageHistory'
 import { createSearchPage } from './pages/search'
 import { refreshUserInfo } from './core/user'
 import { childs } from './utils/dom'
-
-const appManager = new AppManager()
 
 lRouter.onBeforeEach(refreshUserInfo)
 
@@ -37,12 +34,12 @@ function _createProfilePage(params: RouteParams) {
   cacheAndNavigate(params._path, mainPage.middle, cb)
 }
 
-let mainPage = createMainPage(appManager.globalMediator)
+let mainPage = createMainPage()
 
 lRouter.on('/', (params) => {
   console.log('router callback')
   cacheAndNavigate(params._path, mainPage.middle, () =>
-    createTimelinePage(mainPage.middle, appManager),
+    createTimelinePage(mainPage.middle),
   )
 })
 lRouter.on('/profile/:webfinger', (params) => _createProfilePage(params))

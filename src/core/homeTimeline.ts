@@ -6,7 +6,7 @@ import { createSignal } from '../utils/signal'
 import { appConfig } from './config'
 import { isLoaded as isUserLoaded } from './user'
 
-export function homeTimeline() {
+export function createHomeTimeline() {
   let maxId = '',
     onClearStatuses: () => void = noop,
     noMoreData = createSignal(false),
@@ -51,3 +51,5 @@ export function homeTimeline() {
     loading,
   }
 }
+
+export let homeTimeline = createHomeTimeline()

@@ -1,69 +1,15 @@
-import { getPublicTimeline, getHomeTimeline } from './api/timeline'
-import { type Status } from './types/shared'
 import type { AppConfig } from './core/config'
 import { logOut, isLoaded as isUserLoaded } from './core/user'
 import { authorize } from './core/auth.ts'
 import type { Router } from './router'
-import type { GlobalNavigation, ITimelineManager } from './types/shared'
+import type { GlobalNavigation } from './types/shared'
 import { appConfig } from './core/config'
 import { lRouter } from './router'
 import { PageHistoryManager, usePageHistory } from './utils/pageHistory.ts'
-import { last } from './utils/arrays.ts'
-
-export class TimelineManager implements ITimelineManager {
-  private maxId: string
-  public onClearCallback?: () => void
-  public statuses: Status[]
-  public noMoreData: boolean
-
-  constructor() {
-    this.maxId = ''
-    this.statuses = []
-    this.onClearCallback = undefined
-    this.noMoreData = false
-  }
-
-  public onClearStatuses(fn: () => void) {
-    this.onClearCallback = fn
-  }
-
-  public async loadStatuses(): Promise<Status[]> {
-    console.log('load statuses!')
-    let { server } = appConfig,
-      fn = isUserLoaded() ? getHomeTimeline : getPublicTimeline
-
-    let st = await fn.call(null, server(), { max_id: this.maxId })
-
-    if (st.ok) {
-      let statuses = st.value
-
-      if (statuses.length) {
-        this.statuses.push(...statuses)
-        this.maxId = last(statuses)!.id
-        return statuses
-      } else {
-        // no more records
-        this.noMoreData = true
-      }
-    }
-
-    return []
-  }
-
-  public resetPagination() {
-    this.maxId = ''
-  }
-
-  public clearStatuses() {
-    this.resetPagination()
-    this.statuses = []
-    this.onClearCallback && this.onClearCallback()
-    this.noMoreData = false
-  }
-}
+import { homeTimeline } from './core/homeTimeline.ts'
 
 export function useGlobalNavigation(
-  tm: TimelineManager,
+  tm: ReturnType<typeof homeTimeline>,
   router: Router,
   config: AppConfig,
   hm: PageHistoryManager,
@@ -105,13 +51,13 @@ export function useGlobalNavigation(
 
 export class AppManager {
   private config: AppConfig
-  public timelineManager: TimelineManager
+  public timelineManager: ReturnType<typeof homeTimeline>
   public globalMediator: GlobalNavigation
   public pageHistoryManager: PageHistoryManager
 
   constructor() {
     this.config = appConfig
-    this.timelineManager = new TimelineManager()
+    this.timelineManager = homeTimeline()
     this.pageHistoryManager = usePageHistory()
 
     this.globalMediator = useGlobalNavigation(

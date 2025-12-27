@@ -3,6 +3,7 @@ import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LNoMoreRows } from '../components/LNoMoreRows'
 import { childs, div, h, hide } from '../utils/dom'
 import type { AppManager } from '../appManager.ts'
+import { on } from '../utils/signal.ts'
 
 export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
   root.innerHTML = ''
@@ -24,9 +25,7 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
 
   hide(noMoreDataText)
 
-  appManager.timelineManager.onClearStatuses(() => {
-    statusesList.clearStatuses()
-  })
+  appManager.timelineManager.onClearStatuses = statusesList.clearStatuses
 
   let timelineContainer = h('div', { className: 'timeline-container' }, [
       statusesListEl,
@@ -34,10 +33,13 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
     ]),
     el = h('div', { attrs: { id: 'timeline-root' } }, [timelineContainer])
 
+  on(appManager.timelineManager.loading, (newVal) => {
+    loadMoreBtn.loading = newVal
+  })
+
   async function loadMore() {
-    loadMoreBtn.loading = true
     let st = await appManager.timelineManager.loadStatuses()
-    if (appManager.timelineManager.noMoreData) {
+    if (appManager.timelineManager.noMoreData()) {
       noMoreDataText.style.display = 'block'
       loadMoreBtn.visible = false
     } else {
@@ -45,7 +47,6 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
       loadMoreBtn.visible = true
     }
 
-    loadMoreBtn.loading = false
     statusesList?.addStatuses(st)
   }
 

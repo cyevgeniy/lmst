@@ -186,25 +186,3 @@ export interface Notification {
 export interface NotificationCount {
   count: number
 }
-
-export interface ITimelineManager {
-  /**
-   * List of statuses for current timeline
-   */
-  statuses: Status[]
-
-  /**
-   * Loads next portion of statuses
-   */
-  loadStatuses: () => Promise<Status[]>
-
-  /**
-   * Clears all statuses
-   */
-  clearStatuses: () => void
-
-  /**
-   * True if there're no more records in the timeline
-   */
-  noMoreData: boolean
-}

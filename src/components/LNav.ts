@@ -3,7 +3,7 @@ import { user, isLoaded } from '../core/user'
 import type { Account } from '../types/shared'
 import { LNavLink } from './LNavLink'
 import { on } from '../utils/signal'
-import { globalNavigation } from '../appManager'
+import { globalNavigation } from '../core/globalNavigation'
 
 export function LNav() {
   let profileLink = LNavLink({ text: '', link: '/' }),

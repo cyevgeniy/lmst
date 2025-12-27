@@ -1,9 +1,9 @@
-import { logOut, isLoaded as isUserLoaded } from './core/user'
-import { authorize } from './core/auth.ts'
-import { appConfig } from './core/config'
-import { lRouter } from './router'
-import { pageHistory } from './utils/pageHistory.ts'
-import { homeTimeline } from './core/homeTimeline.ts'
+import { logOut, isLoaded as isUserLoaded } from '../core/user'
+import { authorize } from '../core/auth.ts'
+import { appConfig } from '../core/config'
+import { lRouter } from '../router'
+import { pageHistory } from '../utils/pageHistory.ts'
+import { homeTimeline } from '../core/homeTimeline.ts'
 
 export let globalNavigation = {
   goHome() {

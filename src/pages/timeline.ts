@@ -20,7 +20,6 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
     statusesList = LStatusesList({
       root: statusesListEl,
       statuses: [],
-      sm: appManager.statusManager,
     })
 
   hide(noMoreDataText)

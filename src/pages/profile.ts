@@ -3,12 +3,11 @@ import { LProfileHeader } from '../components/ProfileHeader'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LNoMoreRows } from '../components/LNoMoreRows'
 import { h, div, hide, show, childs } from '../utils/dom'
-import { ProfileTimelineManager, StatusManager } from '../appManager'
 import { logErr } from '../utils/errors'
+import { profileTimeline } from '../core/profileTimeline'
+import { on } from '../utils/signal'
 
 interface ProfilePageConstructorParams {
-  pm: ProfileTimelineManager
-  sm: StatusManager
   params?: Record<string, string>
 }
 
@@ -17,7 +16,7 @@ export function createProfilePage(
   opts: ProfilePageConstructorParams,
 ) {
   root.innerHTML = ''
-  let profileId = '',
+  let pm = profileTimeline(),
     noMoreDataText = LNoMoreRows(),
     loadMoreBtn = LLoadMoreBtn({
       text: 'Load more',
@@ -31,8 +30,21 @@ export function createProfilePage(
     statusesList = LStatusesList({
       root: timelineContainer,
       statuses: [],
-      sm: opts.sm,
     })
+
+  on(pm.loading, (newVal) => {
+    loadMoreBtn.loading = newVal
+  })
+
+  on(pm.noMoreData, (newVal) => {
+    if (newVal) {
+      show(noMoreDataText)
+      loadMoreBtn.visible = false
+    } else {
+      hide(noMoreDataText)
+      loadMoreBtn.visible = true
+    }
+  })
 
   hide(noMoreDataText)
 
@@ -45,22 +57,10 @@ export function createProfilePage(
   childs(root, [el])
 
   async function loadStatuses() {
-    if (!profileId) return
-
     // xxx: check for errors here or in profileManager and return an
     // empty array?
-    loadMoreBtn.loading = true
-    const statuses = await opts.pm.loadStatuses()
+    const statuses = await pm.loadStatuses()
 
-    if (opts.pm.noMoreData) {
-      show(noMoreDataText)
-      loadMoreBtn.visible = false
-    } else {
-      hide(noMoreDataText)
-      loadMoreBtn.visible = true
-    }
-
-    loadMoreBtn.loading = false
     statusesList.addStatuses(statuses)
   }
 
@@ -80,11 +80,10 @@ export function createProfilePage(
   async function loadProfileInfo(params?: Record<string, string>) {
     let webfinger = params?.webfinger ?? ''
 
-    opts.pm.profileWebfinger = webfinger
+    pm.profileWebfinger(webfinger)
 
     try {
-      let resp = await opts.pm.getAccount()
-      profileId = resp.id
+      let resp = await pm.getAccount()
       profileHeaderComponent.update(resp)
     } catch (e: unknown) {
       createNotFound(webfinger)

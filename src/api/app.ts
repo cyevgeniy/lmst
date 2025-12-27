@@ -21,6 +21,9 @@ export interface Application {
   vapid_key: string
 }
 
+/**
+ * Register application to obtain oauth token
+ */
 export async function registerApp(
   params: RegisterAppParams,
 ): Promise<ApiResult<Application>> {
@@ -44,41 +47,9 @@ export async function registerApp(
   }
 }
 
-export interface GetAppTokenParams {
-  server: string
-  client_id: string
-  client_secret: string
-  redirect_uri: string
-  grant_type: string
-  [k: string]: string
-}
-
 export interface Token {
   access_token: string
   token_type: string
   scope: string
   created_at: number
-}
-
-export async function getAppToken(
-  params: GetAppTokenParams,
-): Promise<ApiResult<Token>> {
-  let payload = new FormData()
-
-  let { server, ...rest } = params
-
-  for (const key in rest) {
-    payload.append(key, rest[key])
-  }
-
-  try {
-    let token = await fetchJson<Token>(`${params.server}/oauth/token`, {
-      method: 'POST',
-      withCredentials: true,
-    })
-
-    return success(token)
-  } catch (e: unknown) {
-    return fail(logErr(e))
-  }
 }

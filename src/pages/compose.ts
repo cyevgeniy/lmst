@@ -1,13 +1,13 @@
 import { childs, getIcon, h } from '../utils/dom'
-import type { AppManager } from '../appManager'
 import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
 import { LFilePicker } from '../components/LFilePicker'
 import { LPreview } from '../components/LPreview'
 import { text, postAvailable, files } from '../store/composeStore'
 import { on } from '../utils/signal'
+import { postStatus } from '../core/status'
 
-export function createComposePage(root: HTMLElement, appManager: AppManager) {
+export function createComposePage(root: HTMLElement) {
   root.innerHTML = ''
 
   let textArea = h('textarea', {
@@ -73,7 +73,7 @@ export function createComposePage(root: HTMLElement, appManager: AppManager) {
   async function onPostClick() {
     postAvailable(false)
 
-    let res = await appManager.statusManager.postStatus({
+    let res = await postStatus({
       statusText: text(),
       files: files(),
       sensitive: sensitiveCheckbox.checked,

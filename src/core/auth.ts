@@ -1,5 +1,5 @@
 import type { Token } from '../api/app'
-import { store } from '../store'
+import { store } from './store'
 import { Account } from '../types/shared'
 import { type ApiResult, fail, success } from '../utils/api'
 import { logErr } from '../utils/errors'

@@ -2,7 +2,7 @@ import { registerApp as registerAppAPI } from '../api/app'
 import { appConfig } from './config'
 import type { Application } from '../api/app'
 import type { ApiResult } from '../utils/api'
-import { store } from '../store'
+import { store } from './store'
 import { success } from '../utils/api'
 
 interface RegisteredApp {

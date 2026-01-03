@@ -7,7 +7,7 @@ import { LStatusesList } from '../components/LStatusesList'
 import { LButton } from '../components/LButton'
 import { LFilePicker } from '../components/LFilePicker'
 import { LPreview } from '../components/LPreview'
-import { useCompose } from '../store/composeStore'
+import { useCompose } from '../core/compose'
 import { getStatus, getStatusContext, postStatus } from '../core/status'
 
 export function createStatusPage(

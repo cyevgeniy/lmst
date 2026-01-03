@@ -1,4 +1,4 @@
-import { store as localStore } from '../store'
+import { store as localStore } from './store'
 import { createSignal, on } from '../utils/signal'
 import type { Signal } from '../utils/signal'
 

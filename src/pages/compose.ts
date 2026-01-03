@@ -3,7 +3,7 @@ import { LButton } from '../components/LButton'
 import { LComposeZen } from '../components/LComposeZen'
 import { LFilePicker } from '../components/LFilePicker'
 import { LPreview } from '../components/LPreview'
-import { text, postAvailable, files } from '../store/composeStore'
+import { text, postAvailable, files } from '../core/compose'
 import { on } from '../utils/signal'
 import { postStatus } from '../core/status'
 

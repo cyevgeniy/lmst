@@ -1,6 +1,6 @@
 import { div, h, childs, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
-import { notificationsStore as ns } from '../store/notificationsStore'
+import { notificationsStore as ns } from '../core/notifications'
 import { LStatus } from '../components/LStatus'
 import { LButton } from '../components/LButton'
 import { LFollowedNotification } from '../components/LFollowedNotification'

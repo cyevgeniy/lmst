@@ -1,5 +1,5 @@
 import { appConfig } from '../core/config'
-import { store } from '../store'
+import { store } from './store'
 import { app } from '../core/app'
 import { createSignal, on } from '../utils/signal'
 import type { Account } from '../types/shared'

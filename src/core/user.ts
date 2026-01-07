@@ -18,7 +18,6 @@ export let user = createSignal<Account>({
 
 // Sync user with localStorage
 on(user, (newValue) => {
-  console.log(newValue)
   if (newValue.id) store.setItem(USER_KEY, newValue)
   else store.removeItem(USER_KEY)
 })
@@ -35,12 +34,6 @@ function clearUserData() {
     fields: [],
   })
 }
-
-// function loadCachedUser() {
-//   let tmp = store.getItem(USER_KEY)
-
-//   if (tmp) user(JSON.parse(tmp) as Account)
-// }
 
 export function isLoaded() {
   return !!user().id

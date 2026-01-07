@@ -37,7 +37,6 @@ function _createProfilePage(params: RouteParams) {
 let mainPage = createMainPage()
 
 lRouter.on('/', (params) => {
-  console.log('router callback')
   cacheAndNavigate(params._path, mainPage.middle, () =>
     createTimelinePage(mainPage.middle),
   )

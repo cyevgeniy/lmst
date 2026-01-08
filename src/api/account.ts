@@ -1,4 +1,4 @@
-import { useAppConfig } from '../appConfig'
+import { appConfig } from '../core/config'
 import { success, fail, getQueryParams } from '../utils/api'
 import { fetchJson } from '../utils/fetch'
 import type { ApiResult } from '../utils/api'
@@ -6,7 +6,7 @@ import type { Account, PaginationParams, Status } from '../types/shared.d'
 import type { Relationship } from '../types/shared.d'
 import { logErr } from '../utils/errors'
 
-let { server } = useAppConfig()
+let { server } = appConfig
 
 export async function lookupAccount(webfinger: string): Promise<Account> {
   let url = `${server()}/api/v1/accounts/lookup/?acct=${webfinger}`,

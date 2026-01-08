@@ -1,10 +1,11 @@
 import { LStatusesList } from '../components/LStatusesList'
 import { LLoadMoreBtn } from '../components/LLoadMoreBtn'
 import { LNoMoreRows } from '../components/LNoMoreRows'
-import { childs, div, h, hide } from '../utils/dom'
-import type { AppManager } from '../appManager.ts'
+import { childs, div, h, hide, show } from '../utils/dom'
+import { on } from '../utils/signal.ts'
+import { homeTimeline } from '../core/homeTimeline.ts'
 
-export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
+export function createTimelinePage(root: HTMLElement) {
   root.innerHTML = ''
 
   let noMoreDataText = LNoMoreRows(),
@@ -20,14 +21,11 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
     statusesList = LStatusesList({
       root: statusesListEl,
       statuses: [],
-      sm: appManager.statusManager,
     })
 
   hide(noMoreDataText)
 
-  appManager.timelineManager.onClearStatuses(() => {
-    statusesList.clearStatuses()
-  })
+  homeTimeline.onClearStatuses = statusesList.clearStatuses
 
   let timelineContainer = h('div', { className: 'timeline-container' }, [
       statusesListEl,
@@ -35,18 +33,23 @@ export function createTimelinePage(root: HTMLElement, appManager: AppManager) {
     ]),
     el = h('div', { attrs: { id: 'timeline-root' } }, [timelineContainer])
 
-  async function loadMore() {
-    loadMoreBtn.loading = true
-    let st = await appManager.timelineManager.loadStatuses()
-    if (appManager.timelineManager.noMoreData) {
-      noMoreDataText.style.display = 'block'
+  on(homeTimeline.loading, (newVal) => {
+    loadMoreBtn.loading = newVal
+  })
+
+  on(homeTimeline.noMoreData, (newVal) => {
+    if (newVal) {
+      show(noMoreDataText)
       loadMoreBtn.visible = false
     } else {
-      noMoreDataText.style.display = 'none'
+      hide(noMoreDataText)
       loadMoreBtn.visible = true
     }
+  })
 
-    loadMoreBtn.loading = false
+  async function loadMore() {
+    let st = await homeTimeline.loadStatuses()
+
     statusesList?.addStatuses(st)
   }
 

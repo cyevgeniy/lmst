@@ -4,7 +4,7 @@ import { LAvatar } from './Avatar'
 import { LButton } from './LButton'
 import { on } from '../utils/signal'
 import { useProfileRelation } from '../utils/useProfileRelation'
-import { user } from '../utils/user'
+import { user, isLoaded } from '../core/user'
 
 function openOriginalSite(url: string): void {
   url && window.open(`${url}`, '_blank')
@@ -85,7 +85,7 @@ export function LProfileHeader(account?: Account) {
     else showOriginalSite()
 
     // Don't show 'follow'/'unfollow' on your own profile
-    if (account && user.user().id !== account.id && user.isLoaded()) {
+    if (account && user().id !== account.id && isLoaded()) {
       updateRelation((id = account.id))
     }
   }

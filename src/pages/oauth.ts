@@ -1,5 +1,6 @@
 import { logErr } from '../utils/errors'
-import { user } from '../utils/user'
+import { refreshUserInfo } from '../core/user'
+import { getUserToken } from '../core/auth'
 
 export async function createOAuthPage(root: HTMLElement) {
   root.innerHTML = ''
@@ -8,10 +9,10 @@ export async function createOAuthPage(root: HTMLElement) {
   // @ts-ignore
   let searchParams = new URL(window.location).searchParams,
     code = searchParams.get('code'),
-    res = await user.getUserToken(code ?? '')
+    res = await getUserToken(code ?? '')
 
   if (!res.ok) logErr(res.error)
-  else await user.verifyCredentials()
+  else await refreshUserInfo()
 
   window.location.replace('/')
 }

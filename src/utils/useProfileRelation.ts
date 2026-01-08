@@ -1,4 +1,4 @@
-import { useAppConfig } from '../appConfig'
+import { appConfig } from '../core/config'
 import { getRelation } from '../api/account'
 import { fetchJson } from './fetch'
 import { Relationship, type Account } from '../types/shared'
@@ -7,7 +7,7 @@ import { createSignal } from '../utils/signal'
 export function useProfileRelation() {
   const relation = createSignal<Relationship | undefined>(undefined)
   const loading = createSignal(false)
-  let { server } = useAppConfig()
+  let { server } = appConfig
 
   /**
    * Depending on current relationship, this function

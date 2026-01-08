@@ -1,18 +1,17 @@
 import { childs, div, h, hide, show } from '../utils/dom'
 import { on } from '../utils/signal'
-import { user } from '../utils/user'
+import { user, isLoaded as isUserLoaded } from '../core/user'
 import { Status } from '../types/shared'
-import { AppManager } from '../appManager'
 import { LStatus } from '../components/LStatus'
 import { LStatusesList } from '../components/LStatusesList'
 import { LButton } from '../components/LButton'
 import { LFilePicker } from '../components/LFilePicker'
 import { LPreview } from '../components/LPreview'
-import { useCompose } from '../store/composeStore'
+import { useCompose } from '../core/compose'
+import { getStatus, getStatusContext, postStatus } from '../core/status'
 
 export function createStatusPage(
   root: HTMLElement,
-  appManager: AppManager,
   params?: Record<string, string>,
 ) {
   let statusId = params?.id ?? '',
@@ -23,7 +22,6 @@ export function createStatusPage(
   let status: Status | undefined = undefined,
     descendantsRoot = div('status-descendants'),
     statusesList = LStatusesList({
-      sm: appManager.statusManager,
       root: descendantsRoot,
       statuses: [],
     }),
@@ -57,7 +55,7 @@ export function createStatusPage(
     }
 
   async function addReplyBlock() {
-    if (!user.isLoaded()) return
+    if (!isUserLoaded()) return
 
     replyTextArea = h('textarea', {
       attrs: {
@@ -75,7 +73,7 @@ export function createStatusPage(
         if (!text() || !status) return
 
         postAvailable(false)
-        const res = await appManager.statusManager.postStatus({
+        const res = await postStatus({
           statusText: `@${status.account.acct} ${replyTextArea.value}`,
           files: files(),
           in_reply_to_id: statusId,
@@ -106,13 +104,13 @@ export function createStatusPage(
     ])
   }
 
-  on(user.user, (_) => {
-    if (!user.isLoaded()) hide(replyToStatus)
+  on(user, (_) => {
+    if (!isUserLoaded()) hide(replyToStatus)
     else show(replyToStatus)
   })
 
   async function loadStatus() {
-    const resp = await appManager.statusManager.getStatus(statusId, {
+    const resp = await getStatus(statusId, {
       server: server,
     })
     status = resp.ok ? resp.value : undefined
@@ -123,7 +121,7 @@ export function createStatusPage(
   async function loadDescendants() {
     statusesList.clearStatuses()
 
-    const res = await appManager.statusManager.getStatusContext(statusId, {
+    const res = await getStatusContext(statusId, {
       server: server,
     })
     if (res.ok) statusesList.addStatuses(res.value.descendants)

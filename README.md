@@ -9,7 +9,7 @@ deliver the essential social experience with a **tiny bundle** and a **clear, cl
 
 ## Highlights
 
-- **Tiny JS bundle**: **up to 10 kB** (brotli). This cap is a hard requirement.
+- **Tiny JS bundle**: **up to 10 kB** (brotli). Hard requirement.
 - **Classic layout**: minimal UI that feels like a website, not a heavy web app.
 - **Zero runtime dependencies**: fewer moving parts and long-term stability.
 

@@ -1,24 +1,51 @@
-# Lmst - web client for Mastodon
+# Lmst — tiny, no-fuss Mastodon web client
 
-<p align="center"><img src="screenshots/logo.png" width="200"></p>
+<p align="center">
+  <img src="screenshots/logo.png" width="200" alt="Lmst logo">
+</p>
 
-Lmst is a web client for Mastodon that focuses on small size and simple
-interface.
+Lmst is a lightweight Mastodon web client built around a simple idea:
+deliver the essential social experience with a **tiny bundle** and a **clear, classic UI**.
 
-## How it's different
+## Highlights
 
-- Small JS bundle size - **up to 10 kB** brotlied, and this limit won't be
-  increased in the future. This is the mandatory requirement.
-- Classic, familiar ui layout. Lmst has simple ui, which reduces visual load on
-  a user. It looks more like a website than a "web app".
+- **Tiny JS bundle**: **up to 10 kB** (brotli). This cap is a hard requirement.
+- **Classic layout**: minimal UI that feels like a website, not a heavy web app.
+- **Zero runtime dependencies**: fewer moving parts and long-term stability.
 
-Also it has zero dependencies, so it won't suffer from a library that became
-deprecated. Even so, it offers basic functionality which may be enough for you:
+## Features
 
-- Follow/unfollow profiles
-- Compose statuses/replies with image attachments
-- Distraction-free compose mode (zen)
-- Boost/unboost statuses
-- Search (profiles, statuses, hashtags)
-- Own statuses deletion
+- Follow and unfollow profiles
+- Compose statuses and replies with image attachments
+- Distraction‑free compose mode (zen)
+- Boost and unboost statuses
+- Search profiles, statuses, and hashtags
+- Delete your own statuses
 - View notifications
+
+## Getting started
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+npm run preview
+```
+
+## Size budget
+
+The bundle size limit is enforced by the `size-limit` configuration in
+`package.json` (`dist/assets/*.js`, **10 kB**). Keep changes lean.
+
+## Contributing
+
+Small, focused contributions are welcome. Please keep the size budget in mind.
+
+## License
+
+MIT. See `LICENSE`.

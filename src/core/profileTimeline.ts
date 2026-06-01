@@ -9,18 +9,21 @@ import { createSignal, Signal } from '../utils/signal'
 
 export interface ProfileTimeline {
   loadStatuses: () => Promise<Status[]>
+  reloadStatuses: () => Promise<Status[]>
   clearStatuses: () => void
   noMoreData: Signal<boolean>
   statuses: Status[]
   getAccount: () => Promise<Account>
   profileWebfinger: Signal<string>
   loading: Signal<boolean>
+  showBoosts: Signal<boolean>
 }
 
 export function profileTimeline(): ProfileTimeline {
   let maxId = '',
     profileId = '',
     profileWebfinger = createSignal(''),
+    showBoosts = createSignal(true),
     statuses: Status[] = [],
     noMoreData = createSignal(false),
     loading = createSignal(false)
@@ -29,7 +32,10 @@ export function profileTimeline(): ProfileTimeline {
     if (!profileId) return []
 
     loading(true)
-    const res = await getStatuses(profileId, { max_id: maxId })
+    const res = await getStatuses(profileId, {
+      max_id: maxId,
+      exclude_reblogs: showBoosts() ? 'false' : 'true',
+    })
     loading(false)
     if (res.ok) {
       if (res.value.length) {
@@ -45,6 +51,11 @@ export function profileTimeline(): ProfileTimeline {
     maxId = ''
     statuses = []
     noMoreData(false)
+  }
+
+  async function reloadStatuses(): Promise<Status[]> {
+    clearStatuses()
+    return loadStatuses()
   }
 
   async function getAccount() {
@@ -63,8 +74,10 @@ export function profileTimeline(): ProfileTimeline {
     noMoreData,
     profileWebfinger,
     loading,
+    showBoosts,
     statuses,
     loadStatuses,
+    reloadStatuses,
     getAccount,
     clearStatuses,
   }

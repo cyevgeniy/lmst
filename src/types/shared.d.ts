@@ -127,6 +127,10 @@ export interface PaginationParams {
   min_id?: string
 }
 
+export interface StatusesParams extends PaginationParams {
+  exclude_reblogs?: 'true' | 'false'
+}
+
 export interface GlobalNavigation {
   goHome: () => void
   login: () => Promise<void>

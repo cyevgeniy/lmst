@@ -2,7 +2,7 @@ import { appConfig } from '../core/config'
 import { success, fail, getQueryParams } from '../utils/api'
 import { fetchJson } from '../utils/fetch'
 import type { ApiResult } from '../utils/api'
-import type { Account, PaginationParams, Status } from '../types/shared.d'
+import type { Account, Status, StatusesParams } from '../types/shared.d'
 import type { Relationship } from '../types/shared.d'
 import { logErr } from '../utils/errors'
 
@@ -28,7 +28,7 @@ export async function getAccount(id: string): Promise<Account> {
 
 export async function getStatuses(
   accountId: string,
-  params: PaginationParams = {},
+  params: StatusesParams = {},
 ) {
   let prm = getQueryParams(params),
     url = `${server()}/api/v1/accounts/${accountId}/statuses${prm}`

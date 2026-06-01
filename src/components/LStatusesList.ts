@@ -53,8 +53,14 @@ export function LStatusesList(props: StatusesListProps) {
     el.appendChild(fragment)
   }
 
+  function replaceStatuses(statuses: Status[]) {
+    clearStatuses()
+    addStatuses(statuses)
+  }
+
   return {
     addStatuses,
     clearStatuses,
+    replaceStatuses,
   }
 }

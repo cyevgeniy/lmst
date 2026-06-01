@@ -26,6 +26,14 @@ export function createProfilePage(
       loadMoreBtn.el,
       noMoreDataText,
     ]),
+    boostsCheckbox = h('input', {
+      attrs: { type: 'checkbox', id: 'profile-boosts', checked: 'checked' },
+      onChange: onBoostsChange,
+    }),
+    boostsFilter = h('div', null, [
+      boostsCheckbox,
+      h('label', { attrs: { for: 'profile-boosts' } }, 'Boosts'),
+    ]),
     timelineContainer = div('timeline-container'),
     statusesList = LStatusesList({
       root: timelineContainer,
@@ -53,7 +61,7 @@ export function createProfilePage(
   let el = h('div', { attrs: { id: 'timeline-root' } }),
     profileHeaderComponent = LProfileHeader()
 
-  childs(el, [profileHeaderComponent, timelineContainer])
+  childs(el, [profileHeaderComponent, boostsFilter, timelineContainer])
   childs(root, [el])
 
   async function loadStatuses() {
@@ -62,6 +70,12 @@ export function createProfilePage(
     const statuses = await pm.loadStatuses()
 
     statusesList.addStatuses(statuses)
+  }
+
+  async function onBoostsChange() {
+    pm.showBoosts(boostsCheckbox.checked)
+    const statuses = await pm.reloadStatuses()
+    statusesList.replaceStatuses(statuses)
   }
 
   // Creates a 'not found' message

@@ -1,8 +1,8 @@
-// vite.config.ts
 import { browserslistToTargets } from 'lightningcss'
 import browserslist from 'browserslist'
+import { defineConfig } from 'vite'
 
-export default {
+export default defineConfig({
   server: {
     host: '127.0.0.1',
   },
@@ -16,4 +16,7 @@ export default {
   build: {
     cssMinify: 'lightningcss',
   },
-}
+  test: {
+    environment: 'jsdom',
+  },
+})

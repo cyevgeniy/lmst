@@ -13,6 +13,7 @@
     "dev": "vite",
     "build": "node scripts/validate-env.js && tsc && vite build && cp _redirects dist/_redirects",
     "preview": "vite preview",
+    "test": "vitest run",
     "size": "npm run build && size-limit"
   },
   "simple-git-hooks": {
@@ -32,9 +33,9 @@
     "prettier": "^3.7.4",
     "simple-git-hooks": "^2.13.0",
     "size-limit": "^11.2.0",
-    "tap": "^21.0.1",
     "typescript": "^5.9.2",
-    "vite": "^7.3.1",
+    "vite": "^8.0.16",
+    "vitest": "^3.2.4",
     "zod": "^3.25.76"
   }
 }

@@ -9,4 +9,4 @@ size:
 	npx vite build
 	npx size-limit
 test:
-	npx tap
+	npx vitest run

@@ -1,10 +1,10 @@
-import t from 'tap'
+import { describe, expect, it } from 'vitest'
 import { last } from './arrays.ts'
 
-t.test('last function works', (t) => {
-  t.equal(last([1, 2, 3]), 3)
-  t.equal(last([1]), 1)
-  t.equal(last([]), undefined)
-
-  t.end()
+describe('last', () => {
+  it('returns the last item in an array', () => {
+    expect(last([1, 2, 3])).toBe(3)
+    expect(last([1])).toBe(1)
+    expect(last([])).toBeUndefined()
+  })
 })

@@ -1,37 +1,34 @@
-import t from 'tap'
+import { describe, expect, it } from 'vitest'
 import { searchParams } from './url.ts'
 
-t.test('searchParams works with simple strings', (t) => {
-  let r = searchParams({ name: 'evg', email: 'evg1' })
+describe('searchParams', () => {
+  it('works with simple strings', () => {
+    const r = searchParams({ name: 'evg', email: 'evg1' })
 
-  t.equal(r, 'name=evg&email=evg1')
-  t.end()
-})
+    expect(r).toBe('name=evg&email=evg1')
+  })
 
-t.test('searchParams works with empty keys', (t) => {
-  let r = searchParams({ name: 'evg', email: '' })
+  it('omits empty keys', () => {
+    const r = searchParams({ name: 'evg', email: '' })
 
-  t.equal(r, 'name=evg')
-  t.end()
-})
+    expect(r).toBe('name=evg')
+  })
 
-t.test('searchParams works with empty keys (1)', (t) => {
-  let r = searchParams({ name: '', email: '' })
+  it('returns an empty string when every key is empty', () => {
+    const r = searchParams({ name: '', email: '' })
 
-  t.equal(r, '')
-  t.end()
-})
+    expect(r).toBe('')
+  })
 
-t.test('searchParams works with multi-word params', (t) => {
-  let r = searchParams({ q: 'search query' })
+  it('encodes multi-word params', () => {
+    const r = searchParams({ q: 'search query' })
 
-  t.equal(r, `q=${encodeURIComponent('search query')}`)
-  t.end()
-})
+    expect(r).toBe(`q=${encodeURIComponent('search query')}`)
+  })
 
-t.test('searchParams works with empty objects', (t) => {
-  let r = searchParams({})
+  it('works with empty objects', () => {
+    const r = searchParams({})
 
-  t.equal(r, '')
-  t.end()
+    expect(r).toBe('')
+  })
 })

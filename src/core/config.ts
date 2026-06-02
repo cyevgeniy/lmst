@@ -22,11 +22,6 @@ export interface AppConfig {
    * Base url of the app
    */
   baseUrl: string
-
-  /**
-   * Application version
-   */
-  version: string
 }
 
 // TODO: move to .env
@@ -47,7 +42,6 @@ export let appConfig: AppConfig = {
   clientName: 'lmst',
   repo: import.meta.env.VITE_REPOSITORY_URL,
   baseUrl: import.meta.env.VITE_BASE_URL,
-  version: import.meta.env.VITE_APP_VERSION,
   get server() {
     if (!_server()) load()
 

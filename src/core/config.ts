@@ -30,7 +30,7 @@ export interface AppConfig {
 }
 
 // TODO: move to .env
-const DEFAULT_SERVER = 'https://mastodon.social'
+const DEFAULT_SERVER = 'https://mstdn.social'
 const SERVER_KEY = 'server'
 
 let _server = createSignal('')

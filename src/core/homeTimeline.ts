@@ -10,12 +10,14 @@ export function createHomeTimeline() {
   let maxId = '',
     onClearStatuses: () => void = noop,
     noMoreData = createSignal(false),
-    loading = createSignal(false)
+    loading = createSignal(false),
+    errorMessage = createSignal('')
 
   async function loadStatuses(): Promise<Status[]> {
     let { server } = appConfig,
       fn = isUserLoaded() ? getHomeTimeline : getPublicTimeline
 
+    errorMessage('')
     loading(true)
 
     let st = await fn.call(null, server(), { max_id: maxId })
@@ -32,6 +34,8 @@ export function createHomeTimeline() {
         // no more records
         noMoreData(true)
       }
+    } else {
+      errorMessage(st.error)
     }
 
     return []
@@ -41,6 +45,7 @@ export function createHomeTimeline() {
     maxId = ''
     onClearStatuses()
     noMoreData(false)
+    errorMessage('')
   }
 
   return {
@@ -49,6 +54,7 @@ export function createHomeTimeline() {
     onClearStatuses,
     clearStatuses,
     loading,
+    errorMessage,
   }
 }
 

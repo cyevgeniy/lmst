@@ -1,14 +1,14 @@
 import 'dotenv/config'
-import { z } from 'zod'
+import * as v from 'valibot'
 
-const env = z.object({
-  VITE_BASE_URL: z.url(),
-  VITE_REPOSITORY_URL: z.url(),
+const env = v.object({
+  VITE_BASE_URL: v.pipe(v.string(), v.url()),
+  VITE_REPOSITORY_URL: v.pipe(v.string(), v.url()),
 })
 
-let result = env.safeParse(process.env)
+const result = v.safeParse(env, process.env)
 
-if (result.error) {
+if (!result.success) {
   console.error('.env file is misconfigured')
-  console.error(result.error.issues)
+  console.error(v.flatten(result.issues).nested)
 }

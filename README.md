@@ -25,6 +25,8 @@ deliver the essential social experience with a **tiny bundle** and a **clear, cl
 
 ## Getting started
 
+Requires Node.js 22.22.2+, 24.15.0+, or 26+ (supported even-numbered releases).
+
 ```bash
 npm install
 npm run dev

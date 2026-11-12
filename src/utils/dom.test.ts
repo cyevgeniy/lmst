@@ -1,9 +1,8 @@
-import { JSDOM } from 'jsdom'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { h } from './dom.ts'
 
 beforeEach(() => {
-  global.document = new JSDOM(`<html><body></body></html>`).window.document
+  document.body.replaceChildren()
 })
 
 describe('h', () => {
